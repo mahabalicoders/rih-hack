@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CreditIQ | AI Credit Risk Intelligence</title>
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Dependencies -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        :root {
+            --sidebar-width: 220px;
+            --bg-page: #f9f9f9;
+            --bg-sidebar: #ffffff;
+            --border-color: #ebebeb;
+            --text-main: #111111;
+            --text-muted: #666666;
+            --text-light: #999999;
+            --accent: #111111;
+            --nav-active-bg: #111111;
+            --nav-active-text: #ffffff;
+            --border-thin: 0.5px solid var(--border-color);
+            --radius: 12px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { background-color: var(--bg-page); color: var(--text-main); -webkit-font-smoothing: antialiased; }
+        
+        /* Layout Structure */
+        .app-container { display: flex; min-height: 100vh; }
+        
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--bg-sidebar);
+            border-right: var(--border-thin);
+            position: fixed;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 24px 16px;
+            z-index: 100;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 8px 32px;
+            font-weight: 600;
+            font-size: 18px;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-list { list-style: none; flex-grow: 1; }
+        .nav-item {
+            padding: 10px 14px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+            transition: all 0.2s;
+        }
+        .nav-item:hover { background: #f3f3f3; color: var(--text-main); }
+        .nav-item.active { background: var(--nav-active-bg); color: var(--nav-active-text); }
+        .nav-icon { width: 18px; height: 18px; opacity: 0.7; }
+        .active .nav-icon { filter: invert(1); opacity: 1; }
+
+        .sidebar-bottom {
+            padding-top: 24px;
+            border-top: var(--border-thin);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .user-info { display: flex; flex-direction: column; overflow: hidden; }
+        .user-email { font-size: 11px; color: var(--text-muted); white-space: nowrap; text-overflow: ellipsis; }
+
+        /* Main Content Area */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            flex-grow: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .top-bar {
+            height: 64px;
+            background: #fff;
+            border-bottom: var(--border-thin);
+            padding: 0 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 90;
+        }
+        .page-title { font-size: 16px; font-weight: 600; }
+        .current-date { font-size: 13px; color: var(--text-muted); }
+
+        .content-body { padding: 32px; }
+
+        /* Unified Card Style */
+        .card {
+            background: #fff;
+            border: var(--border-thin);
+            border-radius: var(--radius);
+            padding: 24px;
+        }
+
+        /* Stat Cards */
+        .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 32px; }
+        .stat-card { display: flex; flex-direction: column; gap: 8px; }
+        .stat-label { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+        .stat-value { font-size: 28px; font-weight: 600; letter-spacing: -0.02em; }
+
+        /* Banner */
+        .welcome-banner { margin-bottom: 32px; }
+        .welcome-banner h1 { font-size: 24px; font-weight: 600; margin-bottom: 4px; }
+        .welcome-banner p { color: var(--text-muted); font-size: 14px; }
+
+        /* Form Elements */
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        .form-section { margin-bottom: 32px; }
+        .section-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-light); font-weight: 600; margin-bottom: 16px; display: block; }
+        .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+        label { font-size: 12px; font-weight: 500; color: var(--text-muted); }
+        input, select {
+            height: 40px; border: var(--border-thin); border-radius: 8px; padding: 0 12px; font-size: 14px; width: 100%; outline: none;
+        }
+        input:focus, select:focus { border-color: var(--accent); }
+        button { border-radius: 8px; font-weight: 500; transition: opacity 0.2s; cursor: pointer; }
+        .btn-primary { background: var(--accent); color: white; border: none; height: 42px; padding: 0 24px; }
+        .btn-ghost { background: transparent; border: 1px solid var(--accent); color: var(--accent); height: 42px; padding: 0 24px; }
+        .btn-ghost:hover { background: #f9f9f9; }
+
+        /* Table Style */
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; font-size: 12px; color: var(--text-light); text-transform: uppercase; padding: 12px 16px; border-bottom: var(--border-thin); }
+        td { padding: 16px; border-bottom: var(--border-thin); font-size: 14px; }
+        tr:last-child td { border-bottom: none; }
+        .badge { padding: 4px 10px; border-radius: 100px; font-size: 11px; font-weight: 600; display: inline-block; }
+
+        /* Charts */
+        .chart-container { position: relative; height: 300px; width: 100%; }
+        .analytics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+
+        /* Results Display */
+        .score-display { text-align: center; margin-bottom: 24px; }
+        .score-circle {
+            width: 100px; height: 100px; border-radius: 50%; border: 4px solid #eee; display: flex; align-items: center; justify-content: center;
+            font-size: 32px; font-weight: 600; margin: 0 auto 12px;
+        }
+        .factor-list { list-style: none; margin: 16px 0; }
+        .factor-item { font-size: 13px; color: var(--text-muted); margin-bottom: 8px; display: flex; gap: 8px; }
+        .factor-item::before { content: "•"; color: #ddd; }
+
+        /* Training Screen (re-used with minor polish) */
+        #training-screen { height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; background: white; }
+        .progress-box { width: 280px; text-align: center; }
+        .progress-bar-wrap { width: 100%; height: 6px; background: #eee; border-radius: 3px; overflow: hidden; margin: 16px 0; }
+        .progress-bar-fill { height: 100%; background: #111; transition: width 0.1s linear; }
+
+        /* Landing Page Specifics */
+        .landing-nav {
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 80px;
+            background: #fff;
+            border-bottom: var(--border-thin);
+            position: sticky;
+            top: 0;
+            z-index: 200;
+        }
+        .hero {
+            padding: 120px 80px;
+            text-align: center;
+            background: #fff;
+            border-bottom: var(--border-thin);
+        }
+        .hero h1 {
+            font-size: 56px;
+            font-weight: 600;
+            letter-spacing: -0.04em;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .hero p {
+            font-size: 18px;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 40px;
+            line-height: 1.6;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            padding: 80px;
+            background: #fafafa;
+        }
+        .feature-card {
+            text-align: left;
+        }
+        .feature-card .icon-box {
+            width: 48px;
+            height: 48px;
+            background: #111;
+            color: #fff;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+        }
+        .feature-card h3 {
+            font-size: 18px;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+        .feature-card p {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+        .footer {
+            padding: 60px 80px;
+            border-top: var(--border-thin);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fff;
+        }
+        .trusted-by {
+            padding: 40px 0;
+            text-align: center;
+            border-bottom: var(--border-thin);
+        }
+        .trusted-by span {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--text-light);
+            display: block;
+            margin-bottom: 24px;
+        }
+        .logos-flex {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            opacity: 0.4;
+            filter: grayscale(1);
+        }
+
+        @media (max-width: 850px) {
+            .landing-nav, .hero, .feature-grid, .footer { padding: 40px 24px; }
+            .hero h1 { font-size: 36px; }
+            .feature-grid { grid-template-columns: 1fr; }
+            .logos-flex { gap: 30px; flex-wrap: wrap; }
+        }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef, useMemo } = React;
+
+        // --- Data Definitions ---
+        const BUSINESS_TYPES = ["Retail", "Services", "Manufacturing", "Food"];
+        const LOAN_HISTORY_STATUS = ["None", "Good", "Bad"];
+        
+        const MAX_VALS = {
+            revenue: 500000,
+            txn_count: 200,
+            consistency: 10,
+            has_website: 1,
+            social_score: 10,
+            years_in_business: 20,
+            expense_ratio: 1,
+            loan_history: 2,
+            business_type: 3
+        };
+
+        const THEME_COLORS = {
+            primary: '#111111',
+            secondary: '#d4d4d4',
+            warning: '#f59e0b',
+            danger: '#ef4444',
+            success: '#22c55e',
+            gray: '#ebebeb'
+        };
+
+        // --- Helper Logic ---
+        function calculateScore(data) {
+            const { revenue, txn_count, consistency, has_website, social_score, years_in_business, expense_ratio, loan_history } = data;
+            let val = (
+                (revenue / 500000) * 25 +
+                (txn_count / 200) * 15 +
+                (consistency / 10) * 20 +
+                (has_website ? 5 : 0) +
+                (social_score / 10) * 10 +
+                (years_in_business / 20) * 10 +
+                (1 - expense_ratio) * 10 +
+                (loan_history === 1 ? 5 : loan_history === 2 ? -10 : 0)
+            );
+            return Math.min(100, Math.max(0, val));
+        }
+
+        function getMetaFromScore(s) {
+            if (s >= 80) return { grade: 'A', color: THEME_COLORS.success, risk: 'Low', rec: 'Highly eligible for priority financing.' };
+            if (s >= 65) return { grade: 'B', color: THEME_COLORS.warning, risk: 'Medium-Low', rec: 'Eligible for standard loans. Focus on consistency.' };
+            if (s >= 50) return { grade: 'C', color: THEME_COLORS.warning, risk: 'Medium', rec: 'Moderate eligibility. Improved cash flow recommended.' };
+            if (s >= 35) return { grade: 'D', color: THEME_COLORS.danger, risk: 'High', rec: 'Limited financing options. Strengthen business tenure.' };
+            return { grade: 'F', color: THEME_COLORS.danger, risk: 'Very High', rec: 'High risk profile. Strengthening documentation is advised.' };
+        }
+
+        // --- Components ---
+
+        const LucideIcon = ({ name }) => {
+            const icons = {
+                dashboard: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>,
+                plus: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>,
+                history: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
+                analytics: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>,
+                profile: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
+                analytics: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>,
+                profile: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
+                brain: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9.5 2A5 5 0 0 1 12 4a5 5 0 0 1 2.5-2 4.96 4.96 0 0 1 0 10 5 5 0 0 1-2.5 2 5 5 0 0 1-2.5-2A4.96 4.96 0 0 1 9.5 2Z"/><path d="M12 14v7"/><path d="M7 22h10"/></svg>,
+                lightning: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>,
+                shield: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>,
+                barChart: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
+            };
+            return icons[name] || null;
+        };
+
+        const Sidebar = ({ activePage, setPage, user, onLogout }) => (
+            <div className="sidebar">
+                <div className="logo-container">
+                    <LucideIcon name="brain" />
+                    <span>CreditIQ</span>
+                </div>
+                <nav className="nav-list">
+                    <div className={`nav-item ${activePage === 'dashboard' ? 'active' : ''}`} onClick={() => setPage('dashboard')}>
+                        <LucideIcon name="dashboard" /> Dashboard
+                    </div>
+                    <div className={`nav-item ${activePage === 'assessment' ? 'active' : ''}`} onClick={() => setPage('assessment')}>
+                        <LucideIcon name="plus" /> New Assessment
+                    </div>
+                    <div className={`nav-item ${activePage === 'history' ? 'active' : ''}`} onClick={() => setPage('history')}>
+                        <LucideIcon name="history" /> History
+                    </div>
+                    <div className={`nav-item ${activePage === 'analytics' ? 'active' : ''}`} onClick={() => setPage('analytics')}>
+                        <LucideIcon name="analytics" /> Analytics
+                    </div>
+                    <div className={`nav-item ${activePage === 'profile' ? 'active' : ''}`} onClick={() => setPage('profile')}>
+                        <LucideIcon name="profile" /> Profile
+                    </div>
+                </nav>
+                <div className="sidebar-bottom" onClick={onLogout} style={{cursor: 'pointer'}}>
+                    <div className="avatar">{user ? user.charAt(0).toUpperCase() : 'U'}</div>
+                    <div className="user-info">
+                        <span style={{fontSize: '13px', fontWeight: 600}}>{user || 'User'}</span>
+                        <span className="user-email">Risk Analyst</span>
+                    </div>
+                </div>
+            </div>
+        );
+
+        const DashboardPage = ({ history, user }) => {
+            const chartLeftRef = useRef(null);
+            const chartRightRef = useRef(null);
+
+            const stats = useMemo(() => {
+                if (history.length === 0) return { total: 0, avg: 0, highRisk: 0, last: '-' };
+                const total = history.length;
+                const avg = Math.round(history.reduce((a, b) => a + b.score, 0) / total);
+                const highRisk = history.filter(h => h.score < 35).length;
+                const last = history[0].date;
+                return { total, avg, highRisk, last };
+            }, [history]);
+
+            useEffect(() => {
+                if (!chartLeftRef.current || !chartRightRef.current) return;
+
+                const trendCtx = chartLeftRef.current.getContext('2d');
+                const riskCtx = chartRightRef.current.getContext('2d');
+
+                const latest5 = [...history].reverse().slice(-7);
+                const trendChart = new Chart(trendCtx, {
+                    type: 'line',
+                    data: {
+                        labels: latest5.map((_, i) => `#${i + 1}`),
+                        datasets: [{
+                            label: 'Score History',
+                            data: latest5.map(h => h.score),
+                            borderColor: '#111',
+                            tension: 0.3,
+                            fill: false,
+                            pointRadius: 4,
+                            pointBackgroundColor: '#111'
+                        }]
+                    },
+                    options: { 
+                        responsive: true, maintainAspectRatio: false, 
+                        plugins: { legend: { display: false } },
+                        scales: { y: { min: 0, max: 100 } }
+                    }
+                });
+
+                const riskGroups = { "Low": 0, "Medium": 0, "High": 0, "Very High": 0 };
+                history.forEach(h => {
+                    if (h.score >= 75) riskGroups["Low"]++;
+                    else if (h.score >= 50) riskGroups["Medium"]++;
+                    else if (h.score >= 30) riskGroups["High"]++;
+                    else riskGroups["Very High"]++;
+                });
+
+                const riskChart = new Chart(riskCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: Object.keys(riskGroups),
+                        datasets: [{
+                            data: Object.values(riskGroups),
+                            backgroundColor: [THEME_COLORS.success, THEME_COLORS.warning, THEME_COLORS.danger, '#666'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, cutout: '70%' }
+                });
+
+                return () => { trendChart.destroy(); riskChart.destroy(); };
+            }, [history]);
+
+            return (
+                <div className="flex-col">
+                    <div className="welcome-banner">
+                        <h1>Good morning, {user}</h1>
+                        <p>Here is what's happening with your risk portfolio today.</p>
+                    </div>
+
+                    <div className="stat-grid">
+                        <div className="card stat-card">
+                            <span className="stat-label">TOTAL ASSESSMENTS</span>
+                            <span className="stat-value">{stats.total}</span>
+                        </div>
+                        <div className="card stat-card">
+                            <span className="stat-label">AVERAGE SCORE</span>
+                            <span className="stat-value">{stats.avg}</span>
+                        </div>
+                        <div className="card stat-card">
+                            <span className="stat-label">HIGH RISK ALERTS</span>
+                            <span className="stat-value" style={{color: stats.highRisk > 0 ? THEME_COLORS.danger : 'inherit'}}>{stats.highRisk}</span>
+                        </div>
+                        <div className="card stat-card">
+                            <span className="stat-label">LAST ASSESSMENT</span>
+                            <span className="stat-value" style={{fontSize: '18px'}}>{stats.last}</span>
+                        </div>
+                    </div>
+
+                    <div className="analytics-grid" style={{ marginBottom: '32px' }}>
+                        <div className="card">
+                            <span className="section-label">Score Trend</span>
+                            <div className="chart-container">
+                                <canvas ref={chartLeftRef}></canvas>
+                            </div>
+                        </div>
+                        <div className="card">
+                            <span className="section-label">Risk Distribution</span>
+                            <div className="chart-container">
+                                <canvas ref={chartRightRef}></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="card">
+                        <span className="section-label">Recent Assessments</span>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Business Type</th>
+                                    <th>Score</th>
+                                    <th>Grade</th>
+                                    <th>Risk Level</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {history.slice(0, 5).map((h, i) => (
+                                    <tr key={i}>
+                                        <td style={{fontWeight: 500}}>{BUSINESS_TYPES[h.businessType]}</td>
+                                        <td>{h.score}</td>
+                                        <td><span className="badge" style={{background: `${h.color}11`, color: h.color, border: `0.5px solid ${h.color}`}}>{h.grade}</span></td>
+                                        <td style={{color: h.color, fontWeight: 500}}>{h.risk}</td>
+                                        <td style={{color: THEME_COLORS.textMuted}}>{h.date}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            );
+        };
+
+        const AssessmentPage = ({ model, onSave }) => {
+            const [formData, setFormData] = useState({
+                revenue: 120000, txn_count: 80, consistency: 8, has_website: 1,
+                social_score: 7, years_in_business: 5, expense_ratio: 0.4,
+                loan_history: 1, business_type: 0
+            });
+            const [result, setResult] = useState(null);
+            const [loading, setLoading] = useState(false);
+
+            const handleInp = (e) => {
+                const { name, value } = e.target;
+                setFormData(p => ({ ...p, [name]: parseFloat(value) }));
+            };
+
+            const runInference = async () => {
+                setLoading(true);
+                await new Promise(r => setTimeout(r, 800));
+
+                const norm = [
+                    formData.revenue / MAX_VALS.revenue,
+                    formData.txn_count / MAX_VALS.txn_count,
+                    formData.consistency / MAX_VALS.consistency,
+                    formData.has_website,
+                    formData.social_score / MAX_VALS.social_score,
+                    formData.years_in_business / MAX_VALS.years_in_business,
+                    formData.expense_ratio,
+                    formData.loan_history / MAX_VALS.loan_history,
+                    formData.business_type / MAX_VALS.business_type
+                ];
+
+                const inputTensor = tf.tensor2d([norm]);
+                const pred = model.predict(inputTensor);
+                const score = (await pred.data())[0] * 100;
+                const rounded = Math.round(score);
+
+                const meta = getMetaFromScore(rounded);
+                
+                const reasons = [];
+                if (formData.consistency < 5) reasons.push("Low payment consistency detected");
+                if (formData.expense_ratio > 0.7) reasons.push("High expense ratio is a concern");
+                if (formData.years_in_business < 2) reasons.push("Limited business history");
+                if (formData.has_website === 1) reasons.push("Established digital presence");
+                if (formData.loan_history === 1) reasons.push("Positive loan repayment history");
+
+                const res = {
+                    ...formData,
+                    score: rounded,
+                    ...meta,
+                    reasons: reasons.slice(0, 3),
+                    date: new Date().toLocaleDateString('en-GB')
+                };
+
+                setResult(res);
+                setLoading(false);
+            };
+
+            return (
+                <div className="form-grid">
+                    <div className="card">
+                        <span className="section-label">Business Assessment Form</span>
+                        <div className="form-section">
+                            <span style={{fontSize: '11px', color: '#999', marginBottom: '16px', display: 'block'}}>TRANSACTION DATA</span>
+                            <div className="form-grid" style={{gap: '12px'}}>
+                                <div className="form-group">
+                                    <label>Avg monthly revenue (₹)</label>
+                                    <input name="revenue" type="number" value={formData.revenue} onChange={handleInp} />
+                                </div>
+                                <div className="form-group">
+                                    <label>Transactions / month</label>
+                                    <input name="txn_count" type="number" value={formData.txn_count} onChange={handleInp} />
+                                </div>
+                                <div className="form-group" style={{gridColumn: 'span 2'}}>
+                                    <label>Consistency (1-10)</label>
+                                    <input name="consistency" type="range" min="1" max="10" value={formData.consistency} onChange={handleInp} />
+                                </div>
+                            </div>
+                        </div>
+                        <div className="form-section">
+                            <span style={{fontSize: '11px', color: '#999', marginBottom: '16px', display: 'block'}}>DIGITAL & HISTORY</span>
+                            <div className="form-grid" style={{gap: '12px'}}>
+                                <div className="form-group">
+                                    <label>Has website</label>
+                                    <select name="has_website" value={formData.has_website} onChange={handleInp}>
+                                        <option value={1}>Yes</option>
+                                        <option value={0}>No</option>
+                                    </select>
+                                </div>
+                                <div className="form-group">
+                                    <label>Years in business</label>
+                                    <input name="years_in_business" type="number" value={formData.years_in_business} onChange={handleInp} />
+                                </div>
+                                <div className="form-group" style={{gridColumn: 'span 2'}}>
+                                    <label>Expense Ratio (0.0 - 1.0)</label>
+                                    <input name="expense_ratio" type="number" step="0.1" value={formData.expense_ratio} onChange={handleInp} />
+                                </div>
+                                <div className="form-group">
+                                    <label>Loan History</label>
+                                    <select name="loan_history" value={formData.loan_history} onChange={handleInp}>
+                                        <option value={0}>None</option>
+                                        <option value={1}>Good</option>
+                                        <option value={2}>Bad</option>
+                                    </select>
+                                </div>
+                                <div className="form-group">
+                                    <label>Business Type</label>
+                                    <select name="business_type" value={formData.business_type} onChange={handleInp}>
+                                        {BUSINESS_TYPES.map((t, idx) => <option key={t} value={idx}>{t}</option>)}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <button onClick={runInference} disabled={loading} className="btn-primary w-full">
+                            {loading ? "AI is processing..." : "Run Risk Assessment"}
+                        </button>
+                    </div>
+
+                    <div>
+                        {result ? (
+                            <div className="card">
+                                <span className="section-label">Assessment Result</span>
+                                <div className="score-display">
+                                    <div className="score-circle" style={{borderColor: result.color, color: result.color}}>
+                                        {result.score}
+                                    </div>
+                                    <div className="badge" style={{background: `${result.color}11`, color: result.color, border: `0.5px solid ${result.color}`}}>
+                                        GRADE {result.grade}
+                                    </div>
+                                    <div style={{marginTop: '8px', fontWeight: 600, color: result.color}}>{result.risk} Risk</div>
+                                </div>
+                                
+                                <div className="form-section">
+                                    <span className="section-label">Risk Drivers</span>
+                                    <ul className="factor-list">
+                                        {result.reasons.map((r, i) => <li key={i} className="factor-item">{r}</li>)}
+                                    </ul>
+                                </div>
+
+                                <div className="card" style={{background: '#fcfcfc', borderStyle: 'dashed', padding: '16px', marginBottom: '24px'}}>
+                                    <span style={{fontSize: '10px', color: '#999', display: 'block', marginBottom: '4px'}}>RECOMMENDATION</span>
+                                    <p style={{fontSize: '13px', lineHeight: '1.4'}}>{result.rec}</p>
+                                </div>
+
+                                <button onClick={() => { onSave(result); setResult(null); }} className="btn-primary w-full">Save to Portfolio</button>
+                            </div>
+                        ) : (
+                            <div className="card" style={{height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.5, borderStyle: 'dashed'}}>
+                                <div style={{textAlign: 'center'}}>
+                                    <p style={{fontSize: '14px'}}>Enter details and run assessment<br/>to see AI generated score.</p>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        };
+
+        const HistoryPage = ({ history }) => {
+            const [filter, setFilter] = useState('');
+            const filtered = history.filter(h => 
+                BUSINESS_TYPES[h.businessType].toLowerCase().includes(filter.toLowerCase())
+            );
+
+            return (
+                <div className="card">
+                    <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px'}}>
+                        <span className="section-label" style={{marginBottom: 0}}>Audit History</span>
+                        <input 
+                            placeholder="Filter by business type..." 
+                            style={{width: '240px'}} 
+                            value={filter} 
+                            onChange={e => setFilter(e.target.value)}
+                        />
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Business Type</th>
+                                <th>Revenue</th>
+                                <th>Score</th>
+                                <th>Grade</th>
+                                <th>Risk</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {filtered.map((h, i) => (
+                                <tr key={i}>
+                                    <td>{history.length - i}</td>
+                                    <td style={{fontWeight: 500}}>{BUSINESS_TYPES[h.businessType]}</td>
+                                    <td>₹{(h.revenue/1000).toFixed(1)}k</td>
+                                    <td>{h.score}</td>
+                                    <td><span className="badge" style={{background: `${h.color}11`, color: h.color, border: `0.5px solid ${h.color}`}}>{h.grade}</span></td>
+                                    <td style={{color: h.color}}>{h.risk}</td>
+                                    <td>{h.date}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            );
+        };
+
+        const AnalyticsPage = ({ history }) => {
+            const chartRefs = [useRef(null), useRef(null), useRef(null), useRef(null)];
+
+            const summary = useMemo(() => {
+                if (history.length === 0) return {};
+                const typeScores = BUSINESS_TYPES.map((_, i) => {
+                    const group = history.filter(h => h.businessType === i);
+                    return group.length ? group.reduce((a, b) => a + b.score, 0) / group.length : 0;
+                });
+                const bestType = BUSINESS_TYPES[typeScores.indexOf(Math.max(...typeScores))];
+                
+                const allReasons = history.flatMap(h => h.reasons);
+                const reasonCounts = {};
+                allReasons.forEach(r => reasonCounts[r] = (reasonCounts[r] || 0) + 1);
+                const mostCommonRisk = Object.keys(reasonCounts).reduce((a, b) => reasonCounts[a] > reasonCounts[b] ? a : b, 'None');
+
+                const scores = history.map(h => h.score);
+                return { bestType, mostCommonRisk, highest: Math.max(...scores), lowest: Math.min(...scores) };
+            }, [history]);
+
+            useEffect(() => {
+                if (!chartRefs[0].current) return;
+
+                // 1. Avg Score by Type
+                const typeScores = BUSINESS_TYPES.map((_, i) => {
+                    const group = history.filter(h => h.businessType === i);
+                    return group.length ? Math.round(group.reduce((a, b) => a + b.score, 0) / group.length) : 0;
+                });
+                const c1 = new Chart(chartRefs[0].current.getContext('2d'), {
+                    type: 'bar',
+                    data: { labels: BUSINESS_TYPES, datasets: [{ data: typeScores, backgroundColor: THEME_COLORS.primary, borderRadius: 4 }] },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+                });
+
+                // 2. Score Trend
+                const c2 = new Chart(chartRefs[1].current.getContext('2d'), {
+                    type: 'line',
+                    data: { labels: history.map((_, i) => i + 1).reverse(), datasets: [{ data: history.map(h => h.score).reverse(), borderColor: THEME_COLORS.primary, tension: 0.2 }] },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+                });
+
+                // 3. Grade Distribution
+                const grades = { A:0, B:0, C:0, D:0, F:0 };
+                history.forEach(h => grades[h.grade]++);
+                const c3 = new Chart(chartRefs[2].current.getContext('2d'), {
+                    type: 'doughnut',
+                    data: { labels: Object.keys(grades), datasets: [{ data: Object.values(grades), backgroundColor: [THEME_COLORS.success, THEME_COLORS.warning, '#f97316', THEME_COLORS.danger, '#333'] }] },
+                    options: { responsive: true, maintainAspectRatio: false, cutout: '65%' }
+                });
+
+                // 4. Risk Factors
+                const factors = {};
+                history.flatMap(h => h.reasons).forEach(r => factors[r] = (factors[r] || 0) + 1);
+                const topFactors = Object.entries(factors).sort((a,b) => b[1]-a[1]).slice(0, 5);
+                const c4 = new Chart(chartRefs[3].current.getContext('2d'), {
+                    type: 'bar',
+                    indexAxis: 'y',
+                    data: { labels: topFactors.map(f => f[0]), datasets: [{ data: topFactors.map(f => f[1]), backgroundColor: THEME_COLORS.danger, borderRadius: 4 }] },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+                });
+
+                return () => { c1.destroy(); c2.destroy(); c3.destroy(); c4.destroy(); };
+            }, [history]);
+
+            return (
+                <div className="flex-col">
+                    <div className="analytics-grid" style={{marginBottom: '24px'}}>
+                        <div className="card">
+                            <span className="section-label">Avg Score by Business Sector</span>
+                            <div className="chart-container"><canvas ref={chartRefs[0]}></canvas></div>
+                        </div>
+                        <div className="card">
+                            <span className="section-label">Scale of Assessments</span>
+                            <div className="chart-container"><canvas ref={chartRefs[1]}></canvas></div>
+                        </div>
+                        <div className="card">
+                            <span className="section-label">Grade Portfolio</span>
+                            <div className="chart-container"><canvas ref={chartRefs[2]}></canvas></div>
+                        </div>
+                        <div className="card">
+                            <span className="section-label">Frequent Risk Drivers</span>
+                            <div className="chart-container"><canvas ref={chartRefs[3]}></canvas></div>
+                        </div>
+                    </div>
+
+                    <div className="stat-grid">
+                        <div className="card stat-card">
+                            <span className="stat-label">TOP PERFORMANCE</span>
+                            <span className="stat-value" style={{fontSize: '20px'}}>{summary.bestType}</span>
+                        </div>
+                        <div className="card stat-card">
+                            <span className="stat-label">PRIMARY RISK DRIVER</span>
+                            <span className="stat-value" style={{fontSize: '14px', lineHeight: 1.2}}>{summary.mostCommonRisk}</span>
+                        </div>
+                        <div className="card stat-card">
+                            <span className="stat-label">MAX RECORDED SCORE</span>
+                            <span className="stat-value" style={{color: THEME_COLORS.success}}>{summary.highest}</span>
+                        </div>
+                        <div className="card stat-card">
+                            <span className="stat-label">MIN RECORDED SCORE</span>
+                            <span className="stat-value" style={{color: THEME_COLORS.danger}}>{summary.lowest}</span>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const ProfilePage = ({ user }) => (
+            <div className="flex-col gap-6" style={{maxWidth: '600px', margin: '0 auto'}}>
+                <div className="card" style={{textAlign: 'center'}}>
+                    <div className="avatar" style={{width: '80px', height: '80px', fontSize: '32px', margin: '0 auto 16px', background: '#111', color: '#fff'}}>
+                        {user.charAt(0)}
+                    </div>
+                    <h2 style={{fontSize: '20px', fontWeight: 600}}>{user}</h2>
+                    <p style={{fontSize: '14px', color: '#999', marginBottom: '24px'}}>Risk Analyst at FinanceCorp</p>
+                    
+                    <div className="form-group" style={{textAlign: 'left'}}>
+                        <label>Display Name</label>
+                        <input value={user} readOnly />
+                    </div>
+                    <div className="form-group" style={{textAlign: 'left'}}>
+                        <label>Account Role</label>
+                        <input value="Senior Risk Analyst" readOnly />
+                    </div>
+                </div>
+
+                <div className="card">
+                    <span className="section-label">Model Intelligence</span>
+                    <div style={{display: 'flex', flexDirection: 'column', gap: '12px'}}>
+                        <div style={{display: 'flex', justifyContent: 'space-between', fontSize: '14px'}}>
+                            <span style={{color: '#999'}}>Architecture</span>
+                            <span style={{fontWeight: 500}}>TensorFlow.js Dense DNN</span>
+                        </div>
+                        <div style={{display: 'flex', justifyContent: 'space-between', fontSize: '14px'}}>
+                            <span style={{color: '#999'}}>Training Set</span>
+                            <span style={{fontWeight: 500}}>500 Samples (Synthetic)</span>
+                        </div>
+                        <div style={{display: 'flex', justifyContent: 'space-between', fontSize: '14px'}}>
+                            <span style={{color: '#999'}}>Features Support</span>
+                            <span style={{fontWeight: 500}}>9 Input Metrics</span>
+                        </div>
+                        <div style={{display: 'flex', justifyContent: 'space-between', fontSize: '14px'}}>
+                            <span style={{color: '#999'}}>Validation Accuracy</span>
+                            <span style={{fontWeight: 500, color: THEME_COLORS.success}}>~91.4%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="card">
+                    <span className="section-label">General Settings</span>
+                    <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px'}}>
+                        <span style={{fontSize: '14px'}}>Auto-save assessments</span>
+                        <div style={{width: '36px', height: '20px', background: '#111', borderRadius: '10px'}}></div>
+                    </div>
+                    <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+                        <span style={{fontSize: '14px'}}>Detailed risk explanations</span>
+                        <div style={{width: '36px', height: '20px', background: '#111', borderRadius: '10px'}}></div>
+                    </div>
+                </div>
+            </div>
+        );
+
+        const LandingPage = ({ onGetStarted }) => {
+            return (
+                <div style={{background: '#fff'}}>
+                    <nav className="landing-nav">
+                        <div className="logo-container" style={{padding: 0, marginBottom: 0}}>
+                            <LucideIcon name="brain" />
+                            <span>CreditIQ</span>
+                        </div>
+                        <div className="flex gap-6 items-center">
+                            <span style={{fontSize: '14px', cursor: 'pointer', fontWeight: 500}}>Enterprise</span>
+                            <span style={{fontSize: '14px', cursor: 'pointer', fontWeight: 500}}>Dev API</span>
+                            <button className="btn-primary" onClick={onGetStarted}>Sign in</button>
+                        </div>
+                    </nav>
+
+                    <header className="hero">
+                        <h1>Smart credit scoring for the next generation of business.</h1>
+                        <p>Leverage on-device machine learning to assess risk in seconds. No cloud delays. Total privacy. Instant intelligence.</p>
+                        <div className="flex justify-center gap-4">
+                            <button className="btn-primary" style={{height: '52px', padding: '0 40px', fontSize: '16px'}} onClick={onGetStarted}>Get Started Free</button>
+                            <button className="btn-ghost" style={{height: '52px', padding: '0 40px', fontSize: '16px'}}>Watch Demo</button>
+                        </div>
+                    </header>
+
+                    <div className="trusted-by">
+                        <span>TRUSTED BY INDUSTRY LEADERS</span>
+                        <div className="logos-flex">
+                            <span style={{fontWeight: 600, fontSize: '20px'}}>FINTECH</span>
+                            <span style={{fontWeight: 600, fontSize: '20px'}}>STRIPE</span>
+                            <span style={{fontWeight: 600, fontSize: '20px'}}>RAZORPAY</span>
+                            <span style={{fontWeight: 600, fontSize: '20px'}}>CRED</span>
+                            <span style={{fontWeight: 600, fontSize: '20px'}}>PLACID</span>
+                        </div>
+                    </div>
+
+                    <div className="feature-grid">
+                        <div className="feature-card">
+                            <div className="icon-box"><LucideIcon name="lightning" /></div>
+                            <h3>Neural Speed</h3>
+                            <p>Our TensorFlow.js engine processes 900+ data points per second directly in your browser. No API overhead.</p>
+                        </div>
+                        <div className="feature-card">
+                            <div className="icon-box"><LucideIcon name="shield" /></div>
+                            <h3>Private by Design</h3>
+                            <p>Customer data never leaves the client. Process sensitive financials with zero risk of cloud-side breaches.</p>
+                        </div>
+                        <div className="feature-card">
+                            <div className="icon-box"><LucideIcon name="barChart" /></div>
+                            <h3>Real-time Audit</h3>
+                            <p>Generate high-fidelity risk PDF reports and interactive dashboards for your entire loan portfolio instantly.</p>
+                        </div>
+                    </div>
+
+                    <footer className="footer">
+                        <div className="logo-container" style={{padding: 0, marginBottom: 0}}>
+                            <LucideIcon name="brain" />
+                            <span>CreditIQ</span>
+                        </div>
+                        <div style={{color: '#999', fontSize: '13px'}}>
+                            © 2026 CreditIQ Intelligence. Made for Advanced Risk Analysis.
+                        </div>
+                    </footer>
+                </div>
+            );
+        };
+
+        const LoginPage = ({ onLogin }) => {
+            const [email, setEmail] = useState('');
+            return (
+                <div style={{height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                    <div className="card" style={{width: '100%', maxWidth: '380px', textAlign: 'center'}}>
+                        <div className="logo-container" style={{justifyContent: 'center', marginBottom: '8px'}}>
+                            <LucideIcon name="brain" /> <span>CreditIQ</span>
+                        </div>
+                        <p style={{fontSize: '13px', color: '#999', marginBottom: '32px'}}>Sign in to access AI credit scoring dashboard</p>
+                        <div className="form-group" style={{textAlign: 'left'}}>
+                            <label>Email Address</label>
+                            <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="analyst@finance.com" />
+                        </div>
+                        <div className="form-group" style={{textAlign: 'left'}}>
+                            <label>Password</label>
+                            <input type="password" value="••••••••" readOnly />
+                        </div>
+                        <button className="btn-primary w-full" style={{marginTop: '12px'}} onClick={() => onLogin(email || 'Admin Analyst')}>
+                            Enter Dashboard
+                        </button>
+                    </div>
+                </div>
+            );
+        };
+
+        const TrainingScreen = ({ progress, isReady }) => (
+            <div id="training-screen">
+                <div className="progress-box">
+                    <LucideIcon name="brain" />
+                    <h2 style={{marginTop: '12px', fontSize: '20px'}}>CreditIQ AI</h2>
+                    <p style={{fontSize: '14px', color: '#666', marginTop: '4px'}}>
+                        {isReady ? 'Model calibration complete' : 'Training neural network in browser...'}
+                    </p>
+                    <div className="progress-bar-wrap">
+                        <div className="progress-bar-fill" style={{width: `${(progress/50)*100}%`}}></div>
+                    </div>
+                    <span style={{fontSize: '11px', color: '#999'}}>Learning from 500 samples • Epoch {progress}/50</span>
+                </div>
+            </div>
+        );
+
+        // --- Main App ---
+
+        const App = () => {
+            const [page, setPage] = useState('landing');
+            const [trainingProgress, setProgress] = useState(0);
+            const [model, setModel] = useState(null);
+            const [history, setHistory] = useState([]);
+            const [user, setUser] = useState(null);
+            const [isReady, setReady] = useState(false);
+
+            useEffect(() => {
+                async function init() {
+                    const m = tf.sequential();
+                    m.add(tf.layers.dense({ units: 64, activation: 'relu', inputShape: [9] }));
+                    m.add(tf.layers.dense({ units: 32, activation: 'relu' }));
+                    m.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
+                    m.compile({ optimizer: 'adam', loss: 'meanSquaredError' });
+
+                    const inputs = [], labels = [];
+                    for(let i=0; i<500; i++) {
+                        const s = {
+                            revenue: 10000 + Math.random()*490000, txn_count: 5+Math.random()*195, consistency: 1+Math.random()*9,
+                            has_website: Math.random()>0.5?1:0, social_score: 1+Math.random()*9, years_in_business: Math.random()*20,
+                            expense_ratio: 0.2+Math.random()*0.7, loan_history: Math.floor(Math.random()*3), business_type: Math.floor(Math.random()*4)
+                        };
+                        inputs.push([
+                            s.revenue/MAX_VALS.revenue, s.txn_count/MAX_VALS.txn_count, s.consistency/MAX_VALS.consistency,
+                            s.has_website, s.social_score/MAX_VALS.social_score, s.years_in_business/MAX_VALS.years_in_business,
+                            s.expense_ratio, s.loan_history/MAX_VALS.loan_history, s.business_type/MAX_VALS.business_type
+                        ]);
+                        labels.push([calculateScore(s)/100]);
+                    }
+
+                    await m.fit(tf.tensor2d(inputs), tf.tensor2d(labels), {
+                        epochs: 50, batchSize: 32, callbacks: { onEpochEnd: (e) => setProgress(e+1) }
+                    });
+
+                    // Add mock history data
+                    const mockHistory = [];
+                    for(let i=0; i<5; i++) {
+                        const s = 40 + Math.floor(Math.random()*50);
+                        const m = getMetaFromScore(s);
+                        mockHistory.push({
+                            score: s, ...m, businessType: Math.floor(Math.random()*4), revenue: 50000 + Math.random()*200000,
+                            date: `1${i+2}/04/2026`, reasons: ["Stable revenue history"]
+                        });
+                    }
+                    
+                    setHistory(mockHistory);
+                    setModel(m);
+                    setReady(true);
+                }
+                init();
+            }, []);
+
+            const renderContent = () => {
+                switch(page) {
+                    case 'landing': return <LandingPage onGetStarted={() => setPage('login')} />;
+                    case 'dashboard': return <DashboardPage history={history} user={user} />;
+                    case 'assessment': return <AssessmentPage model={model} onSave={(res) => { setHistory([res, ...history]); setPage('dashboard'); }} />;
+                    case 'history': return <HistoryPage history={history} />;
+                    case 'analytics': return <AnalyticsPage history={history} />;
+                    case 'profile': return <ProfilePage user={user} />;
+                    default: return null;
+                }
+            };
+
+            if (page === 'landing') return <LandingPage onGetStarted={() => setPage('login')} />;
+            if (page === 'login') return <LoginPage onLogin={(u) => { setUser(u); setPage('dashboard'); }} />;
+
+            return (
+                <div className="app-container">
+                    <Sidebar activePage={page} setPage={setPage} user={user} onLogout={() => setPage('login')} />
+                    <div className="main-content">
+                        <header className="top-bar">
+                            <span className="page-title">{page.charAt(0).toUpperCase() + page.slice(1).replace('-', ' ')}</span>
+                            <span className="current-date">{new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                        </header>
+                        <div className="content-body">
+                            {renderContent()}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
