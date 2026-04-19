@@ -1,0 +1,25 @@
+name: Deploy to Firebase
+on:
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install Firebase Tools
+        run: npm install -g firebase-tools
+
+      - name: Deploy to Firebase
+        run: firebase deploy --only hosting,functions --non-interactive --token "${{ secrets.FIREBASE_TOKEN }}"
+        # Alternatively, if using Service Account:
+        # env:
+        #   GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_ARTHASHAKTI }}
