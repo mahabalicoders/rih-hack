@@ -453,7 +453,9 @@
                 'ShieldCheck': 'ph:shield-check-bold',
                 'TrendingUp': 'ph:trend-up-bold',
                 'Search': 'ph:magnifying-glass-bold',
-                'ChartBar': 'ph:chart-line-up-bold'
+                'ChartBar': 'ph:chart-line-up-bold',
+                'Handshake': 'ph:handshake-bold',
+                'Buildings': 'ph:buildings-bold'
             };
             const iconId = iconMap[name] || name;
             return <span className={`iconify ${className}`} data-icon={iconId} style={{ fontSize: size, color: color, display: 'inline-block', verticalAlign: 'middle' }}></span>;
@@ -542,6 +544,9 @@
                     </div>
                     <div className={`nav-item ${activePage === 'analytics' ? 'active' : ''}`} onClick={() => setPage('analytics')}>
                         <Icon name="BarChart3" /> Analytics
+                    </div>
+                    <div className={`nav-item ${activePage === 'funding' ? 'active' : ''}`} onClick={() => setPage('funding')}>
+                        <Icon name="Handshake" /> Funding Hub
                     </div>
                     <div className={`nav-item ${activePage === 'profile' ? 'active' : ''}`} onClick={() => setPage('profile')}>
                         <Icon name="User" /> Profile
@@ -1383,6 +1388,69 @@
             </div>
         );
 
+        const FundingPage = ({ history }) => {
+            const deals = [
+                { id: 1, name: "Shivani Organics", sector: "Agri-Processing", score: 88, ask: "₹45L", growth: "+22%", type: "Debt" },
+                { id: 2, name: "Metro Build-Tech", sector: "Construction", score: 72, ask: "₹1.2Cr", growth: "+15%", type: "Working Capital" },
+                { id: 3, name: "Zest Medicals", sector: "Pharmacy", score: 94, ask: "₹25L", growth: "+40%", type: "Expansion" },
+                { id: 4, name: "Om Sai Kirana", sector: "Retail", score: 65, ask: "₹10L", growth: "+10%", type: "Micro-Loan" },
+            ];
+
+            return (
+                <div className="flex-col gap-6">
+                    <div className="welcome-banner">
+                        <h1>Funding Hub</h1>
+                        <p>Bridging the gap between credit-ready MSMEs and strategic capital.</p>
+                    </div>
+
+                    <div className="analytics-grid" style={{gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))'}}>
+                        {deals.map(deal => (
+                            <div key={deal.id} className="card flex-col gap-4" style={{borderTop: `4px solid ${getMetaFromScore(deal.score).color}`}}>
+                                <div className="flex justify-between items-start">
+                                    <div>
+                                        <h3 style={{fontSize: '18px', fontWeight: 700}}>{deal.name}</h3>
+                                        <span className="badge" style={{marginTop: '4px', background: '#f0f0f0'}}>{deal.sector}</span>
+                                    </div>
+                                    <div style={{textAlign: 'right'}}>
+                                        <span style={{fontSize: '24px', fontWeight: 800, color: getMetaFromScore(deal.score).color}}>{deal.score}</span>
+                                        <span style={{display: 'block', fontSize: '10px', color: '#999'}}>AI SCORE</span>
+                                    </div>
+                                </div>
+
+                                <div className="flex gap-4" style={{padding: '12px 0', borderY: '1px solid #f0f0f0'}}>
+                                    <div style={{flex: 1}}>
+                                        <span style={{fontSize: '11px', color: '#999'}}>FUNDING ASK</span>
+                                        <div style={{fontWeight: 600}}>{deal.ask}</div>
+                                    </div>
+                                    <div style={{flex: 1}}>
+                                        <span style={{fontSize: '11px', color: '#999'}}>ANNUAL GROWTH</span>
+                                        <div style={{fontWeight: 600, color: THEME_COLORS.success}}>{deal.growth}</div>
+                                    </div>
+                                </div>
+
+                                <div className="flex gap-2">
+                                    <button className="btn-primary" style={{flex: 1, height: '40px', fontSize: '12px'}}>VIEW PITCH</button>
+                                    <button className="btn-ghost" style={{width: '40px', height: '40px', padding: 0}} title="Contact Lender">
+                                        <Icon name="Buildings" size={16} />
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="card" style={{background: 'linear-gradient(135deg, #111 0%, #333 100%)', color: 'white'}}>
+                        <div className="flex justify-between items-center">
+                            <div>
+                                <h3 style={{fontSize: '20px', fontWeight: 700, marginBottom: '8px'}}>Are you an Investor?</h3>
+                                <p style={{fontSize: '14px', opacity: 0.8}}>Get access to deep-dive AI analytical models and verified bank statements.</p>
+                            </div>
+                            <button className="btn-primary" style={{background: 'white', color: 'black'}}>REGISTER AS LENDER</button>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
         const LandingPage = ({ onGetStarted }) => {
             return (
                 <div style={{background: '#fff'}}>
@@ -1639,6 +1707,7 @@
                     case 'assessment': return <AssessmentPage user={user} model={model} onSave={(res) => { setHistory([res, ...history]); setPage('dashboard'); }} />;
                     case 'history': return <HistoryPage history={history} />;
                     case 'analytics': return <AnalyticsPage history={history} />;
+                    case 'funding': return <FundingPage history={history} />;
                     case 'profile': return <ProfilePage user={user} />;
                     default: return <DashboardPage history={history} user={user} />;
                 }
