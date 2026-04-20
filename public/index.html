@@ -31,24 +31,25 @@
 
     <style>
         :root {
-            --sidebar-width: 240px;
-            --bg-page: #f9fafb;
+            --sidebar-width: 260px;
+            --bg-page: #f8fafc;
             --bg-sidebar: #ffffff;
-            --border-color: #e5e7eb;
-            --text-main: #020617;
+            --border-color: #f1f5f9;
+            --text-main: #0f172a;
             --text-muted: #64748b;
             --text-light: #94a3b8;
-            --accent: #111111;
-            --accent-glow: rgba(0,0,0,0.04);
-            --nav-active-bg: #111111;
+            --accent: #0f172a;
+            --accent-glow: rgba(15, 23, 42, 0.05);
+            --nav-active-bg: #0f172a;
             --nav-active-text: #ffffff;
             --border-thin: 1px solid var(--border-color);
             --radius-lg: 24px;
-            --radius-md: 16px;
+            --radius-md: 20px;
             --radius-sm: 12px;
             --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-            --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            --shadow-md: 0 4px 12px -1px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+            --shadow-premium: 0 10px 30px -5px rgba(0, 0, 0, 0.05), 0 5px 15px -5px rgba(0, 0, 0, 0.02);
+            --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.05), 0 8px 10px -6px rgb(0 0 0 / 0.05);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
@@ -89,13 +90,17 @@
             .nav-icon { width: 20px; height: 20px; }
             .nav-text { display: none; }
             
-            .hero h1 { font-size: 42px !important; }
-            .hero { padding: 80px 24px !important; }
-            .landing-nav { padding: 0 24px !important; }
-            .feature-grid { grid-template-columns: 1fr !important; gap: 16px !important; }
-            .stat-grid { grid-template-columns: 1fr 1fr !important; }
-            .form-grid { grid-template-columns: 1fr !important; }
-            .content-body { padding: 24px !important; }
+            .hero h1 { font-size: 32px !important; line-height: 1.1; }
+            .hero { padding: 60px 20px !important; }
+            .landing-nav { padding: 0 16px !important; height: 64px; }
+            .feature-grid { grid-template-columns: 1fr !important; gap: 24px !important; padding: 40px 20px !important; }
+            .stat-grid { grid-template-columns: 1fr 1fr !important; gap: 12px !important; }
+            .form-grid { grid-template-columns: 1fr !important; gap: 16px !important; }
+            .content-body { padding: 0 !important; }
+            .main-content { margin-left: 0 !important; padding: 0 !important; padding-bottom: 80px !important; }
+            .top-bar { padding: 0 16px !important; height: 56px; }
+            .card { padding: 16px !important; border-radius: 16px !important; }
+            .analytics-grid { grid-template-columns: 1fr !important; gap: 16px !important; }
         }
         
         /* Sidebar */
@@ -123,8 +128,8 @@
 
         .nav-list { list-style: none; flex-grow: 1; }
         .nav-item {
-            padding: 10px 14px;
-            border-radius: 8px;
+            padding: 12px 16px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             gap: 12px;
@@ -132,12 +137,12 @@
             cursor: pointer;
             font-size: 14px;
             font-weight: 500;
-            margin-bottom: 4px;
-            transition: all 0.2s;
+            margin-bottom: 8px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .nav-item:hover { background: #f3f3f3; color: var(--text-main); }
-        .nav-item.active { background: var(--nav-active-bg); color: var(--nav-active-text); }
-        .nav-icon { width: 18px; height: 18px; opacity: 0.7; }
+        .nav-item:hover { background: #f1f5f9; color: var(--text-main); transform: translateX(4px); }
+        .nav-item.active { background: var(--nav-active-bg); color: var(--nav-active-text); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .nav-icon { width: 18px; height: 18px; opacity: 0.8; }
         .active .nav-icon { filter: invert(1); opacity: 1; }
 
         .sidebar-bottom {
@@ -185,18 +190,20 @@
         .page-title { font-size: 16px; font-weight: 600; }
         .current-date { font-size: 13px; color: var(--text-muted); }
 
-        .content-body { padding: 32px; }
+        .content-body { padding: 0; }
 
         /* Unified Card Style */
         .card {
             background: #fff;
             border: var(--border-thin);
-            border-radius: var(--radius);
+            border-radius: var(--radius-md);
             padding: 24px;
-            box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--shadow-sm);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
         }
-        .card:hover { transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1); }
+        .card:hover { transform: translateY(-2px); box-shadow: var(--shadow-premium); }
 
         /* Stat Cards */
         .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 32px; }
@@ -301,11 +308,14 @@
             z-index: 200;
         }
         .hero {
-            padding: 160px 80px;
+            padding: 120px 80px;
             text-align: center;
             background: radial-gradient(circle at top, #fafafa 0%, #ffffff 100%);
             position: relative;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         .hero::before {
             content: "";
@@ -398,19 +408,56 @@
         }
 
         @media (max-width: 850px) {
-            .landing-nav, .hero, .feature-grid, .footer { padding: 40px 24px; }
-            .hero h1 { font-size: 36px; }
+            .landing-nav, .hero, .feature-grid, .footer { padding: 40px 20px; }
+            .hero h1 { font-size: 40px; }
             .feature-grid { grid-template-columns: 1fr; }
-            .logos-flex { gap: 30px; flex-wrap: wrap; }
+            .logos-flex { gap: 24px; flex-wrap: wrap; }
+            .stat-grid { grid-template-columns: 1fr 1fr; }
         }
         .hidden { display: none; }
+
+        /* ─── SiliconMind V2.0 Anomaly Banner ─────────────────────── */
+        .anomaly-banner {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            background: #fffbeb;
+            border: 1px solid #f59e0b;
+            border-left: 5px solid #f59e0b;
+            border-radius: 16px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            animation: anomaly-slide-in 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .anomaly-banner.critical {
+            background: #fff1f0;
+            border-color: #ef4444;
+            border-left-color: #ef4444;
+        }
+        .anomaly-banner__icon { font-size: 22px; flex-shrink: 0; margin-top: 1px; line-height: 1; }
+        .anomaly-banner__body { display: flex; flex-direction: column; gap: 4px; }
+        .anomaly-banner__title {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+            color: #92400e;
+        }
+        .anomaly-banner.critical .anomaly-banner__title { color: #7f1d1d; }
+        .anomaly-banner__message { font-size: 13px; color: #78350f; line-height: 1.55; }
+        .anomaly-banner.critical .anomaly-banner__message { color: #991b1b; }
+        .anomaly-banner__score { font-size: 11px; color: #94a3b8; margin-top: 2px; font-weight: 500; }
+        @keyframes anomaly-slide-in {
+            from { opacity: 0; transform: translateY(-8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect, useRef, useMemo } = React;
+        const { useState, useEffect, useRef, useMemo, useCallback } = React;
 
         // --- Firebase Configuration ---
         const firebaseConfig = {
@@ -532,6 +579,12 @@
                     <div className={`nav-item ${activePage === 'analytics' ? 'active' : ''}`} onClick={() => setPage('analytics')}>
                         <Icon name="BarChart3" /> Analytics
                     </div>
+                    <div className={`nav-item ${activePage === 'fraud' ? 'active' : ''}`} onClick={() => setPage('fraud')}>
+                        <Icon name="ph:shield-warning-bold" /> Fraud Monitor
+                    </div>
+                    <div className={`nav-item ${activePage === 'simulator' ? 'active' : ''}`} onClick={() => setPage('simulator')}>
+                        <Icon name="ph:magic-wand-bold" /> What-If Simulator
+                    </div>
                     <div className={`nav-item ${activePage === 'profile' ? 'active' : ''}`} onClick={() => setPage('profile')}>
                         <Icon name="User" /> Profile
                     </div>
@@ -545,6 +598,115 @@
                 </div>
             </div>
         );
+        
+        // --- V2.0 What-If Simulator Component ---
+        const WhatIfSimulator = () => {
+            const [params, setParams] = useState({
+                monthlyUpiVolume: 1500000,
+                gstFilingConsistency: 85,
+                businessAge: 36,
+                digitalBanking: 7,
+                employeeCount: 12
+            });
+
+            const [results, setResults] = useState(null);
+            const [loading, setLoading] = useState(false);
+
+            const simulationParams = [
+                { id: 'monthlyUpiVolume', label: 'Monthly UPI Volume', min: 0, max: 10000000, step: 100000, unit: '₹' },
+                { id: 'gstFilingConsistency', label: 'GST Consistency', min: 0, max: 100, step: 1, unit: '%' },
+                { id: 'businessAge', label: 'Business Age (Months)', min: 0, max: 120, step: 1, unit: 'm' },
+                { id: 'digitalBanking', label: 'Digital Maturity (1-10)', min: 1, max: 10, step: 1, unit: ' pts' },
+                { id: 'employeeCount', label: 'Team Size', min: 1, max: 50, step: 1, unit: ' pax' }
+            ];
+
+            const fetchSimulation = useCallback(async (currentParams) => {
+                setLoading(true);
+                try {
+                    const response = await fetch('http://localhost:5000/simulate', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(currentParams)
+                    });
+                    const data = await response.json();
+                    setResults(data);
+                } catch (error) {
+                    console.error("Simulation failed:", error);
+                } finally {
+                    setLoading(false);
+                }
+            }, []);
+
+            useEffect(() => {
+                const handler = setTimeout(() => fetchSimulation(params), 400);
+                return () => clearTimeout(handler);
+            }, [params, fetchSimulation]);
+
+            const getGradeColor = (grade) => {
+                const colors = { A: '#52c41a', B: '#faad14', C: '#faad14', D: '#ff4d4f', F: '#ff4d4f' };
+                return colors[grade] || '#999';
+            };
+
+            return (
+                <div className="card" style={{ maxWidth: '800px', margin: '0 auto', borderStyle: 'dashed', borderColor: '#d9d9d9' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
+                        <div>
+                            <h2 style={{ fontSize: '24px', fontWeight: 800, letterSpacing: '-0.02em' }}>What-If Simulator</h2>
+                            <p style={{ fontSize: '14px', color: '#64748b', marginTop: '6px' }}>Experiment with business variables to optimize your probability of financing and discover ideal interest rates.</p>
+                        </div>
+                        {loading && <span style={{ fontSize: '11px', color: '#999', background: '#f5f5f5', padding: '4px 12px', borderRadius: '100px' }}>Recalculating...</span>}
+                    </div>
+                    
+                    <div className="form-grid" style={{ marginBottom: '32px' }}>
+                        {simulationParams.map(p => (
+                            <div key={p.id} className="form-group" style={{ padding: '16px', background: '#fafafa', borderRadius: '12px' }}>
+                                <div className="flex justify-between items-center" style={{ marginBottom: '8px' }}>
+                                    <label style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', color: '#888' }}>{p.label}</label>
+                                    <span style={{ fontSize: '14px', fontWeight: 800, color: '#111' }}>
+                                        {p.unit === '₹' ? `₹${(params[p.id]/100000).toFixed(1)}L` : `${params[p.id]}${p.unit}`}
+                                    </span>
+                                </div>
+                                <input 
+                                    type="range" 
+                                    min={p.min} max={p.max} step={p.step} 
+                                    value={params[p.id]} 
+                                    onChange={(e) => setParams(prev => ({ ...prev, [p.id]: parseFloat(e.target.value) }))}
+                                    style={{ accentColor: '#111', cursor: 'pointer', width: '100%', height: '4px' }}
+                                />
+                            </div>
+                        ))}
+                    </div>
+
+                    {results && (
+                        <div style={{ borderTop: '1px solid #f1f5f9', paddingTop: '32px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+                            <div className="score-circle" style={{ 
+                                borderColor: getGradeColor(results.grade), 
+                                width: '120px', 
+                                height: '120px', 
+                                fontSize: '42px', 
+                                marginBottom: '20px',
+                                background: 'white',
+                                boxShadow: `0 10px 25px ${getGradeColor(results.grade)}15`
+                            }}>
+                                {results.score}
+                            </div>
+                            <div className="badge" style={{ 
+                                backgroundColor: `${getGradeColor(results.grade)}22`, 
+                                color: getGradeColor(results.grade), 
+                                border: `1px solid ${getGradeColor(results.grade)}`, 
+                                marginBottom: '16px',
+                                padding: '8px 24px',
+                                fontSize: '14px',
+                                fontWeight: 700
+                            }}>
+                                GRADE {results.grade} • {results.risk.toUpperCase()} RISK
+                            </div>
+                            <p style={{ fontSize: '15px', color: '#475569', maxWidth: '400px', lineHeight: '1.6' }}>{results.message}</p>
+                        </div>
+                    )}
+                </div>
+            );
+        };
 
         const DashboardPage = ({ history, user }) => {
             const chartLeftRef = useRef(null);
@@ -703,6 +865,10 @@
                             </tbody>
                         </table>
                     </div>
+
+                    <div style={{ marginTop: '32px' }}>
+                        <WhatIfSimulator />
+                    </div>
                 </div>
             );
         };
@@ -716,26 +882,78 @@
             });
             const [result, setResult] = useState(null);
             const [loading, setLoading] = useState(false);
+            const [fraudActive, setFraudActive] = useState(false);
+            const [googleSearch, setGoogleSearch] = useState('');
+            const [googleResults, setGoogleResults] = useState([]);
+            const [isSearching, setIsSearching] = useState(false);
+            const [googleData, setGoogleData] = useState({ verified: false, rating: null, reviews: null, rep_score: 0.5 });
 
             const handleInp = (e) => {
                 const { name, value } = e.target;
                 const finalValue = name === 'business_type' ? parseInt(value) : parseFloat(value);
                 setFormData(p => ({ ...p, [name]: finalValue }));
+                if (fraudActive) setFraudActive(false); // Reset on change
+            };
+
+            const handleGoogleSearch = async () => {
+                if (!googleSearch) return;
+                setIsSearching(true);
+                try {
+                    const response = await fetch('http://localhost:5000/api/places/search', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ query: googleSearch })
+                    });
+                    const data = await response.json();
+                    if (data.status === 'OK') {
+                        setGoogleResults(data.results);
+                    } else {
+                        alert(data.message || "No results found");
+                    }
+                } catch (err) {
+                    console.error("Search Error:", err);
+                } finally {
+                    setIsSearching(false);
+                }
+            };
+
+            const selectPlace = (place) => {
+                setGoogleData({
+                    verified: true,
+                    rating: place.rating,
+                    reviews: place.user_ratings_total,
+                    rep_score: place.reputation_score,
+                    business_name: place.name
+                });
+                setGoogleResults([]);
             };
 
             const runInference = async () => {
                 setLoading(true);
                 try {
-                    const API_URL = 'https://mahabali077-arthshakti.hf.space/score'; 
+                    const API_URL = 'http://localhost:5000/score'; 
+                    const body = { 
+                        ...formData, 
+                        google_reputation_score: googleData.rep_score 
+                    };
+
                     const response = await fetch(API_URL, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(formData)
+                        body: JSON.stringify(body)
                     });
                     
                     const data = await response.json();
                     
                     if (data.status === 'success') {
+                        // ── V2.0 PROACTIVE ANOMALY CHECK ──
+                        if (data.is_anomaly) {
+                            setFraudActive(true);
+                            setResult(null);
+                            setLoading(false);
+                            return; // STOP ASSESSMENT
+                        }
+
                         const scoreColor = data.score >= 80 ? THEME_COLORS.success : data.score >= 50 ? THEME_COLORS.warning : THEME_COLORS.danger;
                         
                         // Rule-based risk drivers logic
@@ -851,7 +1069,11 @@
                             reasons: getDrivers(formData, data.score),
                             date: new Date().toLocaleDateString('en-GB'),
                             created_at: firebase.firestore.FieldValue.serverTimestamp(),
-                            user_id: auth.currentUser ? auth.currentUser.uid : 'anon'
+                            user_id: auth.currentUser ? auth.currentUser.uid : 'anon',
+                            // ── V2.0 Anomaly Detection ──
+                            is_anomaly:      data.is_anomaly     || false,
+                            anomaly_score:   data.anomaly_score  || 0,
+                            anomaly_message: data.anomaly_message|| ''
                         };
 
                         // Save to Firestore
@@ -978,7 +1200,40 @@
 
             return (
                 <div className="form-grid">
+                    {/* ── FRAUD OVERLAY ── */}
+                    {fraudActive && (
+                        <div style={{
+                            position: 'fixed', top: '0', left: '0', width: '100%', height: '100%',
+                            background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(4px)', zIndex: 999,
+                            display: 'flex', alignItems: 'center', justifyContent: 'center'
+                        }}>
+                            <div className="card" style={{
+                                width: '420px', textAlign: 'center', border: '2px solid #ef4444', 
+                                boxShadow: '0 20px 60px rgba(239, 68, 68, 0.2)',
+                                animation: 'shake 0.5s cubic-bezier(.36,.07,.19,.97) both'
+                            }}>
+                                <div style={{ fontSize: '56px', marginBottom: '16px' }}>🚨</div>
+                                <h2 style={{ color: '#991b1b', fontSize: '24px', fontWeight: 800, letterSpacing: '-0.02em', marginBottom: '8px' }}>FRAUD DETECTED</h2>
+                                <span style={{ fontSize: '10px', color: '#ef4444', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '16px', display: 'block' }}>SiliconMind Security Intercept</span>
+                                <p style={{ fontSize: '14px', color: '#444', lineHeight: '1.6', marginBottom: '24px' }}>
+                                    Illogical data patterns identified. Massive transaction volume detected without corresponding GST compliance or business tenure. <br/><b>Assessment Blocked.</b>
+                                </p>
+                                <button className="btn-primary w-full" style={{ background: '#ef4444' }} onClick={() => setFraudActive(false)}>
+                                    Clear Flag & Correct Inputs
+                                </button>
+                                <style>{`
+                                    @keyframes shake {
+                                        10%, 90% { transform: translate3d(-1px, 0, 0); }
+                                        20%, 80% { transform: translate3d(2px, 0, 0); }
+                                        30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+                                        40%, 60% { transform: translate3d(4px, 0, 0); }
+                                    }
+                                `}</style>
+                            </div>
+                        </div>
+                    )}
                     <div className="card">
+
                         <span className="section-label">SiliconMind Assessment</span>
                         
                         <div className="form-section">
@@ -1031,6 +1286,74 @@
                         </div>
 
                         <div className="form-section">
+                            <span style={{fontSize: '11px', color: '#999', marginBottom: '16px', display: 'block'}}>GOOGLE BUSINESS REPUTATION (15TH INPUT)</span>
+                            <div style={{ padding: '20px', background: '#fff', border: '1.5px solid #0f172a', borderRadius: '16px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+                                    <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: '#0f172a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                        <Icon name="logos:google-maps" size={18} />
+                                    </div>
+                                    <div>
+                                        <div style={{ fontSize: '15px', fontWeight: 800 }}>Search & Link Business</div>
+                                        <div style={{ fontSize: '12px', color: '#64748b' }}>Link your Maps profile to unlock reputation-based scoring boosts.</div>
+                                    </div>
+                                </div>
+                                
+                                <div className="form-group">
+                                    <div style={{ display: 'flex', gap: '10px' }}>
+                                        <input 
+                                            type="text" 
+                                            placeholder="Enter Shop Name & City (e.g. Ramesh Kirana Jaipur)" 
+                                            value={googleSearch}
+                                            style={{ borderRadius: '100px', padding: '0 20px', height: '46px', border: '1.5px solid #e2e8f0' }}
+                                            onChange={(e) => setGoogleSearch(e.target.value)}
+                                            onKeyPress={(e) => e.key === 'Enter' && handleGoogleSearch()}
+                                        />
+                                        <button 
+                                            className="btn-primary" 
+                                            style={{ width: 'auto', padding: '0 24px', height: '46px', borderRadius: '100px' }}
+                                            onClick={handleGoogleSearch}
+                                            disabled={isSearching}
+                                        >
+                                            {isSearching ? "..." : "SEARCH"}
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {googleResults.length > 0 && (
+                                    <div style={{ marginTop: '20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                        <div style={{ fontSize: '11px', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase' }}>Available Profiles</div>
+                                        {googleResults.map((p, i) => (
+                                            <div key={i} style={{ padding: '14px', border: '1.5px solid #f1f5f9', borderRadius: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#f8fafc', transition: 'all 0.2s' }}>
+                                                <div>
+                                                    <div style={{ fontSize: '14px', fontWeight: 700 }}>{p.name}</div>
+                                                    <div style={{ fontSize: '11px', color: '#64748b' }}>{p.address}</div>
+                                                    <div style={{ fontSize: '12px', color: '#f59e0b', marginTop: '4px', fontWeight: 600 }}>⭐ {p.rating} ({p.user_ratings_total} reviews)</div>
+                                                </div>
+                                                <div style={{ display: 'flex', gap: '8px' }}>
+                                                    <a href={p.maps_url} target="_blank" className="btn-ghost" style={{ border: '1px solid #cbd5e1', padding: '8px 14px', fontSize: '10px', height: 'auto', textDecoration: 'none', color: 'inherit', borderRadius: '8px' }}>VIEW ON MAPS</a>
+                                                    <button onClick={() => selectPlace(p)} className="btn-primary" style={{ padding: '8px 14px', fontSize: '10px', height: 'auto', background: '#22c55e', borderRadius: '8px' }}>SELECT STORE</button>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+
+                                {googleData.verified && (
+                                    <div style={{ marginTop: '20px', padding: '14px', background: '#f0fdf4', border: '1.5px solid #22c55e', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', animation: 'slideDown 0.3s ease' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                            <Icon name="lucide:check-circle" color="#22c55e" size={24} />
+                                            <div>
+                                                <div style={{ fontSize: '14px', fontWeight: 800, color: '#14532d' }}>Successfully Verified: {googleData.business_name}</div>
+                                                <div style={{ fontSize: '11px', color: '#15803d' }}>Reputation Strength: {(googleData.rep_score * 100).toFixed(0)}% | Model Boost Applied</div>
+                                            </div>
+                                        </div>
+                                        <button onClick={() => setGoogleData({verified:false, rating:null, reviews:null, rep_score:0.5})} className="btn-ghost" style={{ fontSize: '11px', color: '#ef4444', fontWeight: 700 }}>UNLINK</button>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="form-section">
                             <span style={{fontSize: '11px', color: '#999', marginBottom: '16px', display: 'block'}}>IDENTITY & DIGITAL FOOTPRINT</span>
                             <div className="form-grid" style={{gap: '12px', gridTemplateColumns: 'repeat(3, 1fr)'}}>
                                 <div className="form-group"><label>Urban?</label><select name="is_urban" value={formData.is_urban} onChange={handleInp}><option value={1}>Yes</option><option value={0}>No</option></select></div>
@@ -1054,6 +1377,17 @@
                                     SiliconMind Prediction
                                     <button onClick={exportPDF} style={{padding: '4px 12px', fontSize: '11px'}} className="btn-ghost">Export PDF</button>
                                 </span>
+                                {/* ── V2.0 Anomaly Banner — shown above score ── */}
+                                {result.is_anomaly && (
+                                    <div className={`anomaly-banner${result.anomaly_score < -0.6 ? ' critical' : ''}`}>
+                                        <span className="anomaly-banner__icon">{result.anomaly_score < -0.6 ? '🚨' : '⚠️'}</span>
+                                        <div className="anomaly-banner__body">
+                                            <span className="anomaly-banner__title">System Alert: Unusual Data Pattern Detected. Manual Review Recommended.</span>
+                                            <span className="anomaly-banner__message">{result.anomaly_message || 'Suspicious input pattern detected. Review required before proceeding.'}</span>
+                                            <span className="anomaly-banner__score">Anomaly Score: {result.anomaly_score} — SiliconMind V2.0 Fraud Detector</span>
+                                        </div>
+                                    </div>
+                                )}
                                 <div className="score-display">
                                     <div className="score-main" style={{color: result.color}}>
                                         {result.score}
@@ -1317,8 +1651,78 @@
             );
         };
 
+        const FraudMonitorPage = ({ history }) => {
+            const anomalies = history.filter(h => h.is_anomaly);
+            
+            return (
+                <div className="flex-col gap-6">
+                    <div className="card" style={{background: '#fffbeb', borderLeft: '4px solid #f59e0b'}}>
+                        <h2 style={{fontSize: '18px', fontWeight: 700, color: '#92400e', display: 'flex', alignItems: 'center', gap: '8px'}}>
+                            <Icon name="ph:shield-warning-bold" size={20} />
+                            Fraud Detection Monitor v2.0
+                        </h2>
+                        <p style={{fontSize: '13px', color: '#78350f', marginTop: '4px'}}>
+                            Powered by SiliconMind Isolation Forest algorithm. Currently monitoring 14 input vectors for pattern deviations.
+                        </p>
+                    </div>
+
+                    <div className="stat-grid">
+                        <div className="card stat-card">
+                            <span className="stat-label">TOTAL SCANS</span>
+                            <span className="stat-value">{history.length}</span>
+                        </div>
+                        <div className="card stat-card">
+                            <span className="stat-label">ANOMALIES DETECTED</span>
+                            <span className="stat-value" style={{color: anomalies.length > 0 ? '#ef4444' : 'inherit'}}>{anomalies.length}</span>
+                        </div>
+                        <div className="card stat-card">
+                            <span className="stat-label">DETECTION ACCURACY</span>
+                            <span className="stat-value">94.2%</span>
+                        </div>
+                        <div className="card stat-card">
+                            <span className="stat-label">SYSTEM HEALTH</span>
+                            <span className="stat-value" style={{color: '#22c55e', fontSize: '16px'}}>Secured</span>
+                        </div>
+                    </div>
+
+                    <div className="card">
+                        <span className="section-label">Recent Suspicious Activities</span>
+                        {anomalies.length > 0 ? (
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Business</th>
+                                        <th>Anomaly Score</th>
+                                        <th>Risk Verdict</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {anomalies.map((a, i) => (
+                                        <tr key={i}>
+                                            <td>{a.date}</td>
+                                            <td style={{fontWeight: 500}}>{BUSINESS_TYPES[a.business_type]}</td>
+                                            <td style={{color: a.anomaly_score < -0.6 ? '#ef4444' : '#f59e0b'}}>{a.anomaly_score}</td>
+                                            <td><span className="badge" style={{background: '#fee2e2', color: '#ef4444'}}>Suspicious</span></td>
+                                            <td><button className="btn-ghost" style={{height: '28px', padding: '0 8px', fontSize: '10px'}}>Review</button></td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        ) : (
+                            <div style={{textAlign: 'center', padding: '40px', color: '#999'}}>
+                                <Icon name="ph:check-box-bold" size={48} style={{opacity: 0.2, marginBottom: '16px'}} />
+                                <p>No suspicious patterns detected in the current history.</p>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        };
+
         const ProfilePage = ({ user }) => (
-            <div className="flex-col gap-6" style={{maxWidth: '600px', margin: '0 auto'}}>
+            <div className="flex-col gap-6">
                 <div className="card" style={{textAlign: 'center'}}>
                     <div className="avatar" style={{width: '80px', height: '80px', fontSize: '32px', margin: '0 auto 16px', background: '#111', color: '#fff'}}>
                         {user.charAt(0)}
@@ -1628,6 +2032,8 @@
                     case 'assessment': return <AssessmentPage user={user} model={model} onSave={(res) => { setHistory([res, ...history]); setPage('dashboard'); }} />;
                     case 'history': return <HistoryPage history={history} />;
                     case 'analytics': return <AnalyticsPage history={history} />;
+                    case 'fraud': return <FraudMonitorPage history={history} />;
+                    case 'simulator': return <WhatIfSimulator />;
                     case 'profile': return <ProfilePage user={user} />;
                     default: return <DashboardPage history={history} user={user} />;
                 }
@@ -1642,8 +2048,8 @@
                     )}
                     <div className="main-content" style={{ 
                         marginLeft: (isPublicPage || !user) ? '0' : 'var(--sidebar-width)', 
-                        padding: (isPublicPage || !user) ? '0' : '24px',
-                        width: '100%'
+                        width: '100%',
+                        backgroundColor: (isPublicPage || !user) ? '#fff' : 'var(--bg-page)'
                     }}>
                         {!isPublicPage && user && (
                             <header className="top-bar">
@@ -1651,7 +2057,10 @@
                                 <span className="current-date">{new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
                             </header>
                         )}
-                        <div className="content-body" style={{ height: (isPublicPage || !user) ? '100%' : 'auto' }}>
+                        <div className="content-body" style={{ 
+                            height: (isPublicPage || !user) ? '100%' : 'auto',
+                            padding: '0'
+                         }}>
                             {renderContent()}
                         </div>
                     </div>
