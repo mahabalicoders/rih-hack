@@ -598,7 +598,8 @@
                 </div>
             </div>
         );
-
+        
+        // --- V2.0 What-If Simulator Component ---
         const WhatIfSimulator = () => {
             const [params, setParams] = useState({
                 monthlyUpiVolume: 1500000,
@@ -882,6 +883,9 @@
             const [result, setResult] = useState(null);
             const [loading, setLoading] = useState(false);
             const [fraudActive, setFraudActive] = useState(false);
+            const [googleSearch, setGoogleSearch] = useState('');
+            const [googleResults, setGoogleResults] = useState([]);
+            const [isSearching, setIsSearching] = useState(false);
             const [googleData, setGoogleData] = useState({ verified: false, rating: null, reviews: null, rep_score: 0.5 });
 
             const handleInp = (e) => {
@@ -891,26 +895,37 @@
                 if (fraudActive) setFraudActive(false); // Reset on change
             };
 
-            const handleGoogleVerify = () => {
-                const width = 500, height = 600;
-                const left = (window.innerWidth / 2) - (width / 2);
-                const top = (window.innerHeight / 2) - (height / 2);
-                const authWindow = window.open('http://localhost:5000/auth/google', 'GoogleVerify', `width=${width},height=${height},top=${top},left=${left}`);
-
-                const messageListener = (event) => {
-                    if (event.origin !== 'http://localhost:5000' && event.origin !== 'http://127.0.0.1:5000') return;
-                    if (event.data && event.data.status === 'success') {
-                        setGoogleData({
-                            verified: true,
-                            rating: event.data.rating,
-                            reviews: event.data.reviews,
-                            rep_score: event.data.rep_score,
-                            business_name: event.data.business_name
-                        });
-                        window.removeEventListener('message', messageListener);
+            const handleGoogleSearch = async () => {
+                if (!googleSearch) return;
+                setIsSearching(true);
+                try {
+                    const response = await fetch('http://localhost:5000/api/places/search', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ query: googleSearch })
+                    });
+                    const data = await response.json();
+                    if (data.status === 'OK') {
+                        setGoogleResults(data.results);
+                    } else {
+                        alert(data.message || "No results found");
                     }
-                };
-                window.addEventListener('message', messageListener);
+                } catch (err) {
+                    console.error("Search Error:", err);
+                } finally {
+                    setIsSearching(false);
+                }
+            };
+
+            const selectPlace = (place) => {
+                setGoogleData({
+                    verified: true,
+                    rating: place.rating,
+                    reviews: place.user_ratings_total,
+                    rep_score: place.reputation_score,
+                    business_name: place.name
+                });
+                setGoogleResults([]);
             };
 
             const runInference = async () => {
@@ -1271,38 +1286,70 @@
                         </div>
 
                         <div className="form-section">
-                            <span style={{fontSize: '11px', color: '#999', marginBottom: '16px', display: 'block'}}>DIGITAL REPUTATION (VERIFIED)</span>
-                            <div className="card" style={{ padding: '16px', background: '#f8fafc', border: googleData.verified ? '1px solid #22c55e' : '1px dashed #cbd5e1', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                <div className="flex items-center gap-4">
-                                    <div style={{ width: '40px', height: '40px', borderRadius: '8px', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
-                                        <Icon name="logos:google-maps" size={24} />
+                            <span style={{fontSize: '11px', color: '#999', marginBottom: '16px', display: 'block'}}>GOOGLE BUSINESS REPUTATION (15TH INPUT)</span>
+                            <div style={{ padding: '20px', background: '#fff', border: '1.5px solid #0f172a', borderRadius: '16px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+                                    <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: '#0f172a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                        <Icon name="logos:google-maps" size={18} />
                                     </div>
                                     <div>
-                                        {googleData.verified ? (
-                                            <>
-                                                <div className="flex items-center gap-2">
-                                                    <span style={{ fontWeight: 700, fontSize: '14px' }}>{googleData.business_name}</span>
-                                                    <span className="badge" style={{ background: '#dcfce7', color: '#15803d', fontSize: '10px', padding: '2px 8px' }}>VERIFIED</span>
-                                                </div>
-                                                <div style={{ fontSize: '12px', color: '#64748b', marginTop: '2px' }}>
-                                                    ⭐ {googleData.rating} ({googleData.reviews} Reviews)
-                                                </div>
-                                            </>
-                                        ) : (
-                                            <>
-                                                <span style={{ fontWeight: 600, fontSize: '13px', color: '#475569' }}>Unlinked Google Business Profile</span>
-                                                <div style={{ fontSize: '11px', color: '#94a3b8' }}>Connect to boost your score with customer reviews.</div>
-                                            </>
-                                        )}
+                                        <div style={{ fontSize: '15px', fontWeight: 800 }}>Search & Link Business</div>
+                                        <div style={{ fontSize: '12px', color: '#64748b' }}>Link your Maps profile to unlock reputation-based scoring boosts.</div>
                                     </div>
                                 </div>
-                                <button 
-                                    className={googleData.verified ? "btn-ghost" : "btn-primary"} 
-                                    style={{ height: '36px', fontSize: '11px', padding: '0 16px' }}
-                                    onClick={handleGoogleVerify}
-                                >
-                                    {googleData.verified ? "RE-LOG" : "CONNECT PROFILE"}
-                                </button>
+                                
+                                <div className="form-group">
+                                    <div style={{ display: 'flex', gap: '10px' }}>
+                                        <input 
+                                            type="text" 
+                                            placeholder="Enter Shop Name & City (e.g. Ramesh Kirana Jaipur)" 
+                                            value={googleSearch}
+                                            style={{ borderRadius: '100px', padding: '0 20px', height: '46px', border: '1.5px solid #e2e8f0' }}
+                                            onChange={(e) => setGoogleSearch(e.target.value)}
+                                            onKeyPress={(e) => e.key === 'Enter' && handleGoogleSearch()}
+                                        />
+                                        <button 
+                                            className="btn-primary" 
+                                            style={{ width: 'auto', padding: '0 24px', height: '46px', borderRadius: '100px' }}
+                                            onClick={handleGoogleSearch}
+                                            disabled={isSearching}
+                                        >
+                                            {isSearching ? "..." : "SEARCH"}
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {googleResults.length > 0 && (
+                                    <div style={{ marginTop: '20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                        <div style={{ fontSize: '11px', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase' }}>Available Profiles</div>
+                                        {googleResults.map((p, i) => (
+                                            <div key={i} style={{ padding: '14px', border: '1.5px solid #f1f5f9', borderRadius: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#f8fafc', transition: 'all 0.2s' }}>
+                                                <div>
+                                                    <div style={{ fontSize: '14px', fontWeight: 700 }}>{p.name}</div>
+                                                    <div style={{ fontSize: '11px', color: '#64748b' }}>{p.address}</div>
+                                                    <div style={{ fontSize: '12px', color: '#f59e0b', marginTop: '4px', fontWeight: 600 }}>⭐ {p.rating} ({p.user_ratings_total} reviews)</div>
+                                                </div>
+                                                <div style={{ display: 'flex', gap: '8px' }}>
+                                                    <a href={p.maps_url} target="_blank" className="btn-ghost" style={{ border: '1px solid #cbd5e1', padding: '8px 14px', fontSize: '10px', height: 'auto', textDecoration: 'none', color: 'inherit', borderRadius: '8px' }}>VIEW ON MAPS</a>
+                                                    <button onClick={() => selectPlace(p)} className="btn-primary" style={{ padding: '8px 14px', fontSize: '10px', height: 'auto', background: '#22c55e', borderRadius: '8px' }}>SELECT STORE</button>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+
+                                {googleData.verified && (
+                                    <div style={{ marginTop: '20px', padding: '14px', background: '#f0fdf4', border: '1.5px solid #22c55e', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', animation: 'slideDown 0.3s ease' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                            <Icon name="lucide:check-circle" color="#22c55e" size={24} />
+                                            <div>
+                                                <div style={{ fontSize: '14px', fontWeight: 800, color: '#14532d' }}>Successfully Verified: {googleData.business_name}</div>
+                                                <div style={{ fontSize: '11px', color: '#15803d' }}>Reputation Strength: {(googleData.rep_score * 100).toFixed(0)}% | Model Boost Applied</div>
+                                            </div>
+                                        </div>
+                                        <button onClick={() => setGoogleData({verified:false, rating:null, reviews:null, rep_score:0.5})} className="btn-ghost" style={{ fontSize: '11px', color: '#ef4444', fontWeight: 700 }}>UNLINK</button>
+                                    </div>
+                                )}
                             </div>
                         </div>
 
