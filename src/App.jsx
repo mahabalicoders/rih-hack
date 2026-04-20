@@ -45,7 +45,7 @@ function App() {
   }
 
   if (page === 'dashboard') {
-    return <Dashboard user={user} model={model} onLogout={handleLogout} />;
+    return <Dashboard user={user} onLogout={handleLogout} />;
   }
 
   return null;

@@ -1,81 +1,127 @@
 import React, { useState } from 'react';
-import * as tf from '@tensorflow/tfjs';
-import { MAX_VALS } from '../utils/ml';
+import WhatIfSimulator from './WhatIfSimulator';
 
-const Dashboard = ({ user, model, onLogout }) => {
+// ─────────────────────────────────────────────────────────────────────────────
+//  AnomalyBanner — renders above the score card when is_anomaly === true.
+//  Uses .anomaly-banner CSS class (index.css) which inherits --warning-color
+//  (amber) and --error-color (red) from the existing design token system.
+//  The "critical" modifier triggers red styling for the most severe scores.
+// ─────────────────────────────────────────────────────────────────────────────
+const AnomalyBanner = ({ anomalyScore, anomalyMessage }) => {
+    const isCritical = anomalyScore < -0.6;
+    return (
+        <div className={`anomaly-banner${isCritical ? ' critical' : ''}`}>
+            <span className="anomaly-banner__icon">{isCritical ? '🚨' : '⚠️'}</span>
+            <div className="anomaly-banner__body">
+                <span className="anomaly-banner__title">
+                    System Alert: Unusual Data Pattern Detected. Manual Review Recommended.
+                </span>
+                <span className="anomaly-banner__message">
+                    {anomalyMessage || 'Suspicious input pattern detected. Review required.'}
+                </span>
+                <span className="anomaly-banner__score">
+                    Anomaly Score: {anomalyScore} (threshold: −0.05)
+                </span>
+            </div>
+        </div>
+    );
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  BACKEND URL — change this if your Flask server runs on a different port
+// ─────────────────────────────────────────────────────────────────────────────
+const BACKEND_URL = 'http://localhost:5000';
+
+const Dashboard = ({ user, onLogout }) => {
+    // ── Form state maps directly to the 14-feature backend schema ──────────
     const [formData, setFormData] = useState({
-        revenue: 50000,
-        txn_count: 50,
-        consistency: 7,
-        has_website: 1,
-        social_score: 5,
-        years_in_business: 2,
-        expense_ratio: 0.5,
-        loan_history: 0,
-        business_type: 0
+        // Core loan details
+        term:              12,
+        loan_amount_inr:   500000,
+        employees:         5,
+        business_type:     1,
+        is_urban:          1,
+        is_existing:       0,
+        // Digital / compliance signals
+        upi_monthly_txn:   150,
+        gst_registered:    1,
+        gst_filing_score:  7,
+        whatsapp_business: 1,
+        has_website:       1,
+        social_score:      6,
+        mobile_banking_score: 7,
+        aadhaar_linked:    1
     });
-    const [result, setResult] = useState(null);
-    const [history, setHistory] = useState([]);
+
+    const [result,      setResult]      = useState(null);
+    const [anomalyData, setAnomalyData] = useState(null);
+    const [history,     setHistory]     = useState([]);
     const [isAssessing, setIsAssessing] = useState(false);
+    const [apiError,    setApiError]    = useState(null);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: parseFloat(value) }));
     };
 
+    // ── Assess — calls Flask /score endpoint ─────────────────────────────
     const assess = async () => {
         setIsAssessing(true);
-        await new Promise(r => setTimeout(r, 600));
+        setApiError(null);
+        setAnomalyData(null);
 
-        const normalized = [
-            formData.revenue / MAX_VALS.revenue,
-            formData.txn_count / MAX_VALS.txn_count,
-            formData.consistency / MAX_VALS.consistency,
-            formData.has_website,
-            formData.social_score / MAX_VALS.social_score,
-            formData.years_in_business / MAX_VALS.years_in_business,
-            formData.expense_ratio,
-            formData.loan_history / MAX_VALS.loan_history,
-            formData.business_type / MAX_VALS.business_type
-        ];
+        try {
+            const response = await fetch(`${BACKEND_URL}/score`, {
+                method:  'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body:    JSON.stringify(formData)
+            });
 
-        const inputTensor = tf.tensor2d([normalized]);
-        const prediction = model.predict(inputTensor);
-        const score = (await prediction.data())[0] * 100;
-        
-        const finalScore = Math.round(score);
-        
-        const reasons = [];
-        if (formData.consistency < 5) reasons.push("Low payment consistency detected");
-        if (formData.expense_ratio > 0.7) reasons.push("High expense ratio is a concern");
-        if (formData.years_in_business < 2) reasons.push("Limited business history");
-        if (formData.has_website === 1) reasons.push("Established digital presence");
-        if (formData.loan_history === 1) reasons.push("Positive loan repayment history");
-        if (formData.social_score > 7) reasons.push("Strong social proof and community trust");
-        if (formData.revenue > 300000) reasons.push("High revenue volume suggests stability");
+            if (!response.ok) {
+                const errData = await response.json().catch(() => ({}));
+                throw new Error(errData.message || `Server error ${response.status}`);
+            }
 
-        const topReasons = reasons.slice(0, 3);
-        
-        const getGrade = (s) => {
-            if (s >= 80) return { grade: 'A', color: '#52c41a', risk: 'Low', rec: 'Highly eligible for priority financing and lower interest rates.' };
-            if (s >= 65) return { grade: 'B', color: '#faad14', risk: 'Medium-Low', rec: 'Eligible for most standard business loans. Focus on consistency.' };
-            if (s >= 50) return { grade: 'C', color: '#faad14', risk: 'Medium', rec: 'Moderate eligibility. Consider reducing external debt or improving cash flow.' };
-            if (s >= 35) return { grade: 'D', color: '#ff4d4f', risk: 'High', rec: 'Limited financing options. Focus on digital presence and consistent revenue.' };
-            return { grade: 'F', color: '#ff4d4f', risk: 'Very High', rec: 'High risk profile. Strengthening financial documentation and tenure is advised.' };
-        };
+            const data = await response.json();
 
-        const meta = getGrade(finalScore);
-        
-        const newResult = {
-            score: finalScore,
-            ...meta,
-            reasons: topReasons,
-            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        };
+            if (data.status !== 'success') {
+                throw new Error(data.message || 'Unknown error from server');
+            }
 
-        setResult(newResult);
-        setHistory(prev => [newResult, ...prev].slice(0, 3));
-        setIsAssessing(false);
+            // ── Extract anomaly data (V2.0) ────────────────────────────
+            setAnomalyData({
+                is_anomaly:      data.is_anomaly,
+                anomaly_score:   data.anomaly_score,
+                anomaly_message: data.anomaly_message
+            });
+
+            // ── Map score to local grade display ─────────────────────────
+            const colorMap = { A: '#52c41a', B: '#faad14', C: '#faad14', D: '#ff4d4f', F: '#ff4d4f' };
+            const recMap = {
+                A: 'Highly eligible for priority financing and lower interest rates.',
+                B: 'Eligible for most standard business loans. Focus on consistency.',
+                C: 'Moderate eligibility. Consider reducing external debt or improving cash flow.',
+                D: 'Limited financing options. Focus on digital presence and consistent revenue.',
+                F: 'High risk profile. Strengthening financial documentation and tenure is advised.'
+            };
+
+            const newResult = {
+                score:     data.score,
+                grade:     data.grade,
+                risk:      data.risk,
+                color:     colorMap[data.grade] || '#999',
+                rec:       recMap[data.grade]   || '',
+                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            };
+
+            setResult(newResult);
+            setHistory(prev => [newResult, ...prev].slice(0, 3));
+
+        } catch (err) {
+            setApiError(err.message);
+        } finally {
+            setIsAssessing(false);
+        }
     };
 
     return (
@@ -89,82 +135,126 @@ const Dashboard = ({ user, model, onLogout }) => {
             </nav>
 
             <div className="dashboard-container">
+                {/* ── LEFT COLUMN: Input Form ── */}
                 <div className="card">
+
+                    {/* Section 1: Loan Details */}
                     <div className="form-section">
-                        <span className="section-label">Transaction Data</span>
+                        <span className="section-label">Loan Details</span>
                         <div className="form-grid">
                             <div className="form-group">
-                                <label>Avg monthly revenue (₹)</label>
-                                <input name="revenue" type="number" value={formData.revenue} onChange={handleInputChange} />
+                                <label>Loan Amount (₹)</label>
+                                <input id="loan_amount_inr" name="loan_amount_inr" type="number" value={formData.loan_amount_inr} onChange={handleInputChange} />
                             </div>
                             <div className="form-group">
-                                <label>Transactions per month</label>
-                                <input name="txn_count" type="number" value={formData.txn_count} onChange={handleInputChange} />
+                                <label>Loan Term (months)</label>
+                                <input id="term" name="term" type="number" min="0" value={formData.term} onChange={handleInputChange} />
                             </div>
-                            <div className="form-group full-width">
-                                <label>Payment consistency (1-10)</label>
-                                <input name="consistency" type="range" min="1" max="10" step="1" value={formData.consistency} onChange={handleInputChange} />
-                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', color: '#999' }}>
-                                    <span>Variable</span><span>Very Stable</span>
-                                </div>
+                            <div className="form-group">
+                                <label>Number of Employees</label>
+                                <input id="employees" name="employees" type="number" min="1" value={formData.employees} onChange={handleInputChange} />
+                            </div>
+                            <div className="form-group">
+                                <label>Business Type</label>
+                                <select id="business_type" name="business_type" value={formData.business_type} onChange={handleInputChange}>
+                                    <option value={0}>Retail</option>
+                                    <option value={1}>Services</option>
+                                    <option value={2}>Manufacturing</option>
+                                    <option value={3}>Food & Beverage</option>
+                                </select>
+                            </div>
+                            <div className="form-group">
+                                <label>Location</label>
+                                <select id="is_urban" name="is_urban" value={formData.is_urban} onChange={handleInputChange}>
+                                    <option value={1}>Urban</option>
+                                    <option value={0}>Rural</option>
+                                </select>
+                            </div>
+                            <div className="form-group">
+                                <label>Existing Customer</label>
+                                <select id="is_existing" name="is_existing" value={formData.is_existing} onChange={handleInputChange}>
+                                    <option value={1}>Yes</option>
+                                    <option value={0}>No</option>
+                                </select>
                             </div>
                         </div>
                     </div>
 
+                    {/* Section 2: Digital & Compliance Signals */}
                     <div className="form-section">
-                        <span className="section-label">Digital Presence</span>
+                        <span className="section-label">Digital &amp; Compliance</span>
                         <div className="form-grid">
                             <div className="form-group">
-                                <label>Has website</label>
-                                <select name="has_website" value={formData.has_website} onChange={handleInputChange}>
+                                <label>UPI Monthly Transactions (₹)</label>
+                                <input id="upi_monthly_txn" name="upi_monthly_txn" type="number" min="0" value={formData.upi_monthly_txn} onChange={handleInputChange} />
+                            </div>
+                            <div className="form-group">
+                                <label>GST Filing Score (0–10)</label>
+                                <input id="gst_filing_score" name="gst_filing_score" type="number" min="0" max="10" value={formData.gst_filing_score} onChange={handleInputChange} />
+                            </div>
+                            <div className="form-group">
+                                <label>GST Registered</label>
+                                <select id="gst_registered" name="gst_registered" value={formData.gst_registered} onChange={handleInputChange}>
                                     <option value={1}>Yes</option>
                                     <option value={0}>No</option>
                                 </select>
                             </div>
                             <div className="form-group">
-                                <label>Social media score (1-10)</label>
-                                <input name="social_score" type="number" min="1" max="10" value={formData.social_score} onChange={handleInputChange} />
-                            </div>
-                            <div className="form-group full-width">
-                                <label>Years in business</label>
-                                <input name="years_in_business" type="number" value={formData.years_in_business} onChange={handleInputChange} />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="form-section" style={{ marginBottom: '0' }}>
-                        <span className="section-label">Financials</span>
-                        <div className="form-grid">
-                            <div className="form-group">
-                                <label>Expense ratio (0.0-1.0)</label>
-                                <input name="expense_ratio" type="number" step="0.1" min="0" max="1" value={formData.expense_ratio} onChange={handleInputChange} />
+                                <label>Aadhaar Linked</label>
+                                <select id="aadhaar_linked" name="aadhaar_linked" value={formData.aadhaar_linked} onChange={handleInputChange}>
+                                    <option value={1}>Yes</option>
+                                    <option value={0}>No</option>
+                                </select>
                             </div>
                             <div className="form-group">
-                                <label>Loan history</label>
-                                <select name="loan_history" value={formData.loan_history} onChange={handleInputChange}>
+                                <label>WhatsApp Business</label>
+                                <select id="whatsapp_business" name="whatsapp_business" value={formData.whatsapp_business} onChange={handleInputChange}>
+                                    <option value={1}>Active</option>
                                     <option value={0}>None</option>
-                                    <option value={1}>Good</option>
-                                    <option value={2}>Bad</option>
                                 </select>
                             </div>
-                            <div className="form-group full-width">
-                                <label>Business type</label>
-                                <select name="business_type" value={formData.business_type} onChange={handleInputChange}>
-                                    <option value={0}>Retail</option>
-                                    <option value={1}>Services</option>
-                                    <option value={2}>Manufacturing</option>
-                                    <option value={3}>Food</option>
+                            <div className="form-group">
+                                <label>Has Website</label>
+                                <select id="has_website" name="has_website" value={formData.has_website} onChange={handleInputChange}>
+                                    <option value={1}>Yes</option>
+                                    <option value={0}>No</option>
                                 </select>
+                            </div>
+                            <div className="form-group">
+                                <label>Social Score (1–10)</label>
+                                <input id="social_score" name="social_score" type="number" min="1" max="10" value={formData.social_score} onChange={handleInputChange} />
+                            </div>
+                            <div className="form-group">
+                                <label>Mobile Banking Score (1–10)</label>
+                                <input id="mobile_banking_score" name="mobile_banking_score" type="number" min="1" max="10" value={formData.mobile_banking_score} onChange={handleInputChange} />
                             </div>
                         </div>
                     </div>
 
-                    <button onClick={assess} disabled={isAssessing} className="btn-primary w-full" style={{ marginTop: '32px' }}>
-                        {isAssessing ? 'Processing AI Prediction...' : 'Assess Creditworthiness'}
+                    <button id="assess-btn" onClick={assess} disabled={isAssessing} className="btn-primary w-full" style={{ marginTop: '8px' }}>
+                        {isAssessing ? '⏳  Analysing with SiliconMind V2.0...' : 'Assess Creditworthiness'}
                     </button>
+
+                    {/* API error display */}
+                    {apiError && (
+                        <div style={{ marginTop: '16px', padding: '12px 16px', background: '#fff1f0', border: '1px solid #ff4d4f', borderRadius: '8px', fontSize: '13px', color: '#991b1b' }}>
+                            ⚠️ {apiError}. Make sure the Flask backend is running at {BACKEND_URL}.
+                        </div>
+                    )}
                 </div>
 
+                {/* ── RIGHT COLUMN: Results ── */}
                 <div className="flex-col gap-6">
+
+                    {/* ── Anomaly Banner (V2.0) — shown above score card ── */}
+                    {anomalyData?.is_anomaly && (
+                        <AnomalyBanner
+                            anomalyScore={anomalyData.anomaly_score}
+                            anomalyMessage={anomalyData.anomaly_message}
+                        />
+                    )}
+
+                    {/* ── Score Card ── */}
                     {result && (
                         <div className="card">
                             <div className="result-header">
@@ -181,15 +271,6 @@ const Dashboard = ({ user, model, onLogout }) => {
                                 <div className="progress-bar" style={{ width: `${result.score}%`, backgroundColor: result.color }}></div>
                             </div>
 
-                            <div style={{ marginBottom: '24px' }}>
-                                <span className="section-label">Key Factors</span>
-                                <ul className="factor-list">
-                                    {result.reasons.map((r, i) => (
-                                        <li key={i} className="factor-item">{r}</li>
-                                    ))}
-                                </ul>
-                            </div>
-
                             <div style={{ padding: '16px', background: '#f9f9f9', borderRadius: '8px', border: '0.5px solid #eee' }}>
                                 <span style={{ fontSize: '11px', fontWeight: 600, color: '#999', display: 'block', marginBottom: '4px' }}>AI RECOMMENDATION</span>
                                 <p style={{ fontSize: '13px', lineHeight: '1.5', color: '#444' }}>{result.rec}</p>
@@ -197,12 +278,14 @@ const Dashboard = ({ user, model, onLogout }) => {
                         </div>
                     )}
 
-                    {!result && (
+                    {/* ── Empty state ── */}
+                    {!result && !apiError && (
                         <div className="card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '300px', textAlign: 'center', opacity: 0.6 }}>
-                            <p style={{ fontSize: '14px', color: '#999' }}>Complete the form to generate<br/> AI credit risk assessment</p>
+                            <p style={{ fontSize: '14px', color: '#999' }}>Complete the form to generate<br />AI credit risk assessment</p>
                         </div>
                     )}
 
+                    {/* ── Assessment History ── */}
                     {history.length > 0 && (
                         <div className="card">
                             <span className="section-label">Recent Assessments</span>
@@ -221,6 +304,9 @@ const Dashboard = ({ user, model, onLogout }) => {
                             </div>
                         </div>
                     )}
+
+                    {/* ── What-If Simulator (SiliconMind V2.0) ── */}
+                    <WhatIfSimulator />
                 </div>
             </div>
         </div>
