@@ -3,6 +3,7 @@ import TrainingScreen from './components/TrainingScreen';
 import LoginPage from './components/LoginPage';
 import Dashboard from './components/Dashboard';
 import { trainModel } from './utils/ml';
+import { signIn, signInWithGoogle } from './utils/firebase';
 import './index.css';
 
 function App() {
@@ -26,14 +27,32 @@ function App() {
     init();
   }, []);
 
-  const handleLogin = (email) => {
-    setUser(email);
-    setPage('dashboard');
+  const handleLogin = async (email, password) => {
+    try {
+      if (signIn) {
+        await signIn(email, password);
+      }
+      setUser(email);
+      setPage('dashboard');
+    } catch (err) {
+      console.error("Login failed:", err);
+      alert("Invalid credentials. Please try again.");
+    }
   };
 
-  const handleLogout = () => {
-    setUser(null);
-    setPage('login');
+  const handleGoogleLogin = async () => {
+    try {
+      if (signInWithGoogle) {
+        const res = await signInWithGoogle();
+        if (res && res.user) {
+          setUser(res.user.displayName || res.user.email);
+          setPage('dashboard');
+        }
+      }
+    } catch (err) {
+      console.error("Google login failed:", err);
+      alert("Google login failed. Please try again.");
+    }
   };
 
   if (page === 'training') {
@@ -41,7 +60,7 @@ function App() {
   }
 
   if (page === 'login') {
-    return <LoginPage onLogin={handleLogin} />;
+    return <LoginPage onLogin={handleLogin} onGoogleLogin={handleGoogleLogin} />;
   }
 
   if (page === 'dashboard') {
