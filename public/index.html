@@ -688,6 +688,7 @@
             margin-right: auto;
             background: linear-gradient(180deg, #111 0%, #444 100%);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
@@ -770,7 +771,6 @@
         }
 
         @media (max-width: 850px) {
-        @media (max-width: 850px) {
             .landing-nav,
             .hero,
             .feature-grid,
@@ -835,6 +835,50 @@
             from { opacity: 0; transform: translateY(-8px); }
             to   { opacity: 1; transform: translateY(0); }
         }
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-card {
+            background: #fff;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            border-radius: 24px;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     </style>
 </head>
 
@@ -1256,9 +1300,7 @@
                         </table>
                     </div>
 
-                    <div style={{ marginTop: '32px' }}>
-                        <WhatIfSimulator />
-                    </div>
+
                 </div>
             );
         };
@@ -1675,7 +1717,6 @@
                         </div>
 
                         <div className="form-section">
-                        <div className="form-section">
                             <span style={{fontSize: '11px', color: '#999', marginBottom: '16px', display: 'block'}}>GOOGLE BUSINESS REPUTATION (15TH INPUT)</span>
                             <div style={{ padding: '20px', background: '#fff', border: '1.5px solid #0f172a', borderRadius: '16px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
@@ -1959,7 +2000,7 @@
 
                 // 1. Avg Score by Type
                 const typeScores = BUSINESS_TYPES.map((_, i) => {
-                    const group = history.filter(h => h.businessType === i);
+                    const group = history.filter(h => h.business_type === i);
                     return group.length ? Math.round(group.reduce((a, b) => a + b.score, 0) / group.length) : 0;
                 });
                 const c1 = new Chart(chartRefs[0].current.getContext('2d'), {
@@ -2167,10 +2208,10 @@
         );
 
         const FundingPage = () => {
-            const [activeTab, setActiveTab] = useState('prime');
             const [deals, setDeals] = useState([]);
             const [search, setSearch] = useState('');
             const [loading, setLoading] = useState(true);
+            const [selectedDeal, setSelectedDeal] = useState(null);
             
             useEffect(() => {
                 const unsubscribe = db.collection('assessments')
@@ -2191,13 +2232,7 @@
             const filteredDeals = deals.filter(deal => {
                 const matchesSearch = BUSINESS_TYPES[deal.business_type]?.toLowerCase().includes(search.toLowerCase()) || 
                                     deal.user?.toLowerCase().includes(search.toLowerCase());
-                
-                if (!matchesSearch) return false;
-
-                if (activeTab === 'prime') return ['A', 'B'].includes(deal.grade);
-                if (activeTab === 'opportunity') return ['C', 'D'].includes(deal.grade);
-                if (activeTab === 'recovery') return ['F'].includes(deal.grade);
-                return true;
+                return matchesSearch && ['C', 'D', 'E', 'F'].includes(deal.grade);
             });
 
             return (
@@ -2205,14 +2240,14 @@
                     <div className="welcome-banner">
                         <div className="flex justify-between items-end">
                             <div>
-                                <h1>Pitching Marketplace</h1>
-                                <p>Segmented deal-flow based on AI risk intelligence from real assessments.</p>
+                                <h1>Recovery & Opportunity Marketplace</h1>
+                                <p>High-yield deal-flow from MSMEs needing strategic capital intervention.</p>
                             </div>
                             <div className="flex gap-2 items-center" style={{background: '#fff', padding: '8px 16px', borderRadius: '12px', border: '1px solid #eee', width: '320px'}}>
                                 <Icon name="Search" size={16} color="#999" />
                                 <input 
                                     placeholder="Search by business or owner..." 
-                                    style={{border: 'none', padding: '0', height: 'auto', fontSize: '13px'}}
+                                    style={{border: 'none', padding: '0', height: 'auto', fontSize: '13px', width: '100%', outline: 'none'}}
                                     value={search}
                                     onChange={e => setSearch(e.target.value)}
                                 />
@@ -2220,35 +2255,14 @@
                         </div>
                     </div>
 
-                    <div className="flex gap-4" style={{borderBottom: '1px solid #eee', marginBottom: '8px'}}>
-                        <button 
-                            className={`nav-item ${activeTab === 'prime' ? 'active' : ''}`} 
-                            style={{margin: 0, borderRadius: '0', borderBottom: activeTab === 'prime' ? '2px solid black' : 'none', background: 'transparent', color: activeTab === 'prime' ? 'black' : '#999'}}
-                            onClick={() => setActiveTab('prime')}>
-                            PRIME (A/B)
-                        </button>
-                        <button 
-                            className={`nav-item ${activeTab === 'opportunity' ? 'active' : ''}`} 
-                            style={{margin: 0, borderRadius: '0', borderBottom: activeTab === 'opportunity' ? '2px solid black' : 'none', background: 'transparent', color: activeTab === 'opportunity' ? 'black' : '#999'}}
-                            onClick={() => setActiveTab('opportunity')}>
-                            OPPORTUNITY (C/D)
-                        </button>
-                        <button 
-                            className={`nav-item ${activeTab === 'recovery' ? 'active' : ''}`} 
-                            style={{margin: 0, borderRadius: '0', borderBottom: activeTab === 'recovery' ? '2px solid black' : 'none', background: 'transparent', color: activeTab === 'recovery' ? 'black' : '#999'}}
-                            onClick={() => setActiveTab('recovery')}>
-                            RECOVERY (F)
-                        </button>
-                    </div>
-
                     {loading ? (
                         <div className="flex justify-center items-center" style={{padding: '60px'}}>
                             <div className="spinner">Connecting into secure vault...</div>
                         </div>
                     ) : (
-                        <div className="analytics-grid" style={{gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))'}}>
+                        <div className="flex-col gap-4">
                             {filteredDeals.length > 0 ? filteredDeals.map(deal => (
-                                <div key={deal.id} className="card flex-col gap-4" style={{borderTop: `4px solid ${getMetaFromScore(deal.score).color}`}}>
+                                <div key={deal.id} className="card flex-col gap-4" style={{borderTop: `4px solid ${getMetaFromScore(deal.score).color}`, cursor: 'pointer'}} onClick={() => setSelectedDeal(deal)}>
                                     <div className="flex justify-between items-start">
                                         <div>
                                             <h3 style={{fontSize: '18px', fontWeight: 700}}>{BUSINESS_TYPES[deal.business_type] || 'Unnamed Entity'}</h3>
@@ -2276,10 +2290,10 @@
 
                                     <div className="flex gap-2" style={{marginTop: '4px'}}>
                                         <button className="btn-primary" style={{flex: 1, height: '40px', fontSize: '12px', padding: '0 12px'}}>
-                                            {activeTab === 'recovery' ? 'ANALYZE RECOVERY' : 'GENERATE TERM SHEET'}
+                                            RECOVERY ANALYSIS
                                         </button>
                                         <button className="btn-ghost" style={{width: '40px', height: '40px', padding: 0}} title="Contact Owner">
-                                            <Icon name={activeTab === 'recovery' ? 'User' : 'Buildings'} size={16} />
+                                            <Icon name="User" size={16} />
                                         </button>
                                     </div>
                                 </div>
@@ -2293,15 +2307,81 @@
                         </div>
                     )}
 
-                    {activeTab === 'recovery' && filteredDeals.length > 0 && (
+                    {filteredDeals.length > 0 && (
                         <div className="card" style={{border: '1px dashed #ef4444', background: '#fff5f5'}}>
                             <div className="flex gap-4 items-center">
                                 <div style={{width: '48px', height: '48px', borderRadius: '50%', background: '#ef4444', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
                                     <Icon name="Zap" size={24} />
                                 </div>
                                 <div>
-                                    <h3 style={{fontSize: '16px', fontWeight: 700, color: '#991b1b'}}>High-Risk Warning</h3>
-                                    <p style={{fontSize: '13px', color: '#b91c1c'}}>These MSMEs have significant credit risk. We recommend manual audit through the "Analyze Recovery" portal.</p>
+                                    <h3 style={{fontSize: '16px', fontWeight: 700, color: '#991b1b'}}>Intervention Required</h3>
+                                    <p style={{fontSize: '13px', color: '#b91c1c'}}>These MSMEs require strategic capital or recovery intervention based on their AI risk profile.</p>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {selectedDeal && (
+                        <div className="modal-overlay" onClick={() => setSelectedDeal(null)}>
+                            <div className="modal-card" onClick={e => e.stopPropagation()}>
+                                <div className="modal-close" onClick={() => setSelectedDeal(null)}>
+                                    <Icon name="Plus" style={{transform: 'rotate(45deg)'}} />
+                                </div>
+                                
+                                <div style={{padding: '32px'}}>
+                                    <div className="flex justify-between items-start" style={{marginBottom: '24px'}}>
+                                        <div>
+                                            <span className="badge" style={{background: `${getMetaFromScore(selectedDeal.score).color}11`, color: getMetaFromScore(selectedDeal.score).color, marginBottom: '8px'}}>GRADE {selectedDeal.grade}</span>
+                                            <h2 style={{fontSize: '24px', fontWeight: 800}}>{BUSINESS_TYPES[selectedDeal.business_type]}</h2>
+                                            <p style={{color: '#999'}}>{selectedDeal.user || 'Anonymous Merchant'}</p>
+                                        </div>
+                                        <div style={{textAlign: 'right'}}>
+                                            <div style={{fontSize: '32px', fontWeight: 800, color: getMetaFromScore(selectedDeal.score).color}}>{selectedDeal.score}</div>
+                                            <div style={{fontSize: '11px', color: '#999'}}>SILICONMIND SCORE</div>
+                                        </div>
+                                    </div>
+
+                                    <div className="analytics-grid" style={{marginBottom: '32px', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px'}}>
+                                        <div className="card" style={{padding: '16px'}}>
+                                            <span style={{fontSize: '11px', color: '#999', display: 'block'}}>LOAN AMOUNT</span>
+                                            <div style={{fontSize: '18px', fontWeight: 700}}>₹{selectedDeal.loan_amount_inr?.toLocaleString('en-IN')}</div>
+                                        </div>
+                                        <div className="card" style={{padding: '16px'}}>
+                                            <span style={{fontSize: '11px', color: '#999', display: 'block'}}>TERM</span>
+                                            <div style={{fontSize: '18px', fontWeight: 700}}>{selectedDeal.term} Months</div>
+                                        </div>
+                                        <div className="card" style={{padding: '16px'}}>
+                                            <span style={{fontSize: '11px', color: '#999', display: 'block'}}>EMPLOYEES</span>
+                                            <div style={{fontSize: '18px', fontWeight: 700}}>{selectedDeal.employees} Staff</div>
+                                        </div>
+                                        <div className="card" style={{padding: '16px'}}>
+                                            <span style={{fontSize: '11px', color: '#999', display: 'block'}}>GST SCORE</span>
+                                            <div style={{fontSize: '18px', fontWeight: 700}}>{selectedDeal.gst_filing_score}/10</div>
+                                        </div>
+                                    </div>
+
+                                    <div className="card" style={{background: '#f8fafc', border: 'none', padding: '24px', marginBottom: '24px'}}>
+                                        <h3 style={{fontSize: '14px', fontWeight: 700, marginBottom: '12px'}}>Risk Intelligence Summary</h3>
+                                        <div className="flex-col gap-3">
+                                            <div className="flex justify-between items-center">
+                                                <span style={{fontSize: '13px', color: '#64748b'}}>UPI Digital Trace</span>
+                                                <span style={{fontWeight: 600}}>{selectedDeal.upi_monthly_txn} Txns/mo</span>
+                                            </div>
+                                            <div className="flex justify-between items-center">
+                                                <span style={{fontSize: '13px', color: '#64748b'}}>Digital Infrastructure</span>
+                                                <span style={{fontWeight: 600}}>{selectedDeal.has_website ? 'Has Website' : 'Offline only'}</span>
+                                            </div>
+                                            <div className="flex justify-between items-center">
+                                                <span style={{fontSize: '13px', color: '#64748b'}}>Market Segment</span>
+                                                <span style={{fontWeight: 600}}>{selectedDeal.is_urban ? 'Urban' : 'Rural'}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex gap-4">
+                                        <button className="btn-primary" style={{flex: 1, height: '48px'}}>INITIATE RECOVERY PLAN</button>
+                                        <button className="btn-ghost" style={{height: '48px', padding: '0 24px'}}>DOWNLOAD DATA</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
