@@ -1408,6 +1408,32 @@
                         </button>
                     </div>
 
+                    {/* ── Seasonal Cash Flow (Below Form) ── */}
+                    <div className="card" style={{ marginTop: '20px', background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)', border: '1px solid #e2e8f0' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                            <span className="section-label" style={{ marginBottom: '0' }}>Seasonal Cash Flow Insights</span>
+                            <div className="seasonal-badge">
+                                <Icon name="ph:calendar-star-bold" size={14} />
+                                {new Date().toLocaleString('default', { month: 'long' })} Policy
+                            </div>
+                        </div>
+                        <p style={{ fontSize: '12px', color: '#64748b', marginBottom: '16px' }}>SiliconMind v2.0 automatically applies these multipliers based on current economic cycles.</p>
+                        <div className="flex gap-4">
+                            <div style={{ flex: 1, padding: '12px', background: '#fff', borderRadius: '12px', border: '1px solid #f1f5f9' }}>
+                                <div style={{ fontSize: '11px', fontWeight: 800, color: '#166534', marginBottom: '4px' }}>+20% BOOST</div>
+                                <div style={{ fontSize: '13px', fontWeight: 700 }}>Prof. Services</div>
+                            </div>
+                            <div style={{ flex: 1, padding: '12px', background: '#fff', borderRadius: '12px', border: '1px solid #f1f5f9' }}>
+                                <div style={{ fontSize: '11px', fontWeight: 800, color: '#166534', marginBottom: '4px' }}>+15% BOOST</div>
+                                <div style={{ fontSize: '13px', fontWeight: 700 }}>Agri-Business</div>
+                            </div>
+                            <div style={{ flex: 1, padding: '12px', background: '#fff', borderRadius: '12px', border: '1px solid #f1f5f9' }}>
+                                <div style={{ fontSize: '11px', fontWeight: 800, color: '#166534', marginBottom: '4px' }}>+15% BOOST</div>
+                                <div style={{ fontSize: '13px', fontWeight: 700 }}>Hospitality</div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div>
                         {result ? (
                             <div className="card">
