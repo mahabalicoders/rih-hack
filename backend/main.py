@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify, make_response, session, redirect, url_for
 from flask_cors import CORS
-import pickle
+import joblib
 import numpy as np
 import pandas as pd
 import os
@@ -24,7 +24,7 @@ CORS(app, supports_credentials=True)
 MODEL_PATH = 'siliconmind.pkl'
 if os.path.exists(MODEL_PATH):
     with open(MODEL_PATH, 'rb') as f:
-        model = pickle.load(f)
+        model = joblib.load(MODEL_PATH)
     print("[OK] SiliconMind credit model loaded")
 else:
     model = None

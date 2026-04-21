@@ -592,9 +592,54 @@
             margin: 0 auto 12px;
         }
 
-        .factor-list {
-            list-style: none;
-            margin: 16px 0;
+        .flex {
+            display: flex;
+            align-items: center;
+        }
+
+        .flex-col {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .justify-between {
+            justify-content: space-between;
+        }
+
+        .items-center {
+            align-items: center;
+        }
+
+        .items-start {
+            align-items: flex-start;
+        }
+
+        .items-end {
+            align-items: flex-end;
+        }
+
+        .gap-1 {
+            gap: 4px;
+        }
+
+        .gap-2 {
+            gap: 8px;
+        }
+
+        .gap-3 {
+            gap: 12px;
+        }
+
+        .gap-4 {
+            gap: 16px;
+        }
+
+        .gap-6 {
+            gap: 24px;
+        }
+
+        .gap-8 {
+            gap: 32px;
         }
 
         .factor-item {
@@ -801,6 +846,7 @@
         .hidden {
             display: none;
         }
+
         .hidden {
             display: none;
         }
@@ -818,13 +864,26 @@
             margin-bottom: 20px;
             animation: anomaly-slide-in 0.35s cubic-bezier(0.16, 1, 0.3, 1);
         }
+
         .anomaly-banner.critical {
             background: #fff1f0;
             border-color: #ef4444;
             border-left-color: #ef4444;
         }
-        .anomaly-banner__icon { font-size: 22px; flex-shrink: 0; margin-top: 1px; line-height: 1; }
-        .anomaly-banner__body { display: flex; flex-direction: column; gap: 4px; }
+
+        .anomaly-banner__icon {
+            font-size: 22px;
+            flex-shrink: 0;
+            margin-top: 1px;
+            line-height: 1;
+        }
+
+        .anomaly-banner__body {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
         .anomaly-banner__title {
             font-size: 11px;
             font-weight: 700;
@@ -832,21 +891,47 @@
             text-transform: uppercase;
             color: #92400e;
         }
-        .anomaly-banner.critical .anomaly-banner__title { color: #7f1d1d; }
-        .anomaly-banner__message { font-size: 13px; color: #78350f; line-height: 1.55; }
-        .anomaly-banner.critical .anomaly-banner__message { color: #991b1b; }
-        .anomaly-banner__score { font-size: 11px; color: #94a3b8; margin-top: 2px; font-weight: 500; }
-        @keyframes anomaly-slide-in {
-            from { opacity: 0; transform: translateY(-8px); }
-            to   { opacity: 1; transform: translateY(0); }
+
+        .anomaly-banner.critical .anomaly-banner__title {
+            color: #7f1d1d;
         }
+
+        .anomaly-banner__message {
+            font-size: 13px;
+            color: #78350f;
+            line-height: 1.55;
+        }
+
+        .anomaly-banner.critical .anomaly-banner__message {
+            color: #991b1b;
+        }
+
+        .anomaly-banner__score {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: 2px;
+            font-weight: 500;
+        }
+
+        @keyframes anomaly-slide-in {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.4);
+            background: rgba(0, 0, 0, 0.4);
             backdrop-filter: blur(8px);
             display: flex;
             align-items: center;
@@ -863,27 +948,32 @@
             border-radius: 24px;
             overflow-y: auto;
             position: relative;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
             animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .modal-close {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: #f1f5f9;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 10;
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
     </style>
 </head>
 
@@ -1037,7 +1127,7 @@
                 </div>
             </div>
         );
-        
+
         // --- V2.0 What-If Simulator Component ---
         const WhatIfSimulator = () => {
             const [params, setParams] = useState({
@@ -1095,20 +1185,20 @@
                         </div>
                         {loading && <span style={{ fontSize: '11px', color: '#999', background: '#f5f5f5', padding: '4px 12px', borderRadius: '100px' }}>Recalculating...</span>}
                     </div>
-                    
+
                     <div className="form-grid" style={{ marginBottom: '32px' }}>
                         {simulationParams.map(p => (
                             <div key={p.id} className="form-group" style={{ padding: '16px', background: '#fafafa', borderRadius: '12px' }}>
                                 <div className="flex justify-between items-center" style={{ marginBottom: '8px' }}>
                                     <label style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', color: '#888' }}>{p.label}</label>
                                     <span style={{ fontSize: '14px', fontWeight: 800, color: '#111' }}>
-                                        {p.unit === '₹' ? `₹${(params[p.id]/100000).toFixed(1)}L` : `${params[p.id]}${p.unit}`}
+                                        {p.unit === '₹' ? `₹${(params[p.id] / 100000).toFixed(1)}L` : `${params[p.id]}${p.unit}`}
                                     </span>
                                 </div>
-                                <input 
-                                    type="range" 
-                                    min={p.min} max={p.max} step={p.step} 
-                                    value={params[p.id]} 
+                                <input
+                                    type="range"
+                                    min={p.min} max={p.max} step={p.step}
+                                    value={params[p.id]}
                                     onChange={(e) => setParams(prev => ({ ...prev, [p.id]: parseFloat(e.target.value) }))}
                                     style={{ accentColor: '#111', cursor: 'pointer', width: '100%', height: '4px' }}
                                 />
@@ -1118,21 +1208,21 @@
 
                     {results && (
                         <div style={{ borderTop: '1px solid #f1f5f9', paddingTop: '32px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-                            <div className="score-circle" style={{ 
-                                borderColor: getGradeColor(results.grade), 
-                                width: '120px', 
-                                height: '120px', 
-                                fontSize: '42px', 
+                            <div className="score-circle" style={{
+                                borderColor: getGradeColor(results.grade),
+                                width: '120px',
+                                height: '120px',
+                                fontSize: '42px',
                                 marginBottom: '20px',
                                 background: 'white',
                                 boxShadow: `0 10px 25px ${getGradeColor(results.grade)}15`
                             }}>
                                 {results.score}
                             </div>
-                            <div className="badge" style={{ 
-                                backgroundColor: `${getGradeColor(results.grade)}22`, 
-                                color: getGradeColor(results.grade), 
-                                border: `1px solid ${getGradeColor(results.grade)}`, 
+                            <div className="badge" style={{
+                                backgroundColor: `${getGradeColor(results.grade)}22`,
+                                color: getGradeColor(results.grade),
+                                border: `1px solid ${getGradeColor(results.grade)}`,
                                 marginBottom: '16px',
                                 padding: '8px 24px',
                                 fontSize: '14px',
@@ -1253,31 +1343,7 @@
                         </div>
                     </div>
 
-                    <div className="card" style={{ marginTop: '24px' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                            <span className="section-label" style={{ marginBottom: 0 }}>Quick Actions</span>
-                            <div className="flex gap-4">
-                                <button className="btn-ghost" style={{ height: '36px', padding: '0 12px', fontSize: '11px' }} onClick={() => setPage('assessment')}>NEW AUDIT</button>
-                                <button className="btn-ghost" style={{ height: '36px', padding: '0 12px', fontSize: '11px' }}>EXPORT PDF</button>
-                            </div>
-                        </div>
-                        <div className="flex gap-6">
-                            <div style={{ flex: 1, padding: '16px', background: '#fcfcfc', border: '0.5px solid #eee', borderRadius: '8px' }}>
-                                <span style={{ fontSize: '11px', color: '#999', display: 'block' }}>SYSTEM STATUS</span>
-                                <div className="flex items-center gap-2" style={{ marginTop: '4px' }}>
-                                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#22c55e' }}></div>
-                                    <span style={{ fontSize: '13px', fontWeight: 600 }}>AI Engine Active</span>
-                                </div>
-                            </div>
-                            <div style={{ flex: 1, padding: '16px', background: '#fcfcfc', border: '0.5px solid #eee', borderRadius: '8px' }}>
-                                <span style={{ fontSize: '11px', color: '#999', display: 'block' }}>FIREBASE SYNC</span>
-                                <div className="flex items-center gap-2" style={{ marginTop: '4px' }}>
-                                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#22c55e' }}></div>
-                                    <span style={{ fontSize: '13px', fontWeight: 600 }}>Cloud Storage Online</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+
 
                     <div className="card" style={{ marginTop: '24px' }}>
                         <span className="section-label">Recent Assessments</span>
@@ -1310,8 +1376,9 @@
             );
         };
 
-        const AssessmentPage = ({ user, onSave }) => {
+        const AssessmentPage = ({ user, onSave, setPage }) => {
             const [formData, setFormData] = useState({
+                business_name: '', mobile: '',
                 term: 12, employees: 5, loan_amount_inr: 50000, business_type: 0,
                 is_urban: 1, is_existing: 1, upi_monthly_txn: 45, gst_registered: 1,
                 gst_filing_score: 8, whatsapp_business: 1, has_website: 1,
@@ -1323,11 +1390,13 @@
             const [googleSearch, setGoogleSearch] = useState('');
             const [googleResults, setGoogleResults] = useState([]);
             const [isSearching, setIsSearching] = useState(false);
+            const [isApproved, setIsApproved] = useState(false);
             const [googleData, setGoogleData] = useState({ verified: false, rating: null, reviews: null, rep_score: 0.5 });
 
             const handleInp = (e) => {
                 const { name, value } = e.target;
-                const finalValue = name === 'business_type' ? parseInt(value) : parseFloat(value);
+                const isNumber = ['business_name', 'mobile'].indexOf(name) === -1 && !isNaN(value);
+                const finalValue = isNumber ? (name === 'business_type' ? parseInt(value) : parseFloat(value)) : value;
                 setFormData(p => ({ ...p, [name]: finalValue }));
                 if (fraudActive) setFraudActive(false); // Reset on change
             };
@@ -1368,10 +1437,10 @@
             const runInference = async () => {
                 setLoading(true);
                 try {
-                    const API_URL = 'http://localhost:5000/score'; 
-                    const body = { 
-                        ...formData, 
-                        google_reputation_score: googleData.rep_score 
+                    const API_URL = 'http://localhost:5000/score';
+                    const body = {
+                        ...formData,
+                        google_reputation_score: googleData.rep_score
                     };
                     const response = await fetch(API_URL, {
                         method: 'POST',
@@ -1507,9 +1576,9 @@
                             created_at: firebase.firestore.FieldValue.serverTimestamp(),
                             user_id: auth.currentUser ? auth.currentUser.uid : 'anon',
                             // ── V2.0 Anomaly Detection ──
-                            is_anomaly:      data.is_anomaly     || false,
-                            anomaly_score:   data.anomaly_score  || 0,
-                            anomaly_message: data.anomaly_message|| ''
+                            is_anomaly: data.is_anomaly || false,
+                            anomaly_score: data.anomaly_score || 0,
+                            anomaly_message: data.anomaly_message || ''
                         };
 
                         // Save to Firestore
@@ -1644,7 +1713,7 @@
                             display: 'flex', alignItems: 'center', justifyContent: 'center'
                         }}>
                             <div className="card" style={{
-                                width: '420px', textAlign: 'center', border: '2px solid #ef4444', 
+                                width: '420px', textAlign: 'center', border: '2px solid #ef4444',
                                 boxShadow: '0 20px 60px rgba(239, 68, 68, 0.2)',
                                 animation: 'shake 0.5s cubic-bezier(.36,.07,.19,.97) both'
                             }}>
@@ -1652,7 +1721,7 @@
                                 <h2 style={{ color: '#991b1b', fontSize: '24px', fontWeight: 800, letterSpacing: '-0.02em', marginBottom: '8px' }}>FRAUD DETECTED</h2>
                                 <span style={{ fontSize: '10px', color: '#ef4444', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '16px', display: 'block' }}>SiliconMind Security Intercept</span>
                                 <p style={{ fontSize: '14px', color: '#444', lineHeight: '1.6', marginBottom: '24px' }}>
-                                    Illogical data patterns identified. Massive transaction volume detected without corresponding GST compliance or business tenure. <br/><b>Assessment Blocked.</b>
+                                    Illogical data patterns identified. Massive transaction volume detected without corresponding GST compliance or business tenure. <br /><b>Assessment Blocked.</b>
                                 </p>
                                 <button className="btn-primary w-full" style={{ background: '#ef4444' }} onClick={() => setFraudActive(false)}>
                                     Clear Flag & Correct Inputs
@@ -1671,6 +1740,20 @@
                     <div className="card">
 
                         <span className="section-label">SiliconMind Assessment</span>
+
+                        <div className="form-section">
+                            <span style={{ fontSize: '11px', color: '#999', marginBottom: '16px', display: 'block' }}>MERCHANT IDENTITY</span>
+                            <div className="form-grid" style={{ gap: '12px' }}>
+                                <div className="form-group">
+                                    <label>Business Name</label>
+                                    <input name="business_name" type="text" value={formData.business_name} onChange={handleInp} placeholder="e.g. Ramesh Kirana Store" />
+                                </div>
+                                <div className="form-group">
+                                    <label>Mobile Number (10 Digit)</label>
+                                    <input name="mobile" type="tel" maxLength="10" value={formData.mobile} onChange={handleInp} placeholder="9876543210" />
+                                </div>
+                            </div>
+                        </div>
 
                         <div className="form-section">
                             <span style={{ fontSize: '11px', color: '#999', marginBottom: '16px', display: 'block' }}>CORE LOAN DETAILS</span>
@@ -1722,7 +1805,7 @@
                         </div>
 
                         <div className="form-section">
-                            <span style={{fontSize: '11px', color: '#999', marginBottom: '16px', display: 'block'}}>GOOGLE BUSINESS REPUTATION (15TH INPUT)</span>
+                            <span style={{ fontSize: '11px', color: '#999', marginBottom: '16px', display: 'block' }}>GOOGLE BUSINESS REPUTATION (15TH INPUT)</span>
                             <div style={{ padding: '20px', background: '#fff', border: '1.5px solid #0f172a', borderRadius: '16px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
                                     <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: '#0f172a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -1733,19 +1816,19 @@
                                         <div style={{ fontSize: '12px', color: '#64748b' }}>Link your Maps profile to unlock reputation-based scoring boosts.</div>
                                     </div>
                                 </div>
-                                
+
                                 <div className="form-group">
                                     <div style={{ display: 'flex', gap: '10px' }}>
-                                        <input 
-                                            type="text" 
-                                            placeholder="Enter Shop Name & City (e.g. Ramesh Kirana Jaipur)" 
+                                        <input
+                                            type="text"
+                                            placeholder="Enter Shop Name & City (e.g. Ramesh Kirana Jaipur)"
                                             value={googleSearch}
                                             style={{ borderRadius: '100px', padding: '0 20px', height: '46px', border: '1.5px solid #e2e8f0' }}
                                             onChange={(e) => setGoogleSearch(e.target.value)}
                                             onKeyPress={(e) => e.key === 'Enter' && handleGoogleSearch()}
                                         />
-                                        <button 
-                                            className="btn-primary" 
+                                        <button
+                                            className="btn-primary"
                                             style={{ width: 'auto', padding: '0 24px', height: '46px', borderRadius: '100px' }}
                                             onClick={handleGoogleSearch}
                                             disabled={isSearching}
@@ -1783,15 +1866,15 @@
                                                 <div style={{ fontSize: '11px', color: '#15803d' }}>Reputation Strength: {(googleData.rep_score * 100).toFixed(0)}% | Model Boost Applied</div>
                                             </div>
                                         </div>
-                                        <button onClick={() => setGoogleData({verified:false, rating:null, reviews:null, rep_score:0.5})} className="btn-ghost" style={{ fontSize: '11px', color: '#ef4444', fontWeight: 700 }}>UNLINK</button>
+                                        <button onClick={() => setGoogleData({ verified: false, rating: null, reviews: null, rep_score: 0.5 })} className="btn-ghost" style={{ fontSize: '11px', color: '#ef4444', fontWeight: 700 }}>UNLINK</button>
                                     </div>
                                 )}
                             </div>
                         </div>
 
                         <div className="form-section">
-                            <span style={{fontSize: '11px', color: '#999', marginBottom: '16px', display: 'block'}}>IDENTITY & DIGITAL FOOTPRINT</span>
-                            <div className="form-grid" style={{gap: '12px', gridTemplateColumns: 'repeat(3, 1fr)'}}>
+                            <span style={{ fontSize: '11px', color: '#999', marginBottom: '16px', display: 'block' }}>IDENTITY & DIGITAL FOOTPRINT</span>
+                            <div className="form-grid" style={{ gap: '12px', gridTemplateColumns: 'repeat(3, 1fr)' }}>
                                 <div className="form-group"><label>Urban?</label><select name="is_urban" value={formData.is_urban} onChange={handleInp}><option value={1}>Yes</option><option value={0}>No</option></select></div>
                                 <div className="form-group"><label>Existing?</label><select name="is_existing" value={formData.is_existing} onChange={handleInp}><option value={1}>Yes</option><option value={0}>No</option></select></div>
                                 <div className="form-group"><label>WhatsApp Biz?</label><select name="whatsapp_business" value={formData.whatsapp_business} onChange={handleInp}><option value={1}>Yes</option><option value={0}>No</option></select></div>
@@ -1918,7 +2001,39 @@
                                     </ul>
                                 </div>
 
-                                <button onClick={() => { onSave(result); setResult(null); }} className="btn-primary w-full">Save to Dashboard</button>
+                                {isApproved ? (
+                                    <div style={{ textAlign: 'center', padding: '20px', background: '#f0fdf4', borderRadius: '12px', border: '2px solid #22c55e', animation: 'bounceIn 0.5s cubic-bezier(0.36, 0, 0.66, -0.56) both' }}>
+                                        <Icon name="ph:confetti-bold" size={48} color="#22c55e" style={{ marginBottom: '12px' }} />
+                                        <h3 style={{ color: '#15803d', fontSize: '24px', fontWeight: 800 }}>LOAN APPROVED</h3>
+                                        <p style={{ fontSize: '14px', color: '#166534', marginBottom: '16px' }}>Funding has been successfully allocated to the merchant's account.</p>
+                                        <button onClick={() => { onSave(result); setResult(null); setIsApproved(false); }} className="btn-primary w-full">Return to Dashboard</button>
+                                    </div>
+                                ) : (
+                                    <div className="flex gap-4">
+                                        <button
+                                            onClick={() => setIsApproved(true)}
+                                            className="btn-primary"
+                                            style={{ flex: 1, background: '#22c55e' }}
+                                        >
+                                            ACCEPT & FUND
+                                        </button>
+                                        <button
+                                            onClick={() => setPage('funding')}
+                                            className="btn-ghost"
+                                            style={{ flex: 1, border: '1.5px solid #ef4444', color: '#ef4444' }}
+                                        >
+                                            DECLINE
+                                        </button>
+                                    </div>
+                                )}
+                                <style>{`
+                                    @keyframes bounceIn {
+                                        0% { opacity: 0; transform: scale(0.3); }
+                                        50% { opacity: 0.9; transform: scale(1.1); }
+                                        80% { opacity: 1; transform: scale(0.89); }
+                                        100% { opacity: 1; transform: scale(1); }
+                                    }
+                                `}</style>
                             </div>
                         ) : (
                             <div className="card" style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.5, borderStyle: 'dashed' }}>
@@ -1935,9 +2050,16 @@
 
         const HistoryPage = ({ history }) => {
             const [filter, setFilter] = useState('');
+            const [currentPage, setCurrentPage] = useState(1);
+            const itemsPerPage = 10;
+
             const filtered = history.filter(h =>
                 BUSINESS_TYPES[h.business_type]?.toLowerCase().includes(filter.toLowerCase())
             );
+
+            const totalPages = Math.ceil(filtered.length / itemsPerPage);
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const paginated = filtered.slice(startIndex, startIndex + itemsPerPage);
 
             return (
                 <div className="card">
@@ -1947,13 +2069,13 @@
                             placeholder="Filter by business type..."
                             style={{ width: '240px' }}
                             value={filter}
-                            onChange={e => setFilter(e.target.value)}
+                            onChange={e => { setFilter(e.target.value); setCurrentPage(1); }}
                         />
                     </div>
                     <table>
                         <thead>
                             <tr>
-                                <th>#</th>
+                                <th>Sr No</th>
                                 <th>Business Type</th>
                                 <th>Requested</th>
                                 <th>Score</th>
@@ -1963,9 +2085,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {filtered.map((h, i) => (
-                                <tr key={i}>
-                                    <td>{history.length - i}</td>
+                            {paginated.map((h, i) => (
+                                <tr key={startIndex + i}>
+                                    <td>{startIndex + i + 1}</td>
                                     <td style={{ fontWeight: 500 }}>{BUSINESS_TYPES[h.business_type]}</td>
                                     <td>₹{(h.loan_amount_inr / 1000).toFixed(0)}k</td>
                                     <td>{h.score}</td>
@@ -1976,6 +2098,44 @@
                             ))}
                         </tbody>
                     </table>
+
+                    {totalPages > 1 && (
+                        <div className="flex justify-between items-center" style={{ marginTop: '24px', padding: '16px 0', borderTop: '1px solid #f1f5f9' }}>
+                            <span style={{ fontSize: '13px', color: '#64748b' }}>
+                                Showing {startIndex + 1} to {Math.min(startIndex + itemsPerPage, filtered.length)} of {filtered.length} entries
+                            </span>
+                            <div className="flex gap-2">
+                                <button 
+                                    className="btn-ghost" 
+                                    style={{ height: '32px', padding: '0 12px', fontSize: '12px' }}
+                                    disabled={currentPage === 1}
+                                    onClick={() => setCurrentPage(p => p - 1)}
+                                >
+                                    Previous
+                                </button>
+                                <div className="flex gap-1">
+                                    {[...Array(totalPages)].map((_, i) => (
+                                        <button
+                                            key={i}
+                                            className={currentPage === i + 1 ? "btn-primary" : "btn-ghost"}
+                                            style={{ width: '32px', height: '32px', padding: 0, fontSize: '12px', borderRadius: '6px' }}
+                                            onClick={() => setCurrentPage(i + 1)}
+                                        >
+                                            {i + 1}
+                                        </button>
+                                    ))}
+                                </div>
+                                <button 
+                                    className="btn-ghost" 
+                                    style={{ height: '32px', padding: '0 12px', fontSize: '12px' }}
+                                    disabled={currentPage === totalPages}
+                                    onClick={() => setCurrentPage(p => p - 1)}
+                                >
+                                    Next
+                                </button>
+                            </div>
+                        </div>
+                    )}
                 </div>
             );
         };
@@ -2089,15 +2249,15 @@
 
         const FraudMonitorPage = ({ history }) => {
             const anomalies = history.filter(h => h.is_anomaly);
-            
+
             return (
                 <div className="flex-col gap-6">
-                    <div className="card" style={{background: '#fffbeb', borderLeft: '4px solid #f59e0b'}}>
-                        <h2 style={{fontSize: '18px', fontWeight: 700, color: '#92400e', display: 'flex', alignItems: 'center', gap: '8px'}}>
+                    <div className="card" style={{ background: '#fffbeb', borderLeft: '4px solid #f59e0b' }}>
+                        <h2 style={{ fontSize: '18px', fontWeight: 700, color: '#92400e', display: 'flex', alignItems: 'center', gap: '8px' }}>
                             <Icon name="ph:shield-warning-bold" size={20} />
                             Fraud Detection Monitor v2.0
                         </h2>
-                        <p style={{fontSize: '13px', color: '#78350f', marginTop: '4px'}}>
+                        <p style={{ fontSize: '13px', color: '#78350f', marginTop: '4px' }}>
                             Powered by SiliconMind Isolation Forest algorithm. Currently monitoring 14 input vectors for pattern deviations.
                         </p>
                     </div>
@@ -2109,7 +2269,7 @@
                         </div>
                         <div className="card stat-card">
                             <span className="stat-label">ANOMALIES DETECTED</span>
-                            <span className="stat-value" style={{color: anomalies.length > 0 ? '#ef4444' : 'inherit'}}>{anomalies.length}</span>
+                            <span className="stat-value" style={{ color: anomalies.length > 0 ? '#ef4444' : 'inherit' }}>{anomalies.length}</span>
                         </div>
                         <div className="card stat-card">
                             <span className="stat-label">DETECTION ACCURACY</span>
@@ -2117,7 +2277,7 @@
                         </div>
                         <div className="card stat-card">
                             <span className="stat-label">SYSTEM HEALTH</span>
-                            <span className="stat-value" style={{color: '#22c55e', fontSize: '16px'}}>Secured</span>
+                            <span className="stat-value" style={{ color: '#22c55e', fontSize: '16px' }}>Secured</span>
                         </div>
                     </div>
 
@@ -2138,17 +2298,17 @@
                                     {anomalies.map((a, i) => (
                                         <tr key={i}>
                                             <td>{a.date}</td>
-                                            <td style={{fontWeight: 500}}>{BUSINESS_TYPES[a.business_type]}</td>
-                                            <td style={{color: a.anomaly_score < -0.6 ? '#ef4444' : '#f59e0b'}}>{a.anomaly_score}</td>
-                                            <td><span className="badge" style={{background: '#fee2e2', color: '#ef4444'}}>Suspicious</span></td>
-                                            <td><button className="btn-ghost" style={{height: '28px', padding: '0 8px', fontSize: '10px'}}>Review</button></td>
+                                            <td style={{ fontWeight: 500 }}>{BUSINESS_TYPES[a.business_type]}</td>
+                                            <td style={{ color: a.anomaly_score < -0.6 ? '#ef4444' : '#f59e0b' }}>{a.anomaly_score}</td>
+                                            <td><span className="badge" style={{ background: '#fee2e2', color: '#ef4444' }}>Suspicious</span></td>
+                                            <td><button className="btn-ghost" style={{ height: '28px', padding: '0 8px', fontSize: '10px' }}>Review</button></td>
                                         </tr>
                                     ))}
                                 </tbody>
                             </table>
                         ) : (
-                            <div style={{textAlign: 'center', padding: '40px', color: '#999'}}>
-                                <Icon name="ph:check-box-bold" size={48} style={{opacity: 0.2, marginBottom: '16px'}} />
+                            <div style={{ textAlign: 'center', padding: '40px', color: '#999' }}>
+                                <Icon name="ph:check-box-bold" size={48} style={{ opacity: 0.2, marginBottom: '16px' }} />
                                 <p>No suspicious patterns detected in the current history.</p>
                             </div>
                         )}
@@ -2217,14 +2377,14 @@
             const [search, setSearch] = useState('');
             const [loading, setLoading] = useState(true);
             const [selectedDeal, setSelectedDeal] = useState(null);
-            
+
             useEffect(() => {
                 const unsubscribe = db.collection('assessments')
                     .limit(50)
                     .onSnapshot(snap => {
                         const data = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                         // Sort by score desc for marketplace feel
-                        data.sort((a,b) => b.score - a.score);
+                        data.sort((a, b) => b.score - a.score);
                         setDeals(data);
                         setLoading(false);
                     }, err => {
@@ -2239,18 +2399,18 @@
             });
 
             return (
-                <div className="flex-col gap-6" style={{padding: '32px'}}>
+                <div className="flex-col gap-6" style={{ padding: '32px' }}>
                     <div className="welcome-banner">
-                        <div className="flex justify-between items-end">
+                        <div className="flex justify-between items-center">
                             <div>
-                                <h1>Recovery & Opportunity Marketplace</h1>
-                                <p>High-yield deal-flow from MSMEs needing strategic capital intervention.</p>
+                                <h1 style={{ fontSize: '28px', fontWeight: 800, letterSpacing: '-0.02em', marginBottom: '4px' }}>Recovery & Opportunity Marketplace</h1>
+                                <p style={{ color: '#64748b', fontSize: '15px' }}>High-yield deal-flow from MSMEs needing strategic intervention.</p>
                             </div>
-                            <div className="flex gap-2 items-center" style={{background: '#fff', padding: '8px 16px', borderRadius: '12px', border: '1px solid #eee', width: '320px'}}>
-                                <Icon name="Search" size={16} color="#999" />
-                                <input 
-                                    placeholder="Search by business or owner..." 
-                                    style={{border: 'none', padding: '0', height: 'auto', fontSize: '13px', width: '100%', outline: 'none'}}
+                            <div className="flex gap-3 items-center" style={{ background: '#fff', padding: '12px 20px', borderRadius: '16px', border: '1.5px solid #eee', width: '360px', boxShadow: '0 2px 10px rgba(0,0,0,0.02)' }}>
+                                <Icon name="Search" size={18} color="#94a3b8" />
+                                <input
+                                    placeholder="Search by business or mobile..."
+                                    style={{ border: 'none', padding: '0', height: '24px', fontSize: '14px', width: '100%', outline: 'none', background: 'transparent' }}
                                     value={search}
                                     onChange={e => setSearch(e.target.value)}
                                 />
@@ -2259,131 +2419,136 @@
                     </div>
 
                     {loading ? (
-                        <div className="flex justify-center items-center" style={{padding: '60px'}}>
+                        <div className="flex justify-center items-center" style={{ padding: '60px' }}>
                             <div className="spinner">Connecting into secure vault...</div>
                         </div>
                     ) : (
                         <div className="flex-col gap-4">
-                            {filteredDeals.length > 0 ? filteredDeals.map(deal => (
-                                <div key={deal.id} className="card flex-col gap-4" style={{borderTop: `4px solid ${getMetaFromScore(deal.score).color}`, cursor: 'pointer'}} onClick={() => setSelectedDeal(deal)}>
-                                    <div className="flex justify-between items-start">
-                                        <div>
-                                            <h3 style={{fontSize: '18px', fontWeight: 700}}>{BUSINESS_TYPES[deal.business_type] || 'Unnamed Entity'}</h3>
-                                            <div className="flex gap-2" style={{marginTop: '4px'}}>
-                                                <span className="badge" style={{background: '#f8fafc', color: '#64748b', fontSize: '10px'}}>{deal.user || 'Anonymous'}</span>
-                                                <span className="badge" style={{background: `${getMetaFromScore(deal.score).color}11`, color: getMetaFromScore(deal.score).color}}>GRADE {deal.grade}</span>
+                            {(() => {
+                                const filtered = deals.filter(d =>
+                                    (['C', 'D', 'E', 'F'].includes(d.grade)) &&
+                                    ((d.business_name || '').toLowerCase().includes(search.toLowerCase()) ||
+                                        (d.mobile || '').includes(search))
+                                );
+                                return filtered.length > 0 ? filtered.map(deal => (
+                                    <div key={deal.id} className="card flex-col gap-4" style={{ border: '1.5px solid #eee', padding: '24px', transition: 'none', transform: 'none' }}>
+                                        <div className="flex justify-between items-start">
+                                            <div style={{ flex: 1 }}>
+                                                <h3 style={{ fontSize: '18px', fontWeight: 800, letterSpacing: '-0.02em' }}>{deal.business_name || BUSINESS_TYPES[deal.business_type] || 'Unnamed Entity'}</h3>
+                                                <div className="flex gap-3" style={{ marginTop: '6px', alignItems: 'center' }}>
+                                                    <span style={{ fontSize: '13px', color: '#64748b', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                                        <Icon name="User" size={14} /> {deal.mobile || 'No Mobile'}
+                                                    </span>
+                                                    <span className="badge" style={{ background: `${getMetaFromScore(deal.score).color}11`, color: getMetaFromScore(deal.score).color }}>GRADE {deal.grade}</span>
+                                                </div>
+                                            </div>
+                                            <div style={{ textAlign: 'right' }}>
+                                                <div style={{ fontSize: '24px', fontWeight: 800, color: getMetaFromScore(deal.score).color }}>{deal.score}</div>
+                                                <div style={{ fontSize: '10px', color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase' }}>RISK SCORE</div>
                                             </div>
                                         </div>
-                                        <div style={{textAlign: 'right'}}>
-                                            <span style={{fontSize: '24px', fontWeight: 800, color: getMetaFromScore(deal.score).color}}>{deal.score}</span>
-                                            <span style={{display: 'block', fontSize: '10px', color: '#999'}}>AI SCORE</span>
-                                        </div>
-                                    </div>
 
-                                    <div className="flex gap-4" style={{padding: '12px 0', borderTop: '0.5px solid #f1f5f9', borderBottom: '0.5px solid #f1f5f9'}}>
-                                        <div style={{flex: 1}}>
-                                            <span style={{fontSize: '11px', color: '#999', display: 'block'}}>LOAN REQUIRED</span>
-                                            <div style={{fontWeight: 600, fontSize: '15px'}}>₹{Math.round(deal.loan_amount_inr / 1000).toLocaleString('en-IN')}K</div>
+                                        <div className="flex gap-8" style={{ padding: '12px 0', borderTop: '1px solid #f1f5f9', marginBottom: '4px' }}>
+                                            <div>
+                                                <span style={{ fontSize: '10px', color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase', display: 'block', marginBottom: '2px' }}>Capital Required</span>
+                                                <div style={{ fontWeight: 700, fontSize: '16px' }}>₹{deal.loan_amount_inr?.toLocaleString('en-IN')}</div>
+                                            </div>
+                                            <div>
+                                                <span style={{ fontSize: '10px', color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase', display: 'block', marginBottom: '2px' }}>Risk Segment</span>
+                                                <div style={{ fontWeight: 700, fontSize: '16px', color: getMetaFromScore(deal.score).color }}>{getMetaFromScore(deal.score).risk}</div>
+                                            </div>
                                         </div>
-                                        <div style={{flex: 1}}>
-                                            <span style={{fontSize: '11px', color: '#999', display: 'block'}}>REPAYMENT TERM</span>
-                                            <div style={{fontWeight: 600, fontSize: '15px'}}>{deal.term || 12} Months</div>
-                                        </div>
-                                    </div>
 
-                                    <div className="flex gap-2" style={{marginTop: '4px'}}>
-                                        <button className="btn-primary" style={{flex: 1, height: '40px', fontSize: '12px', padding: '0 12px'}}>
-                                            RECOVERY ANALYSIS
-                                        </button>
-                                        <button className="btn-ghost" style={{width: '40px', height: '40px', padding: 0}} title="Contact Owner">
-                                            <Icon name="User" size={16} />
-                                        </button>
+                                        <div className="flex gap-2" style={{ marginTop: '4px' }}>
+                                            <button
+                                                className="btn-primary"
+                                                style={{ flex: 1, height: '34px', fontSize: '11px', fontWeight: 700, borderRadius: '6px' }}
+                                                onClick={() => setSelectedDeal(deal)}
+                                            >
+                                                VIEW DETAILS
+                                            </button>
+                                            <button
+                                                className="btn-ghost"
+                                                style={{ flex: 1, height: '34px', fontSize: '11px', fontWeight: 700, border: '1px solid #eee', borderRadius: '6px', color: '#1e293b' }}
+                                                onClick={() => window.location.href = `tel:${deal.mobile}`}
+                                            >
+                                                CONTACT
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
-                            )) : (
-                                <div className="card" style={{gridColumn: '1/-1', textAlign: 'center', padding: '80px', borderStyle: 'dashed'}}>
-                                    <Icon name="Search" size={48} style={{opacity: 0.1, marginBottom: '16px'}} />
-                                    <h4 style={{fontSize: '18px', color: '#666'}}>No active pitches found</h4>
-                                    <p style={{color: '#999', fontSize: '14px', maxWidth: '300px', margin: '8px auto'}}>There are currently no credit-ready MSMEs matching this criteria or search term.</p>
-                                </div>
-                            )}
+                                )) : (
+                                    <div className="card" style={{ gridColumn: '1/-1', textAlign: 'center', padding: '80px', borderStyle: 'dashed' }}>
+                                        <Icon name="Search" size={48} style={{ opacity: 0.1, marginBottom: '16px' }} />
+                                        <h4 style={{ fontSize: '18px', color: '#666' }}>No recovery deals found</h4>
+                                        <p style={{ color: '#999', fontSize: '14px', maxWidth: '300px', margin: '8px auto' }}>No MSMEs with Grades C, D, E, or F match your search.</p>
+                                    </div>
+                                );
+                            })()}
                         </div>
                     )}
 
-                    {filteredDeals.length > 0 && (
-                        <div className="card" style={{border: '1px dashed #ef4444', background: '#fff5f5'}}>
-                            <div className="flex gap-4 items-center">
-                                <div style={{width: '48px', height: '48px', borderRadius: '50%', background: '#ef4444', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                                    <Icon name="Zap" size={24} />
-                                </div>
-                                <div>
-                                    <h3 style={{fontSize: '16px', fontWeight: 700, color: '#991b1b'}}>Intervention Required</h3>
-                                    <p style={{fontSize: '13px', color: '#b91c1c'}}>These MSMEs require strategic capital or recovery intervention based on their AI risk profile.</p>
-                                </div>
-                            </div>
-                        </div>
-                    )}
+
 
                     {selectedDeal && (
                         <div className="modal-overlay" onClick={() => setSelectedDeal(null)}>
                             <div className="modal-card" onClick={e => e.stopPropagation()}>
                                 <div className="modal-close" onClick={() => setSelectedDeal(null)}>
-                                    <Icon name="Plus" style={{transform: 'rotate(45deg)'}} />
+                                    <Icon name="Plus" style={{ transform: 'rotate(45deg)' }} />
                                 </div>
-                                
-                                <div style={{padding: '32px'}}>
-                                    <div className="flex justify-between items-start" style={{marginBottom: '24px'}}>
+
+                                <div style={{ padding: '32px' }}>
+                                    <div className="flex justify-between items-start" style={{ marginBottom: '24px' }}>
                                         <div>
-                                            <span className="badge" style={{background: `${getMetaFromScore(selectedDeal.score).color}11`, color: getMetaFromScore(selectedDeal.score).color, marginBottom: '8px'}}>GRADE {selectedDeal.grade}</span>
-                                            <h2 style={{fontSize: '24px', fontWeight: 800}}>{BUSINESS_TYPES[selectedDeal.business_type]}</h2>
-                                            <p style={{color: '#999'}}>{selectedDeal.user || 'Anonymous Merchant'}</p>
+                                            <span className="badge" style={{ background: `${getMetaFromScore(selectedDeal.score).color}11`, color: getMetaFromScore(selectedDeal.score).color, marginBottom: '8px' }}>GRADE {selectedDeal.grade}</span>
+                                            <h2 style={{ fontSize: '24px', fontWeight: 800 }}>{selectedDeal.business_name || BUSINESS_TYPES[selectedDeal.business_type]}</h2>
+                                            <p style={{ color: '#999', fontSize: '13px' }}>{selectedDeal.mobile || 'No Mobile Number'} | {selectedDeal.user || 'Anonymous'}</p>
                                         </div>
-                                        <div style={{textAlign: 'right'}}>
-                                            <div style={{fontSize: '32px', fontWeight: 800, color: getMetaFromScore(selectedDeal.score).color}}>{selectedDeal.score}</div>
-                                            <div style={{fontSize: '11px', color: '#999'}}>SILICONMIND SCORE</div>
-                                        </div>
-                                    </div>
-
-                                    <div className="analytics-grid" style={{marginBottom: '32px', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px'}}>
-                                        <div className="card" style={{padding: '16px'}}>
-                                            <span style={{fontSize: '11px', color: '#999', display: 'block'}}>LOAN AMOUNT</span>
-                                            <div style={{fontSize: '18px', fontWeight: 700}}>₹{selectedDeal.loan_amount_inr?.toLocaleString('en-IN')}</div>
-                                        </div>
-                                        <div className="card" style={{padding: '16px'}}>
-                                            <span style={{fontSize: '11px', color: '#999', display: 'block'}}>TERM</span>
-                                            <div style={{fontSize: '18px', fontWeight: 700}}>{selectedDeal.term} Months</div>
-                                        </div>
-                                        <div className="card" style={{padding: '16px'}}>
-                                            <span style={{fontSize: '11px', color: '#999', display: 'block'}}>EMPLOYEES</span>
-                                            <div style={{fontSize: '18px', fontWeight: 700}}>{selectedDeal.employees} Staff</div>
-                                        </div>
-                                        <div className="card" style={{padding: '16px'}}>
-                                            <span style={{fontSize: '11px', color: '#999', display: 'block'}}>GST SCORE</span>
-                                            <div style={{fontSize: '18px', fontWeight: 700}}>{selectedDeal.gst_filing_score}/10</div>
+                                        <div style={{ textAlign: 'right' }}>
+                                            <div style={{ fontSize: '32px', fontWeight: 800, color: getMetaFromScore(selectedDeal.score).color }}>{selectedDeal.score}</div>
+                                            <div style={{ fontSize: '11px', color: '#999' }}>SILICONMIND SCORE</div>
                                         </div>
                                     </div>
 
-                                    <div className="card" style={{background: '#f8fafc', border: 'none', padding: '24px', marginBottom: '24px'}}>
-                                        <h3 style={{fontSize: '14px', fontWeight: 700, marginBottom: '12px'}}>Risk Intelligence Summary</h3>
+                                    <div className="analytics-grid" style={{ marginBottom: '32px', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px' }}>
+                                        <div className="card" style={{ padding: '16px' }}>
+                                            <span style={{ fontSize: '11px', color: '#999', display: 'block' }}>LOAN AMOUNT</span>
+                                            <div style={{ fontSize: '18px', fontWeight: 700 }}>₹{selectedDeal.loan_amount_inr?.toLocaleString('en-IN')}</div>
+                                        </div>
+                                        <div className="card" style={{ padding: '16px' }}>
+                                            <span style={{ fontSize: '11px', color: '#999', display: 'block' }}>TERM</span>
+                                            <div style={{ fontSize: '18px', fontWeight: 700 }}>{selectedDeal.term} Months</div>
+                                        </div>
+                                        <div className="card" style={{ padding: '16px' }}>
+                                            <span style={{ fontSize: '11px', color: '#999', display: 'block' }}>EMPLOYEES</span>
+                                            <div style={{ fontSize: '18px', fontWeight: 700 }}>{selectedDeal.employees} Staff</div>
+                                        </div>
+                                        <div className="card" style={{ padding: '16px' }}>
+                                            <span style={{ fontSize: '11px', color: '#999', display: 'block' }}>GST SCORE</span>
+                                            <div style={{ fontSize: '18px', fontWeight: 700 }}>{selectedDeal.gst_filing_score}/10</div>
+                                        </div>
+                                    </div>
+
+                                    <div className="card" style={{ background: '#f8fafc', border: 'none', padding: '24px', marginBottom: '24px' }}>
+                                        <h3 style={{ fontSize: '14px', fontWeight: 700, marginBottom: '12px' }}>Risk Intelligence Summary</h3>
                                         <div className="flex-col gap-3">
                                             <div className="flex justify-between items-center">
-                                                <span style={{fontSize: '13px', color: '#64748b'}}>UPI Digital Trace</span>
-                                                <span style={{fontWeight: 600}}>{selectedDeal.upi_monthly_txn} Txns/mo</span>
+                                                <span style={{ fontSize: '13px', color: '#64748b' }}>UPI Digital Trace</span>
+                                                <span style={{ fontWeight: 600 }}>{selectedDeal.upi_monthly_txn} Txns/mo</span>
                                             </div>
                                             <div className="flex justify-between items-center">
-                                                <span style={{fontSize: '13px', color: '#64748b'}}>Digital Infrastructure</span>
-                                                <span style={{fontWeight: 600}}>{selectedDeal.has_website ? 'Has Website' : 'Offline only'}</span>
+                                                <span style={{ fontSize: '13px', color: '#64748b' }}>Digital Infrastructure</span>
+                                                <span style={{ fontWeight: 600 }}>{selectedDeal.has_website ? 'Has Website' : 'Offline only'}</span>
                                             </div>
                                             <div className="flex justify-between items-center">
-                                                <span style={{fontSize: '13px', color: '#64748b'}}>Market Segment</span>
-                                                <span style={{fontWeight: 600}}>{selectedDeal.is_urban ? 'Urban' : 'Rural'}</span>
+                                                <span style={{ fontSize: '13px', color: '#64748b' }}>Market Segment</span>
+                                                <span style={{ fontWeight: 600 }}>{selectedDeal.is_urban ? 'Urban' : 'Rural'}</span>
                                             </div>
                                         </div>
                                     </div>
 
                                     <div className="flex gap-4">
-                                        <button className="btn-primary" style={{flex: 1, height: '48px'}}>INITIATE RECOVERY PLAN</button>
-                                        <button className="btn-ghost" style={{height: '48px', padding: '0 24px'}}>DOWNLOAD DATA</button>
+                                        <button className="btn-primary" style={{ flex: 1, height: '48px' }}>INITIATE RECOVERY PLAN</button>
+                                        <button className="btn-ghost" style={{ height: '48px', padding: '0 24px' }}>DOWNLOAD DATA</button>
                                     </div>
                                 </div>
                             </div>
@@ -2494,17 +2659,30 @@
             const [showPass, setShowPass] = useState(false);
 
             const handleLogin = async () => {
+                if (!email || !pass) {
+                    alert("Please enter both email and password.");
+                    return;
+                }
                 try {
-                    const res = await auth.signInWithEmailAndPassword(email, pass || 'password');
+                    const res = await auth.signInWithEmailAndPassword(email, pass);
                     onLogin(res.user.displayName || res.user.email);
-                } catch (e) { alert(e.message); }
+                } catch (e) {
+                    console.error("Login Error:", e);
+                    alert(e.message);
+                }
             };
 
             const handleGoogle = async () => {
                 const p = new firebase.auth.GoogleAuthProvider();
                 try {
-                    await auth.signInWithRedirect(p);
-                } catch (e) { alert(e.message); }
+                    const res = await auth.signInWithPopup(p);
+                    if (res && res.user) {
+                        onLogin(res.user.displayName || res.user.email);
+                    }
+                } catch (e) {
+                    console.error("Google Auth Error:", e);
+                    alert(e.message);
+                }
             };
 
             return (
@@ -2603,7 +2781,7 @@
         // --- Main App ---
 
         const App = () => {
-            const [page, setPage] = useState('landing');
+            const [page, setPage] = useState('login');
             const [trainingProgress, setProgress] = useState(0);
             const [model, setModel] = useState(null);
             const [history, setHistory] = useState([]);
@@ -2663,7 +2841,7 @@
                 // Private Routes
                 switch (page) {
                     case 'dashboard': return <DashboardPage history={history} user={user} />;
-                    case 'assessment': return <AssessmentPage user={user} model={model} onSave={(res) => { setHistory([res, ...history]); setPage('dashboard'); }} />;
+                    case 'assessment': return <AssessmentPage user={user} model={model} setPage={setPage} onSave={(res) => { setHistory([res, ...history]); setPage('dashboard'); }} />;
                     case 'history': return <HistoryPage history={history} />;
                     case 'analytics': return <AnalyticsPage history={history} />;
                     case 'funding': return <FundingPage history={history} />;

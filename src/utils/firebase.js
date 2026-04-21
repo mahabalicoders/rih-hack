@@ -13,6 +13,9 @@ const firebaseConfig = {
 let app;
 let db;
 let auth;
+let signIn;
+let googleProvider;
+let signInWithGoogle;
 
 if (window.firebase) {
     if (!window.firebase.apps.length) {
@@ -23,8 +26,10 @@ if (window.firebase) {
     db = window.firebase.firestore();
     auth = window.firebase.auth();
     signIn = (email, password) => auth.signInWithEmailAndPassword(email, password);
+    googleProvider = new window.firebase.auth.GoogleAuthProvider();
+    signInWithGoogle = () => auth.signInWithPopup(googleProvider);
 } else {
     console.warn("Firebase script not loaded yet.");
 }
 
-export { app, db, auth, signIn };
+export { app, db, auth, signIn, googleProvider, signInWithGoogle };
