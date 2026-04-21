@@ -101,19 +101,19 @@ def _generate_synthetic_training_data(n=2000):
     """
     rng = np.random.default_rng(seed=42)
 
-    term               = rng.integers(6, 60, n)                      # months
-    employees          = rng.integers(1, 50, n)                      # staff count
-    loan_amount_inr    = rng.integers(50_000, 5_000_000, n)          # INR
-    business_type      = rng.integers(0, 4, n)                       # 0-3
+    term               = rng.integers(6, 72, n)                      # expanded to 72m
+    employees          = rng.integers(1, 100, n)                     # expanded to 100 staff
+    loan_amount_inr    = rng.integers(50_000, 10_000_000, n)         # expanded to 10M
+    business_type      = rng.integers(0, 8, n)                       # matches all 8 types
     is_urban           = rng.integers(0, 2, n)                       # 0/1
     is_existing        = rng.integers(0, 2, n)                       # 0/1
-    upi_monthly_txn    = rng.integers(10, 2000, n)                   # transactions
+    upi_monthly_txn    = rng.integers(0, 10_000, n)                  # expanded to 10k txns
     gst_registered     = rng.integers(0, 2, n)                       # 0/1
     gst_filing_score   = rng.integers(0, 11, n)                      # 0-10
     whatsapp_business  = rng.integers(0, 2, n)                       # 0/1
     has_website        = rng.integers(0, 2, n)                       # 0/1
-    social_score       = rng.integers(1, 11, n)                      # 1-10
-    mobile_banking_score = rng.integers(1, 11, n)                    # 1-10
+    social_score       = rng.integers(0, 11, n)                      # 0-10
+    mobile_banking_score = rng.integers(0, 11, n)                    # 0-10
     aadhaar_linked     = rng.integers(0, 2, n)                       # 0/1
     reputation_score   = rng.uniform(0.1, 1.0, n)                    # 0.1-1.0 (Google Rep)
 
@@ -130,7 +130,7 @@ print("[...] Training SiliconMind V2.0 Isolation Forest...")
 _training_data = _generate_synthetic_training_data(n=2000)
 anomaly_detector = IsolationForest(
     n_estimators=150,
-    contamination=0.05,
+    contamination=0.01,
     random_state=42,
     max_samples='auto'
 )
@@ -293,34 +293,42 @@ def places_search():
         except Exception as e:
             print(f"[NOMINATIM ERROR] {e}")
 
-        # ── 3. Last Resort: Smart Mock (If all live searches fail) ──
-        mock_database = [
-            {"name": "Ramesh Kirana Store", "rating": 4.8, "reviews": 412, "address": "Station Rd, Jaipur"},
-            {"name": "Sharma Sweets & snacks", "rating": 4.5, "reviews": 850, "address": "MI Road, Jaipur"},
-            {"name": "Digital Mobile World", "rating": 3.9, "reviews": 45, "address": "Raja Park, Jaipur"},
-            {"name": "Green Grocers", "rating": 4.2, "reviews": 120, "address": "Mansarovar, Jaipur"},
-            {"name": "The Tech Hub", "rating": 4.9, "reviews": 32, "address": "Malviya Nagar, Jaipur"}
-        ]
-        
-        # Simple fuzzy filter on mock data
-        filtered = [s for s in mock_database if query.lower() in s['name'].lower()]
-        results = filtered if filtered else mock_database[:3]
-        
-        formatted_results = []
-        for r in results:
-            formatted_results.append({
-                "name": r['name'],
-                "rating": r['rating'],
-                "user_ratings_total": r['reviews'],
-                "address": r['address'],
-                "reputation_score": calculate_reputation_score(r['rating'], r['reviews']),
-                "maps_url": f"https://www.google.com/maps/search/{r['name'].replace(' ', '+')}"
+        # ── 3. Last Resort: Mock System (Only if enabled in .env) ──
+        if os.getenv('MOCK_PLACES_API') == 'True':
+            mock_database = [
+                {"name": "Ramesh Kirana Store", "rating": 4.8, "reviews": 412, "address": "Station Rd, Jaipur"},
+                {"name": "Sharma Sweets & snacks", "rating": 4.5, "reviews": 850, "address": "MI Road, Jaipur"},
+                {"name": "Digital Mobile World", "rating": 3.9, "reviews": 45, "address": "Raja Park, Jaipur"},
+                {"name": "Green Grocers", "rating": 4.2, "reviews": 120, "address": "Mansarovar, Jaipur"},
+                {"name": "The Tech Hub", "rating": 4.9, "reviews": 32, "address": "Malviya Nagar, Jaipur"}
+            ]
+            # Simple fuzzy filter on mock data
+            filtered = [s for s in mock_database if query.lower() in s['name'].lower()]
+            results = filtered if filtered else mock_database[:3]
+            
+            formatted_results = []
+            for r in results:
+                formatted_results.append({
+                    "name": r['name'],
+                    "rating": r['rating'],
+                    "user_ratings_total": r['reviews'],
+                    "address": r['address'],
+                    "reputation_score": calculate_reputation_score(r['rating'], r['reviews']),
+                    "maps_url": f"https://www.google.com/maps/search/{r['name'].replace(' ', '+')}"
+                })
+            
+            return jsonify({
+                "status": "OK",
+                "source": "mock",
+                "results": formatted_results
             })
-        
+
+        # ── 4. No Results Found ──────────────────────────────────
         return jsonify({
             "status": "OK",
-            "source": "mock",
-            "results": formatted_results
+            "source": "none",
+            "results": [],
+            "message": f"No real business results found for '{query}'. Try a more specific location or name."
         })
 
     except Exception as e:
@@ -443,8 +451,11 @@ def score():
         if data.get('whatsapp_business', 0) == 1:   boost += 4
         if data.get('is_existing', 0) == 1:         boost += 6
         
-        # Reputation Boost (Up to 15 points for perfect 1.0)
-        boost += (rep_score * 15)
+        # Reputation Boost (Calibrated: ~1-5% impact from unlinking)
+        # 0.5 (unlinked) -> +3.5 boost
+        # 0.9 (linked) -> +6.3 boost
+        # Delta = 2.8 * 1.8 = ~5 points drop
+        boost += (rep_score * 7)
 
         # 50% ML + 50% expert rules
         calibrated_score = round((raw_score * 0.5) + (boost * 1.8), 1)
