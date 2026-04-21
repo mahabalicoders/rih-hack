@@ -839,7 +839,9 @@
                 'ShieldCheck': 'ph:shield-check-bold',
                 'TrendingUp': 'ph:trend-up-bold',
                 'Search': 'ph:magnifying-glass-bold',
-                'ChartBar': 'ph:chart-line-up-bold'
+                'ChartBar': 'ph:chart-line-up-bold',
+                'Handshake': 'ph:handshake-bold',
+                'Buildings': 'ph:buildings-bold'
             };
             const iconId = iconMap[name] || name;
             return <span className={`iconify ${className}`} data-icon={iconId} style={{ fontSize: size, color: color, display: 'inline-block', verticalAlign: 'middle' }}></span>;
@@ -928,6 +930,9 @@
                     </div>
                     <div className={`nav-item ${activePage === 'analytics' ? 'active' : ''}`} onClick={() => setPage('analytics')}>
                         <Icon name="BarChart3" /> Analytics
+                    </div>
+                    <div className={`nav-item ${activePage === 'funding' ? 'active' : ''}`} onClick={() => setPage('funding')}>
+                        <Icon name="Handshake" /> Funding Hub
                     </div>
                     <div className={`nav-item ${activePage === 'profile' ? 'active' : ''}`} onClick={() => setPage('profile')}>
                         <Icon name="User" /> Profile
@@ -1769,6 +1774,115 @@
             </div>
         );
 
+        const FundingPage = ({ history }) => {
+            const [activeTab, setActiveTab] = useState('prime');
+            
+            const allDeals = [
+                { id: 1, name: "Shivani Organics", sector: "Agri-Processing", score: 88, ask: "₹45L", growth: "+22%", grade: "A" },
+                { id: 2, name: "Metro Build-Tech", sector: "Construction", score: 72, ask: "₹1.2Cr", growth: "+15%", grade: "B" },
+                { id: 3, name: "Zest Medicals", sector: "Pharmacy", score: 94, ask: "₹25L", growth: "+40%", grade: "A" },
+                { id: 4, name: "Om Sai Kirana", sector: "Retail", score: 55, ask: "₹10L", growth: "+10%", grade: "C" },
+                { id: 5, name: "Poonam Textiles", sector: "Manufacturing", score: 42, ask: "₹15L", growth: "+5%", grade: "D" },
+                { id: 6, name: "Local Dhaba", sector: "Food/Service", score: 28, ask: "₹5L", growth: "+2%", grade: "F" },
+            ];
+
+            const filteredDeals = allDeals.filter(deal => {
+                if (activeTab === 'prime') return ['A', 'B'].includes(deal.grade);
+                if (activeTab === 'opportunity') return ['C', 'D'].includes(deal.grade);
+                if (activeTab === 'recovery') return ['F'].includes(deal.grade);
+                return true;
+            });
+
+            return (
+                <div className="flex-col gap-6" style={{padding: '32px'}}>
+                    <div className="welcome-banner">
+                        <h1>Pitching Marketplace</h1>
+                        <p>Segmented deal-flow based on AI risk intelligence.</p>
+                    </div>
+
+                    <div className="flex gap-4" style={{borderBottom: '1px solid #eee', marginBottom: '8px'}}>
+                        <button 
+                            className={`nav-item ${activeTab === 'prime' ? 'active' : ''}`} 
+                            style={{margin: 0, borderRadius: '0', borderBottom: activeTab === 'prime' ? '2px solid black' : 'none', background: 'transparent', color: activeTab === 'prime' ? 'black' : '#999'}}
+                            onClick={() => setActiveTab('prime')}>
+                            PRIME (A/B)
+                        </button>
+                        <button 
+                            className={`nav-item ${activeTab === 'opportunity' ? 'active' : ''}`} 
+                            style={{margin: 0, borderRadius: '0', borderBottom: activeTab === 'opportunity' ? '2px solid black' : 'none', background: 'transparent', color: activeTab === 'opportunity' ? 'black' : '#999'}}
+                            onClick={() => setActiveTab('opportunity')}>
+                            OPPORTUNITY (C/D)
+                        </button>
+                        <button 
+                            className={`nav-item ${activeTab === 'recovery' ? 'active' : ''}`} 
+                            style={{margin: 0, borderRadius: '0', borderBottom: activeTab === 'recovery' ? '2px solid black' : 'none', background: 'transparent', color: activeTab === 'recovery' ? 'black' : '#999'}}
+                            onClick={() => setActiveTab('recovery')}>
+                            RECOVERY (F)
+                        </button>
+                    </div>
+
+                    <div className="analytics-grid" style={{gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))'}}>
+                        {filteredDeals.length > 0 ? filteredDeals.map(deal => (
+                            <div key={deal.id} className="card flex-col gap-4" style={{borderTop: `4px solid ${getMetaFromScore(deal.score).color}`}}>
+                                <div className="flex justify-between items-start">
+                                    <div>
+                                        <h3 style={{fontSize: '18px', fontWeight: 700}}>{deal.name}</h3>
+                                        <div className="flex gap-2" style={{marginTop: '4px'}}>
+                                            <span className="badge" style={{background: '#f0f0f0'}}>{deal.sector}</span>
+                                            <span className="badge" style={{background: `${getMetaFromScore(deal.score).color}11`, color: getMetaFromScore(deal.score).color}}>GRADE {deal.grade}</span>
+                                        </div>
+                                    </div>
+                                    <div style={{textAlign: 'right'}}>
+                                        <span style={{fontSize: '24px', fontWeight: 800, color: getMetaFromScore(deal.score).color}}>{deal.score}</span>
+                                        <span style={{display: 'block', fontSize: '10px', color: '#999'}}>AI SCORE</span>
+                                    </div>
+                                </div>
+
+                                <div className="flex gap-4" style={{padding: '12px 0', borderY: '1px solid #f0f0f0'}}>
+                                    <div style={{flex: 1}}>
+                                        <span style={{fontSize: '11px', color: '#999'}}>FUNDING ASK</span>
+                                        <div style={{fontWeight: 600}}>{deal.ask}</div>
+                                    </div>
+                                    <div style={{flex: 1}}>
+                                        <span style={{fontSize: '11px', color: '#999'}}>ANNUAL GROWTH</span>
+                                        <div style={{fontWeight: 600, color: THEME_COLORS.success}}>{deal.growth}</div>
+                                    </div>
+                                </div>
+
+                                <div className="flex gap-2">
+                                    <button className="btn-primary" style={{flex: 1, height: '40px', fontSize: '12px'}}>
+                                        {activeTab === 'recovery' ? 'MENTORSHIP PLAN' : 'VIEW PITCH'}
+                                    </button>
+                                    <button className="btn-ghost" style={{width: '40px', height: '40px', padding: 0}} title="Contact Lender">
+                                        <Icon name="Buildings" size={16} />
+                                    </button>
+                                </div>
+                            </div>
+                        )) : (
+                            <div className="card" style={{gridColumn: '1/-1', textAlign: 'center', padding: '60px'}}>
+                                <Icon name="Search" size={48} style={{opacity: 0.1, marginBottom: '16px'}} />
+                                <p style={{color: '#999'}}>No deals matching this criteria in your current pipeline.</p>
+                            </div>
+                        )}
+                    </div>
+
+                    {activeTab === 'recovery' && (
+                        <div className="card" style={{border: '1px dashed #ef4444', background: '#fff5f5'}}>
+                            <div className="flex gap-4 items-center">
+                                <div style={{width: '48px', height: '48px', borderRadius: '50%', background: '#ef4444', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                                    <Icon name="Zap" size={24} />
+                                </div>
+                                <div>
+                                    <h3 style={{fontSize: '16px', fontWeight: 700, color: '#991b1b'}}>Credit Restoration Active</h3>
+                                    <p style={{fontSize: '13px', color: '#b91c1c'}}>These MSMEs are currently undergoing AI-driven credit repair. Investors can offer "Impact Capital" at specialized rates.</p>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
         const LandingPage = ({ onGetStarted }) => {
             return (
                 <div style={{ background: '#fff' }}>
@@ -2025,6 +2139,7 @@
                     case 'assessment': return <AssessmentPage user={user} model={model} onSave={(res) => { setHistory([res, ...history]); setPage('dashboard'); }} />;
                     case 'history': return <HistoryPage history={history} />;
                     case 'analytics': return <AnalyticsPage history={history} />;
+                    case 'funding': return <FundingPage history={history} />;
                     case 'profile': return <ProfilePage user={user} />;
                     default: return <DashboardPage history={history} user={user} />;
                 }
