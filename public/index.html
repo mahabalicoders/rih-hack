@@ -1886,8 +1886,7 @@
             const handleGoogle = async () => {
                 const p = new firebase.auth.GoogleAuthProvider();
                 try {
-                    const res = await auth.signInWithPopup(p);
-                    onLogin(res.user.displayName);
+                    await auth.signInWithRedirect(p);
                 } catch (e) { alert(e.message); }
             };
 
@@ -1993,6 +1992,24 @@
             const [history, setHistory] = useState([]);
             const [user, setUser] = useState(null);
             const [isReady, setReady] = useState(false);
+
+            useEffect(() => {
+                auth.getRedirectResult().then((res) => {
+                    if (res && res.user) {
+                        setUser(res.user.displayName || res.user.email);
+                        setPage('dashboard');
+                    }
+                }).catch((e) => {
+                    console.error("Redirect Error:", e);
+                    // Standard Firebase auth listener as fallback
+                    auth.onAuthStateChanged((user) => {
+                        if (user) {
+                            setUser(user.displayName || user.email);
+                            setPage('dashboard');
+                        }
+                    });
+                });
+            }, []);
 
             useEffect(() => {
                 if (!user || page === 'landing') return;
