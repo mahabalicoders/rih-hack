@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,19 +8,20 @@
     <!-- Google Fonts: Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
     <!-- Dependencies -->
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    
+
     <!-- jsPDF for PDF Exports -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    
+
     <!-- Iconify (Vast icon library) -->
     <script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
 
@@ -52,26 +54,62 @@
             --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.05), 0 8px 10px -6px rgb(0 0 0 / 0.05);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background-color: var(--bg-page); color: var(--text-main); -webkit-font-smoothing: antialiased; letter-spacing: -0.01em; }
-        
-        h1, h2, h3 { letter-spacing: -0.03em; }
-        .app-container { display: flex; min-height: 100vh; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            -webkit-font-smoothing: antialiased;
+            letter-spacing: -0.01em;
+        }
+
+        h1,
+        h2,
+        h3 {
+            letter-spacing: -0.03em;
+        }
+
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
 
         /* Responsive */
         @media (max-width: 1024px) {
-            :root { --sidebar-width: 80px; }
-            .user-info, .logo-text, .nav-text { display: none; }
-            .sidebar { padding: 32px 12px; }
-            .nav-item { justify-content: center; padding: 12px; }
+            :root {
+                --sidebar-width: 80px;
+            }
+
+            .user-info,
+            .logo-text,
+            .nav-text {
+                display: none;
+            }
+
+            .sidebar {
+                padding: 32px 12px;
+            }
+
+            .nav-item {
+                justify-content: center;
+                padding: 12px;
+            }
         }
 
         @media (max-width: 768px) {
-            .app-container { flex-direction: column; }
-            .sidebar { 
-                width: 100% !important; 
-                height: 64px !important; 
-                position: fixed !important; 
+            .app-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100% !important;
+                height: 64px !important;
+                position: fixed !important;
                 bottom: 0 !important;
                 top: auto !important;
                 padding: 0 16px !important;
@@ -80,29 +118,99 @@
                 flex-direction: row !important;
                 align-items: center;
                 justify-content: space-around;
-                background: rgba(255,255,255,0.8);
+                background: rgba(255, 255, 255, 0.8);
                 backdrop-filter: blur(12px);
             }
-            .sidebar-bottom, .logo-container { display: none !important; }
-            .main-content { margin-left: 0 !important; padding: 0 !important; padding-bottom: 80px !important; }
-            .nav-list { display: flex; flex-direction: row !important; gap: 4px; margin: 0; }
-            .nav-item { margin-bottom: 0; padding: 12px; flex-direction: column; gap: 4px; }
-            .nav-icon { width: 20px; height: 20px; }
-            .nav-text { display: none; }
-            
-            .hero h1 { font-size: 32px !important; line-height: 1.1; }
-            .hero { padding: 60px 20px !important; }
-            .landing-nav { padding: 0 16px !important; height: 64px; }
-            .feature-grid { grid-template-columns: 1fr !important; gap: 24px !important; padding: 40px 20px !important; }
-            .stat-grid { grid-template-columns: 1fr 1fr !important; gap: 12px !important; }
-            .form-grid { grid-template-columns: 1fr !important; gap: 16px !important; }
-            .content-body { padding: 0 !important; }
-            .main-content { margin-left: 0 !important; padding: 0 !important; padding-bottom: 80px !important; }
-            .top-bar { padding: 0 16px !important; height: 56px; }
-            .card { padding: 16px !important; border-radius: 16px !important; }
-            .analytics-grid { grid-template-columns: 1fr !important; gap: 16px !important; }
+            .sidebar-bottom,
+            .logo-container {
+                display: none !important;
+            }
+
+            .main-content {
+                margin-left: 0 !important;
+                padding: 0 !important;
+                padding-bottom: 80px !important;
+            }
+
+            .nav-list {
+                display: flex;
+                flex-direction: row !important;
+                gap: 4px;
+                margin: 0;
+            }
+
+            .nav-item {
+                margin-bottom: 0;
+                padding: 12px;
+                flex-direction: column;
+                gap: 4px;
+            }
+
+            .nav-icon {
+                width: 20px;
+                height: 20px;
+            }
+
+            .nav-text {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 32px !important;
+                line-height: 1.1;
+            }
+
+            .hero {
+                padding: 60px 20px !important;
+            }
+
+            .landing-nav {
+                padding: 0 16px !important;
+                height: 64px;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr !important;
+                gap: 24px !important;
+                padding: 40px 20px !important;
+            }
+
+            .stat-grid {
+                grid-template-columns: 1fr 1fr !important;
+                gap: 12px !important;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr !important;
+                gap: 16px !important;
+            }
+
+            .content-body {
+                padding: 0 !important;
+            }
+
+            .main-content {
+                margin-left: 0 !important;
+                padding: 0 !important;
+                padding-bottom: 80px !important;
+            }
+
+            .top-bar {
+                padding: 0 16px !important;
+                height: 56px;
+            }
+
+            .card {
+                padding: 16px !important;
+                border-radius: 16px !important;
+            }
+
+            .analytics-grid {
+                grid-template-columns: 1fr !important;
+                gap: 16px !important;
+            }
         }
-        
+
         /* Sidebar */
         .sidebar {
             width: var(--sidebar-width);
@@ -126,7 +234,11 @@
             letter-spacing: -0.04em;
         }
 
-        .nav-list { list-style: none; flex-grow: 1; }
+        .nav-list {
+            list-style: none;
+            flex-grow: 1;
+        }
+
         .nav-item {
             padding: 12px 16px;
             border-radius: 12px;
@@ -140,10 +252,29 @@
             margin-bottom: 8px;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .nav-item:hover { background: #f1f5f9; color: var(--text-main); transform: translateX(4px); }
-        .nav-item.active { background: var(--nav-active-bg); color: var(--nav-active-text); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        .nav-icon { width: 18px; height: 18px; opacity: 0.8; }
-        .active .nav-icon { filter: invert(1); opacity: 1; }
+
+        .nav-item:hover {
+            background: #f1f5f9;
+            color: var(--text-main);
+            transform: translateX(4px);
+        }
+
+        .nav-item.active {
+            background: var(--nav-active-bg);
+            color: var(--nav-active-text);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-icon {
+            width: 18px;
+            height: 18px;
+            opacity: 0.8;
+        }
+
+        .active .nav-icon {
+            filter: invert(1);
+            opacity: 1;
+        }
 
         .sidebar-bottom {
             padding-top: 24px;
@@ -152,6 +283,7 @@
             align-items: center;
             gap: 12px;
         }
+
         .avatar {
             width: 32px;
             height: 32px;
@@ -163,8 +295,19 @@
             font-size: 12px;
             font-weight: 600;
         }
-        .user-info { display: flex; flex-direction: column; overflow: hidden; }
-        .user-email { font-size: 11px; color: var(--text-muted); white-space: nowrap; text-overflow: ellipsis; }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .user-email {
+            font-size: 11px;
+            color: var(--text-muted);
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
 
         /* Main Content Area */
         .main-content {
@@ -187,10 +330,20 @@
             top: 0;
             z-index: 90;
         }
-        .page-title { font-size: 16px; font-weight: 600; }
-        .current-date { font-size: 13px; color: var(--text-muted); }
 
-        .content-body { padding: 0; }
+        .page-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .current-date {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .content-body {
+            padding: 0;
+        }
 
         /* Unified Card Style */
         .card {
@@ -203,43 +356,143 @@
             position: relative;
             overflow: hidden;
         }
-        .card:hover { transform: translateY(-2px); box-shadow: var(--shadow-premium); }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-premium);
+        }
 
         /* Stat Cards */
-        .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 32px; }
-        .stat-card { display: flex; flex-direction: column; gap: 8px; }
-        .stat-label { font-size: 12px; color: var(--text-muted); font-weight: 500; }
-        .stat-value { font-size: 28px; font-weight: 600; letter-spacing: -0.02em; }
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
 
         /* Banner */
-        .welcome-banner { margin-bottom: 32px; }
-        .welcome-banner h1 { font-size: 24px; font-weight: 600; margin-bottom: 4px; }
-        .welcome-banner p { color: var(--text-muted); font-size: 14px; }
+        .welcome-banner {
+            margin-bottom: 32px;
+        }
+
+        .welcome-banner h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .welcome-banner p {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
 
         /* Form Elements */
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-        .form-section { margin-bottom: 32px; }
-        .section-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-light); font-weight: 600; margin-bottom: 16px; display: block; }
-        .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
-        label { font-size: 12px; font-weight: 500; color: var(--text-muted); }
-        input, select {
-            height: 44px; border: var(--border-thin); border-radius: 10px; padding: 0 14px; font-size: 14px; width: 100%; outline: none; background: #fff; transition: all 0.2s;
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
         }
-        input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(17, 17, 17, 0.05); }
-        button { border-radius: 10px; font-weight: 600; transition: all 0.2s; cursor: pointer; border: none; }
-        .btn-primary { 
-            background: var(--accent); 
-            color: white; 
-            height: 48px; 
-            padding: 0 32px; 
+
+        .form-section {
+            margin-bottom: 32px;
+        }
+
+        .section-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-light);
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        label {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        input,
+        select {
+            height: 44px;
+            border: var(--border-thin);
+            border-radius: 10px;
+            padding: 0 14px;
+            font-size: 14px;
+            width: 100%;
+            outline: none;
+            background: #fff;
+            transition: all 0.2s;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(17, 17, 17, 0.05);
+        }
+
+        button {
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+            height: 48px;
+            padding: 0 32px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
         }
-        .btn-primary:hover { opacity: 0.9; transform: scale(1.02); }
-        .btn-ghost { background: transparent; border: 1px solid #e2e8f0; color: var(--text-main); height: 48px; padding: 0 32px; }
-        .btn-ghost:hover { background: #f8fafc; border-color: var(--border-color); }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: scale(1.02);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid #e2e8f0;
+            color: var(--text-main);
+            height: 48px;
+            padding: 0 32px;
+        }
+
+        .btn-ghost:hover {
+            background: #f8fafc;
+            border-color: var(--border-color);
+        }
 
         .btn-google {
             background: #fff;
@@ -257,21 +510,65 @@
             transition: all 0.2s;
             margin-top: 24px;
         }
-        .btn-google:hover { background: #f8fafc; border-color: #cbd5e1; transform: translateY(-1px); }
+
+        .btn-google:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            transform: translateY(-1px);
+        }
 
         /* Table Style */
-        table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; font-size: 12px; color: var(--text-light); text-transform: uppercase; padding: 12px 16px; border-bottom: var(--border-thin); }
-        td { padding: 16px; border-bottom: var(--border-thin); font-size: 14px; }
-        tr:last-child td { border-bottom: none; }
-        .badge { padding: 4px 10px; border-radius: 100px; font-size: 11px; font-weight: 600; display: inline-block; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            font-size: 12px;
+            color: var(--text-light);
+            text-transform: uppercase;
+            padding: 12px 16px;
+            border-bottom: var(--border-thin);
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: var(--border-thin);
+            font-size: 14px;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 100px;
+            font-size: 11px;
+            font-weight: 600;
+            display: inline-block;
+        }
 
         /* Charts */
-        .chart-container { position: relative; height: 300px; width: 100%; }
-        .analytics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
 
         /* Results Display */
-        .score-display { text-align: center; margin-bottom: 32px; }
+        .score-display {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
         .score-main {
             font-size: 120px;
             font-weight: 800;
@@ -280,19 +577,68 @@
             margin-bottom: 8px;
             margin-top: 16px;
         }
+
         .score-circle {
-            width: 80px; height: 80px; border-radius: 50%; border: 4px solid #eee; display: flex; align-items: center; justify-content: center;
-            font-size: 24px; font-weight: 700; margin: 0 auto 12px;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 4px solid #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 700;
+            margin: 0 auto 12px;
         }
-        .factor-list { list-style: none; margin: 16px 0; }
-        .factor-item { font-size: 13px; color: var(--text-muted); margin-bottom: 8px; display: flex; gap: 8px; }
-        .factor-item::before { content: "•"; color: #ddd; }
+
+        .factor-list {
+            list-style: none;
+            margin: 16px 0;
+        }
+
+        .factor-item {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .factor-item::before {
+            content: "•";
+            color: #ddd;
+        }
 
         /* Training Screen (re-used with minor polish) */
-        #training-screen { height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; background: white; }
-        .progress-box { width: 280px; text-align: center; }
-        .progress-bar-wrap { width: 100%; height: 6px; background: #eee; border-radius: 3px; overflow: hidden; margin: 16px 0; }
-        .progress-bar-fill { height: 100%; background: #111; transition: width 0.1s linear; }
+        #training-screen {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            background: white;
+        }
+
+        .progress-box {
+            width: 280px;
+            text-align: center;
+        }
+
+        .progress-bar-wrap {
+            width: 100%;
+            height: 6px;
+            background: #eee;
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 16px 0;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: #111;
+            transition: width 0.1s linear;
+        }
 
         /* Landing Page Specifics */
         .landing-nav {
@@ -307,6 +653,7 @@
             top: 0;
             z-index: 200;
         }
+
         .hero {
             padding: 120px 80px;
             text-align: center;
@@ -317,14 +664,19 @@
             flex-direction: column;
             align-items: center;
         }
+
         .hero::before {
             content: "";
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background-image: url("https://www.transparenttextures.com/patterns/fine-mesh.png");
             opacity: 0.03;
             pointer-events: none;
         }
+
         .hero h1 {
             font-size: 80px;
             font-weight: 800;
@@ -336,8 +688,10 @@
             margin-right: auto;
             background: linear-gradient(180deg, #111 0%, #444 100%);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+
         .hero p {
             font-size: 20px;
             color: var(--text-muted);
@@ -347,6 +701,7 @@
             font-weight: 450;
             letter-spacing: -0.01em;
         }
+
         .feature-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -354,9 +709,11 @@
             padding: 80px;
             background: #fafafa;
         }
+
         .feature-card {
             text-align: left;
         }
+
         .feature-card .icon-box {
             width: 48px;
             height: 48px;
@@ -368,16 +725,19 @@
             justify-content: center;
             margin-bottom: 24px;
         }
+
         .feature-card h3 {
             font-size: 18px;
             margin-bottom: 12px;
             font-weight: 600;
         }
+
         .feature-card p {
             font-size: 14px;
             color: var(--text-muted);
             line-height: 1.6;
         }
+
         .footer {
             padding: 60px 80px;
             border-top: var(--border-thin);
@@ -386,11 +746,13 @@
             align-items: center;
             background: #fff;
         }
+
         .trusted-by {
             padding: 40px 0;
             text-align: center;
             border-bottom: var(--border-thin);
         }
+
         .trusted-by span {
             font-size: 11px;
             text-transform: uppercase;
@@ -399,6 +761,7 @@
             display: block;
             margin-bottom: 24px;
         }
+
         .logos-flex {
             display: flex;
             justify-content: center;
@@ -408,13 +771,34 @@
         }
 
         @media (max-width: 850px) {
-            .landing-nav, .hero, .feature-grid, .footer { padding: 40px 20px; }
-            .hero h1 { font-size: 40px; }
-            .feature-grid { grid-template-columns: 1fr; }
-            .logos-flex { gap: 24px; flex-wrap: wrap; }
-            .stat-grid { grid-template-columns: 1fr 1fr; }
+            .landing-nav,
+            .hero,
+            .feature-grid,
+            .footer {
+                padding: 40px 20px;
+            }
+
+            .hero h1 {
+                font-size: 40px;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .logos-flex {
+                gap: 24px;
+                flex-wrap: wrap;
+            }
+
+            .stat-grid {
+                grid-template-columns: 1fr 1fr;
+            }
         }
-        .hidden { display: none; }
+
+        .hidden {
+            display: none;
+        }
 
         /* ─── SiliconMind V2.0 Anomaly Banner ─────────────────────── */
         .anomaly-banner {
@@ -451,8 +835,53 @@
             from { opacity: 0; transform: translateY(-8px); }
             to   { opacity: 1; transform: translateY(0); }
         }
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-card {
+            background: #fff;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            border-radius: 24px;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     </style>
 </head>
+
 <body>
     <div id="root"></div>
 
@@ -461,13 +890,13 @@
 
         // --- Firebase Configuration ---
         const firebaseConfig = {
-          apiKey: "AIzaSyC5pe8gt-XTlkcBERxSVrbuxJcNbilIVw4",
-          authDomain: "credit-iq-baa91.firebaseapp.com",
-          projectId: "credit-iq-baa91",
-          storageBucket: "credit-iq-baa91.firebasestorage.app",
-          messagingSenderId: "31663798764",
-          appId: "1:31663798764:web:d1ce015657133a0e9768c9",
-          measurementId: "G-HGYNZ30ZV1"
+            apiKey: "AIzaSyC5pe8gt-XTlkcBERxSVrbuxJcNbilIVw4",
+            authDomain: "credit-iq-baa91.firebaseapp.com",
+            projectId: "credit-iq-baa91",
+            storageBucket: "credit-iq-baa91.firebasestorage.app",
+            messagingSenderId: "31663798764",
+            appId: "1:31663798764:web:d1ce015657133a0e9768c9",
+            measurementId: "G-HGYNZ30ZV1"
         };
 
         // Initialize Firebase
@@ -489,7 +918,9 @@
                 'ShieldCheck': 'ph:shield-check-bold',
                 'TrendingUp': 'ph:trend-up-bold',
                 'Search': 'ph:magnifying-glass-bold',
-                'ChartBar': 'ph:chart-line-up-bold'
+                'ChartBar': 'ph:chart-line-up-bold',
+                'Handshake': 'ph:handshake-bold',
+                'Buildings': 'ph:buildings-bold'
             };
             const iconId = iconMap[name] || name;
             return <span className={`iconify ${className}`} data-icon={iconId} style={{ fontSize: size, color: color, display: 'inline-block', verticalAlign: 'middle' }}></span>;
@@ -511,7 +942,7 @@
             "Repair / General Services"
         ];
         const LOAN_HISTORY_STATUS = ["None", "Good", "Bad"];
-        
+
         const MAX_VALS = {
             revenue: 500000,
             txn_count: 200,
@@ -579,6 +1010,9 @@
                     <div className={`nav-item ${activePage === 'analytics' ? 'active' : ''}`} onClick={() => setPage('analytics')}>
                         <Icon name="BarChart3" /> Analytics
                     </div>
+                    <div className={`nav-item ${activePage === 'funding' ? 'active' : ''}`} onClick={() => setPage('funding')}>
+                        <Icon name="Handshake" /> Funding Hub
+                    </div>
                     <div className={`nav-item ${activePage === 'fraud' ? 'active' : ''}`} onClick={() => setPage('fraud')}>
                         <Icon name="ph:shield-warning-bold" /> Fraud Monitor
                     </div>
@@ -589,10 +1023,10 @@
                         <Icon name="User" /> Profile
                     </div>
                 </nav>
-                <div className="sidebar-bottom" onClick={onLogout} style={{cursor: 'pointer'}}>
+                <div className="sidebar-bottom" onClick={onLogout} style={{ cursor: 'pointer' }}>
                     <div className="avatar">{user ? user.charAt(0).toUpperCase() : 'U'}</div>
                     <div className="user-info">
-                        <span style={{fontSize: '13px', fontWeight: 600}}>{user || 'User'}</span>
+                        <span style={{ fontSize: '13px', fontWeight: 600 }}>{user || 'User'}</span>
                         <span className="user-email">Risk Analyst</span>
                     </div>
                 </div>
@@ -742,8 +1176,8 @@
                             pointBackgroundColor: '#111'
                         }]
                     },
-                    options: { 
-                        responsive: true, maintainAspectRatio: false, 
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
                         plugins: { legend: { display: false } },
                         scales: { y: { min: 0, max: 100 } }
                     }
@@ -791,11 +1225,11 @@
                         </div>
                         <div className="card stat-card">
                             <span className="stat-label">HIGH RISK ALERTS</span>
-                            <span className="stat-value" style={{color: stats.highRisk > 0 ? THEME_COLORS.danger : 'inherit'}}>{stats.highRisk}</span>
+                            <span className="stat-value" style={{ color: stats.highRisk > 0 ? THEME_COLORS.danger : 'inherit' }}>{stats.highRisk}</span>
                         </div>
                         <div className="card stat-card">
                             <span className="stat-label">LAST ASSESSMENT</span>
-                            <span className="stat-value" style={{fontSize: '18px'}}>{stats.last}</span>
+                            <span className="stat-value" style={{ fontSize: '18px' }}>{stats.last}</span>
                         </div>
                     </div>
 
@@ -814,33 +1248,33 @@
                         </div>
                     </div>
 
-                    <div className="card" style={{marginTop: '24px'}}>
-                        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px'}}>
-                            <span className="section-label" style={{marginBottom: 0}}>Quick Actions</span>
+                    <div className="card" style={{ marginTop: '24px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                            <span className="section-label" style={{ marginBottom: 0 }}>Quick Actions</span>
                             <div className="flex gap-4">
-                                <button className="btn-ghost" style={{height: '36px', padding: '0 12px', fontSize: '11px'}} onClick={() => setPage('assessment')}>NEW AUDIT</button>
-                                <button className="btn-ghost" style={{height: '36px', padding: '0 12px', fontSize: '11px'}}>EXPORT PDF</button>
+                                <button className="btn-ghost" style={{ height: '36px', padding: '0 12px', fontSize: '11px' }} onClick={() => setPage('assessment')}>NEW AUDIT</button>
+                                <button className="btn-ghost" style={{ height: '36px', padding: '0 12px', fontSize: '11px' }}>EXPORT PDF</button>
                             </div>
                         </div>
                         <div className="flex gap-6">
-                            <div style={{flex: 1, padding: '16px', background: '#fcfcfc', border: '0.5px solid #eee', borderRadius: '8px'}}>
-                                <span style={{fontSize: '11px', color: '#999', display: 'block'}}>SYSTEM STATUS</span>
-                                <div className="flex items-center gap-2" style={{marginTop: '4px'}}>
-                                    <div style={{width: '8px', height: '8px', borderRadius: '50%', background: '#22c55e'}}></div>
-                                    <span style={{fontSize: '13px', fontWeight: 600}}>AI Engine Active</span>
+                            <div style={{ flex: 1, padding: '16px', background: '#fcfcfc', border: '0.5px solid #eee', borderRadius: '8px' }}>
+                                <span style={{ fontSize: '11px', color: '#999', display: 'block' }}>SYSTEM STATUS</span>
+                                <div className="flex items-center gap-2" style={{ marginTop: '4px' }}>
+                                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#22c55e' }}></div>
+                                    <span style={{ fontSize: '13px', fontWeight: 600 }}>AI Engine Active</span>
                                 </div>
                             </div>
-                            <div style={{flex: 1, padding: '16px', background: '#fcfcfc', border: '0.5px solid #eee', borderRadius: '8px'}}>
-                                <span style={{fontSize: '11px', color: '#999', display: 'block'}}>FIREBASE SYNC</span>
-                                <div className="flex items-center gap-2" style={{marginTop: '4px'}}>
-                                    <div style={{width: '8px', height: '8px', borderRadius: '50%', background: '#22c55e'}}></div>
-                                    <span style={{fontSize: '13px', fontWeight: 600}}>Cloud Storage Online</span>
+                            <div style={{ flex: 1, padding: '16px', background: '#fcfcfc', border: '0.5px solid #eee', borderRadius: '8px' }}>
+                                <span style={{ fontSize: '11px', color: '#999', display: 'block' }}>FIREBASE SYNC</span>
+                                <div className="flex items-center gap-2" style={{ marginTop: '4px' }}>
+                                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#22c55e' }}></div>
+                                    <span style={{ fontSize: '13px', fontWeight: 600 }}>Cloud Storage Online</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div className="card" style={{marginTop: '24px'}}>
+                    <div className="card" style={{ marginTop: '24px' }}>
                         <span className="section-label">Recent Assessments</span>
                         <table>
                             <thead>
@@ -855,20 +1289,18 @@
                             <tbody>
                                 {history.slice(0, 5).map((h, i) => (
                                     <tr key={i}>
-                                        <td style={{fontWeight: 500}}>{BUSINESS_TYPES[h.business_type]}</td>
+                                        <td style={{ fontWeight: 500 }}>{BUSINESS_TYPES[h.business_type]}</td>
                                         <td>{h.score}</td>
-                                        <td><span className="badge" style={{background: `${h.color}11`, color: h.color, border: `0.5px solid ${h.color}`}}>{h.grade}</span></td>
-                                        <td style={{color: h.color, fontWeight: 500}}>{h.risk}</td>
-                                        <td style={{color: THEME_COLORS.textMuted}}>{h.date}</td>
+                                        <td><span className="badge" style={{ background: `${h.color}11`, color: h.color, border: `0.5px solid ${h.color}` }}>{h.grade}</span></td>
+                                        <td style={{ color: h.color, fontWeight: 500 }}>{h.risk}</td>
+                                        <td style={{ color: THEME_COLORS.textMuted }}>{h.date}</td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
                     </div>
 
-                    <div style={{ marginTop: '32px' }}>
-                        <WhatIfSimulator />
-                    </div>
+
                 </div>
             );
         };
@@ -936,15 +1368,14 @@
                         ...formData, 
                         google_reputation_score: googleData.rep_score 
                     };
-
                     const response = await fetch(API_URL, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(body)
                     });
-                    
+
                     const data = await response.json();
-                    
+
                     if (data.status === 'success') {
                         // ── V2.0 PROACTIVE ANOMALY CHECK ──
                         if (data.is_anomaly) {
@@ -955,7 +1386,7 @@
                         }
 
                         const scoreColor = data.score >= 80 ? THEME_COLORS.success : data.score >= 50 ? THEME_COLORS.warning : THEME_COLORS.danger;
-                        
+
                         // Rule-based risk drivers logic
                         const getDrivers = (d, s) => {
                             const drv = [];
@@ -977,9 +1408,9 @@
                             if (d.whatsapp_business) drv.push('Active WhatsApp Business user');
                             if (d.is_existing) drv.push('Existing business with track record');
                             if (d.social_score >= 7) drv.push('Strong social media presence');
-                            
+
                             // Fill if empty or short
-                            while(drv.length < 3) drv.push(s >= 50 ? 'Stable financial outlook' : 'Risk mitigation recommended');
+                            while (drv.length < 3) drv.push(s >= 50 ? 'Stable financial outlook' : 'Risk mitigation recommended');
                             return drv.slice(0, 3);
                         };
 
@@ -996,22 +1427,22 @@
 
                         const getLoanRecommendation = (grade, requestedAmount, businessType) => {
                             const SECTOR_MAX = { 0: 7500000, 1: 10000000, 2: 2000000, 3: 2000000, 4: 2000000, 5: 5000000, 6: 5000000, 7: 500000 };
-                            const SECTOR_SCHEMES = { 
-                                0: 'NABARD NWR Pledge Loan', 1: 'MSME Business Loan / PSL', 2: 'CGTMSE Collateral Free Loan', 
-                                3: 'PMMY Tarun Plus', 4: 'PMMY Tarun', 5: 'Healthcare PSL Target Loan', 
-                                6: 'Professional Business Loan', 7: 'PMMY Shishu / Kishore' 
+                            const SECTOR_SCHEMES = {
+                                0: 'NABARD NWR Pledge Loan', 1: 'MSME Business Loan / PSL', 2: 'CGTMSE Collateral Free Loan',
+                                3: 'PMMY Tarun Plus', 4: 'PMMY Tarun', 5: 'Healthcare PSL Target Loan',
+                                6: 'Professional Business Loan', 7: 'PMMY Shishu / Kishore'
                             };
                             const GRADE_PERCENTAGE = { 'A': 1.0, 'B': 0.75, 'C': 0.5, 'D': 0.2, 'F': 0 };
                             const RATES = { 'A': '8.5-11%', 'B': '12-15%', 'C': '16-20%', 'D': '22-26%', 'F': 'N/A' };
                             const TENURE = { 'A': 36, 'B': 24, 'C': 18, 'D': 12, 'F': 0 };
-                            const LENDER = { 
-                                'A': 'PSU Bank (SBI/PNB)', 'B': 'Private Bank (HDFC/ICICI)', 'C': 'NBFC (Bajaj Finance)', 
-                                'D': 'Microfinance Institution', 'F': 'Not Eligible' 
+                            const LENDER = {
+                                'A': 'PSU Bank (SBI/PNB)', 'B': 'Private Bank (HDFC/ICICI)', 'C': 'NBFC (Bajaj Finance)',
+                                'D': 'Microfinance Institution', 'F': 'Not Eligible'
                             };
                             const DECISIONS = { 'A': 'APPROVED', 'B': 'APPROVED', 'C': 'REVIEW', 'D': 'REVIEW', 'F': 'REJECTED' };
 
                             if (grade === 'F') return {
-                                amount: 0, amountFormatted: 'Not Eligible', scheme: 'N/A', rate: 'N/A', 
+                                amount: 0, amountFormatted: 'Not Eligible', scheme: 'N/A', rate: 'N/A',
                                 tenure: 0, tenureFormatted: 'N/A', lender: 'Not Eligible', decision: 'REJECTED',
                                 requestedFormatted: '₹' + requestedAmount.toLocaleString('en-IN'), approvedPct: '0%'
                             };
@@ -1029,7 +1460,7 @@
                                 tenureFormatted: tenureMonths + ' months',
                                 lender: LENDER[grade],
                                 decision: DECISIONS[grade],
-                                requestedFormatted: '₹' + (parseInt(requestedAmount)||0).toLocaleString('en-IN'),
+                                requestedFormatted: '₹' + (parseInt(requestedAmount) || 0).toLocaleString('en-IN'),
                                 approvedPct: Math.round(pct * 100) + '%'
                             };
                         };
@@ -1040,9 +1471,9 @@
                             if (rateStr === 'N/A') return null;
                             const approvedAmount = amt;
                             const tenureMonths = parseInt(tenureStr.split(' ')[0]) || 0;
-                            const parts = rateStr.replace('%','').split('-');
+                            const parts = rateStr.replace('%', '').split('-');
                             const avgRate = (parseFloat(parts[0]) + parseFloat(parts[1])) / 2 / 100;
-                            
+
                             const totalInterest = Math.round(approvedAmount * avgRate * (tenureMonths / 12));
                             const expectedLoss = Math.round(approvedAmount * (defProb / 100) * 0.6);
                             const netBenefit = totalInterest - expectedLoss;
@@ -1050,10 +1481,10 @@
 
                             return {
                                 totalInterest: '₹' + totalInterest.toLocaleString('en-IN'),
-                                expectedLoss:  '₹' + expectedLoss.toLocaleString('en-IN'),
-                                netBenefit:    '₹' + netBenefit.toLocaleString('en-IN'),
-                                returnOnLoan:  rol + '%',
-                                worthIt:       netBenefit > 0
+                                expectedLoss: '₹' + expectedLoss.toLocaleString('en-IN'),
+                                netBenefit: '₹' + netBenefit.toLocaleString('en-IN'),
+                                returnOnLoan: rol + '%',
+                                worthIt: netBenefit > 0
                             };
                         };
 
@@ -1105,20 +1536,20 @@
                     const successColor = [34, 197, 94]; // Green
                     const dangerColor = [239, 68, 68]; // Red
                     const cardBg = [248, 250, 252];
-                    
+
                     // --- HEADER ---
                     doc.setFillColor(...primaryColor);
                     doc.rect(0, 0, 210, 45, 'F');
-                    
+
                     doc.setTextColor(255, 255, 255);
                     doc.setFontSize(26);
                     doc.setFont("helvetica", "bold");
                     doc.text("ARTHASHAKTI", 20, 25);
-                    
+
                     doc.setFontSize(10);
                     doc.setFont("helvetica", "normal");
                     doc.text("Bharat Fintech v1.0 | AI Credit Assessment", 20, 34);
-                    
+
                     doc.setFontSize(10);
                     doc.text(`REPORT ID: AS-${Date.now().toString().slice(-6)}`, 150, 25);
                     doc.text(`DATE: ${result.date} | ${new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}`, 150, 31);
@@ -1132,20 +1563,20 @@
 
                     doc.setFillColor(...cardBg);
                     doc.roundedRect(20, 75, 170, 40, 3, 3, 'F');
-                    
+
                     doc.setFontSize(28);
                     const scoreColor = result.score >= 70 ? successColor : (result.score >= 40 ? [245, 158, 11] : dangerColor);
                     doc.setTextColor(...scoreColor);
                     doc.text(`${result.score}`, 35, 103);
-                    
+
                     doc.setTextColor(...primaryColor);
                     doc.setFontSize(10);
                     doc.text("SILICONMIND SCORE", 35, 87);
-                    
+
                     doc.setFontSize(16);
                     doc.setFont("helvetica", "bold");
                     doc.text(`GRADE ${result.grade}`, 110, 95);
-                    
+
                     doc.setFontSize(10);
                     doc.setFont("helvetica", "normal");
                     doc.text(`${result.risk.toUpperCase()} RISK PROFILE`, 110, 102);
@@ -1235,10 +1666,10 @@
                     <div className="card">
 
                         <span className="section-label">SiliconMind Assessment</span>
-                        
+
                         <div className="form-section">
-                            <span style={{fontSize: '11px', color: '#999', marginBottom: '16px', display: 'block'}}>CORE LOAN DETAILS</span>
-                            <div className="form-grid" style={{gap: '12px'}}>
+                            <span style={{ fontSize: '11px', color: '#999', marginBottom: '16px', display: 'block' }}>CORE LOAN DETAILS</span>
+                            <div className="form-grid" style={{ gap: '12px' }}>
                                 <div className="form-group">
                                     <label>Loan Amount (₹)</label>
                                     <input name="loan_amount_inr" type="number" value={formData.loan_amount_inr} onChange={handleInp} />
@@ -1261,8 +1692,8 @@
                         </div>
 
                         <div className="form-section">
-                            <span style={{fontSize: '11px', color: '#999', marginBottom: '16px', display: 'block'}}>ALTERNATIVE TRANSACTION DATA</span>
-                            <div className="form-grid" style={{gap: '12px'}}>
+                            <span style={{ fontSize: '11px', color: '#999', marginBottom: '16px', display: 'block' }}>ALTERNATIVE TRANSACTION DATA</span>
+                            <div className="form-grid" style={{ gap: '12px' }}>
                                 <div className="form-group">
                                     <label>UPI Monthly Txns</label>
                                     <input name="upi_monthly_txn" type="number" value={formData.upi_monthly_txn} onChange={handleInp} />
@@ -1365,7 +1796,7 @@
                             </div>
                         </div>
 
-                        <button onClick={runInference} disabled={loading} className="btn-primary w-full" style={{marginTop: '12px'}}>
+                        <button onClick={runInference} disabled={loading} className="btn-primary w-full" style={{ marginTop: '12px' }}>
                             {loading ? "Analyzing SiliconMind Patterns..." : "Calculate Risk Score"}
                         </button>
                     </div>
@@ -1373,9 +1804,9 @@
                     <div>
                         {result ? (
                             <div className="card">
-                                <span className="section-label" style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+                                <span className="section-label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                     SiliconMind Prediction
-                                    <button onClick={exportPDF} style={{padding: '4px 12px', fontSize: '11px'}} className="btn-ghost">Export PDF</button>
+                                    <button onClick={exportPDF} style={{ padding: '4px 12px', fontSize: '11px' }} className="btn-ghost">Export PDF</button>
                                 </span>
                                 {/* ── V2.0 Anomaly Banner — shown above score ── */}
                                 {result.is_anomaly && (
@@ -1389,52 +1820,52 @@
                                     </div>
                                 )}
                                 <div className="score-display">
-                                    <div className="score-main" style={{color: result.color}}>
+                                    <div className="score-main" style={{ color: result.color }}>
                                         {result.score}
                                     </div>
-                                    <div style={{fontSize: '11px', color: '#999', marginBottom: '12px'}}>
+                                    <div style={{ fontSize: '11px', color: '#999', marginBottom: '12px' }}>
                                         Prob. of Default: {result.default_probability}%
                                     </div>
-                                    <div className="badge" style={{background: `${result.color}11`, color: result.color, border: `0.5px solid ${result.color}`, padding: '6px 16px', fontSize: '13px'}}>
+                                    <div className="badge" style={{ background: `${result.color}11`, color: result.color, border: `0.5px solid ${result.color}`, padding: '6px 16px', fontSize: '13px' }}>
                                         GRADE {result.grade}
                                     </div>
-                                    <div style={{marginTop: '12px', fontWeight: 700, color: result.color, fontSize: '18px'}}>{result.risk} Risk</div>
+                                    <div style={{ marginTop: '12px', fontWeight: 700, color: result.color, fontSize: '18px' }}>{result.risk} Risk</div>
                                 </div>
-                                
+
                                 <div className="form-section">
                                     <span className="section-label">Eligibility Insights</span>
-                                    <div style={{background: '#fcfcfc', border: '0.5px solid #eee', borderRadius: '8px', padding: '16px'}}>
-                                        <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '8px'}}>
-                                            <span style={{fontSize: '12px', color: '#666'}}>Requested Amount</span>
-                                            <span style={{fontSize: '12px', fontWeight: 700}}>{result.loan.requestedFormatted}</span>
+                                    <div style={{ background: '#fcfcfc', border: '0.5px solid #eee', borderRadius: '8px', padding: '16px' }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                                            <span style={{ fontSize: '12px', color: '#666' }}>Requested Amount</span>
+                                            <span style={{ fontSize: '12px', fontWeight: 700 }}>{result.loan.requestedFormatted}</span>
                                         </div>
-                                        <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '8px'}}>
-                                            <span style={{fontSize: '12px', color: '#666'}}>Approved Amount</span>
-                                            <span style={{fontSize: '12px', fontWeight: 800, color: THEME_COLORS.success}}>{result.loan.amountFormatted}</span>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                                            <span style={{ fontSize: '12px', color: '#666' }}>Approved Amount</span>
+                                            <span style={{ fontSize: '12px', fontWeight: 800, color: THEME_COLORS.success }}>{result.loan.amountFormatted}</span>
                                         </div>
-                                        <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '8px'}}>
-                                            <span style={{fontSize: '12px', color: '#666'}}>Approval %</span>
-                                            <span style={{fontSize: '12px', fontWeight: 700, color: THEME_COLORS.accent}}>{result.loan.approvedPct}</span>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                                            <span style={{ fontSize: '12px', color: '#666' }}>Approval %</span>
+                                            <span style={{ fontSize: '12px', fontWeight: 700, color: THEME_COLORS.accent }}>{result.loan.approvedPct}</span>
                                         </div>
-                                        <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '8px', paddingTop: '8px', borderTop: '0.5px solid #eee'}}>
-                                            <span style={{fontSize: '12px', color: '#666'}}>Scheme</span>
-                                            <span style={{fontSize: '12px', fontWeight: 700, color: THEME_COLORS.accent, textAlign: 'right'}}>{result.loan.scheme}</span>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', paddingTop: '8px', borderTop: '0.5px solid #eee' }}>
+                                            <span style={{ fontSize: '12px', color: '#666' }}>Scheme</span>
+                                            <span style={{ fontSize: '12px', fontWeight: 700, color: THEME_COLORS.accent, textAlign: 'right' }}>{result.loan.scheme}</span>
                                         </div>
-                                        <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '8px'}}>
-                                            <span style={{fontSize: '12px', color: '#666'}}>Lender</span>
-                                            <span style={{fontSize: '12px', fontWeight: 600}}>{result.loan.lender}</span>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                                            <span style={{ fontSize: '12px', color: '#666' }}>Lender</span>
+                                            <span style={{ fontSize: '12px', fontWeight: 600 }}>{result.loan.lender}</span>
                                         </div>
-                                        <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '8px'}}>
-                                            <span style={{fontSize: '12px', color: '#666'}}>Interest Rate</span>
-                                            <span style={{fontSize: '12px', fontWeight: 700}}>{result.loan.rate}</span>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                                            <span style={{ fontSize: '12px', color: '#666' }}>Interest Rate</span>
+                                            <span style={{ fontSize: '12px', fontWeight: 700 }}>{result.loan.rate}</span>
                                         </div>
-                                        <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '8px'}}>
-                                            <span style={{fontSize: '12px', color: '#666'}}>Tenure</span>
-                                            <span style={{fontSize: '12px', fontWeight: 700}}>{result.loan.tenureFormatted}</span>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                                            <span style={{ fontSize: '12px', color: '#666' }}>Tenure</span>
+                                            <span style={{ fontSize: '12px', fontWeight: 700 }}>{result.loan.tenureFormatted}</span>
                                         </div>
-                                        <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                                            <span style={{fontSize: '12px', color: '#666'}}>Decision</span>
-                                            <span style={{fontSize: '12px', fontWeight: 700, color: result.loan.decision === 'REJECTED' ? THEME_COLORS.danger : '#111'}}>{result.loan.decision}</span>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                            <span style={{ fontSize: '12px', color: '#666' }}>Decision</span>
+                                            <span style={{ fontSize: '12px', fontWeight: 700, color: result.loan.decision === 'REJECTED' ? THEME_COLORS.danger : '#111' }}>{result.loan.decision}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -1442,34 +1873,34 @@
                                 <div className="form-section">
                                     <span className="section-label">Bank Benefit Analysis</span>
                                     {result.benefit ? (
-                                        <div style={{background: '#fcfcfc', border: '0.5px solid #eee', borderRadius: '8px', padding: '16px'}}>
-                                            <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '8px'}}>
-                                                <span style={{fontSize: '12px', color: '#666'}}>Interest Income</span>
-                                                <span style={{fontSize: '12px', fontWeight: 700}}>{result.benefit.totalInterest}</span>
+                                        <div style={{ background: '#fcfcfc', border: '0.5px solid #eee', borderRadius: '8px', padding: '16px' }}>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                                                <span style={{ fontSize: '12px', color: '#666' }}>Interest Income</span>
+                                                <span style={{ fontSize: '12px', fontWeight: 700 }}>{result.benefit.totalInterest}</span>
                                             </div>
-                                            <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '8px'}}>
-                                                <span style={{fontSize: '12px', color: '#666'}}>Expected Loss</span>
-                                                <span style={{fontSize: '12px', fontWeight: 700, color: THEME_COLORS.danger}}>{result.benefit.expectedLoss}</span>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                                                <span style={{ fontSize: '12px', color: '#666' }}>Expected Loss</span>
+                                                <span style={{ fontSize: '12px', fontWeight: 700, color: THEME_COLORS.danger }}>{result.benefit.expectedLoss}</span>
                                             </div>
-                                            <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '8px', paddingTop: '8px', borderTop: '0.5px solid #eee'}}>
-                                                <span style={{fontSize: '12px', fontWeight: 700}}>Net Benefit</span>
-                                                <span style={{fontSize: '12px', fontWeight: 800, color: result.benefit.worthIt ? THEME_COLORS.success : THEME_COLORS.danger}}>{result.benefit.netBenefit}</span>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', paddingTop: '8px', borderTop: '0.5px solid #eee' }}>
+                                                <span style={{ fontSize: '12px', fontWeight: 700 }}>Net Benefit</span>
+                                                <span style={{ fontSize: '12px', fontWeight: 800, color: result.benefit.worthIt ? THEME_COLORS.success : THEME_COLORS.danger }}>{result.benefit.netBenefit}</span>
                                             </div>
-                                            <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '8px'}}>
-                                                <span style={{fontSize: '12px', color: '#666'}}>Return on Loan</span>
-                                                <span style={{fontSize: '12px', fontWeight: 700}}>{result.benefit.returnOnLoan}</span>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                                                <span style={{ fontSize: '12px', color: '#666' }}>Return on Loan</span>
+                                                <span style={{ fontSize: '12px', fontWeight: 700 }}>{result.benefit.returnOnLoan}</span>
                                             </div>
-                                            <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '12px'}}>
-                                                <span style={{fontSize: '12px', color: '#666'}}>Lender Type</span>
-                                                <span style={{fontSize: '12px', fontWeight: 600}}>{result.loan.lender}</span>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+                                                <span style={{ fontSize: '12px', color: '#666' }}>Lender Type</span>
+                                                <span style={{ fontSize: '12px', fontWeight: 600 }}>{result.loan.lender}</span>
                                             </div>
-                                            <div style={{textAlign: 'center', padding: '10px', borderRadius: '6px', background: result.benefit.worthIt ? '#f0fdf4' : '#fef2f2', color: result.benefit.worthIt ? '#15803d' : '#991b1b', fontWeight: 700, fontSize: '13px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'}}>
+                                            <div style={{ textAlign: 'center', padding: '10px', borderRadius: '6px', background: result.benefit.worthIt ? '#f0fdf4' : '#fef2f2', color: result.benefit.worthIt ? '#15803d' : '#991b1b', fontWeight: 700, fontSize: '13px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
                                                 <Icon name={result.benefit.worthIt ? "ph:check-circle-fill" : "ph:x-circle-fill"} size={16} color={result.benefit.worthIt ? THEME_COLORS.success : THEME_COLORS.danger} />
                                                 <span>{result.benefit.worthIt ? 'Worth lending' : 'High risk lending'}</span>
                                             </div>
                                         </div>
                                     ) : (
-                                        <div style={{fontSize: '12px', color: '#999', textAlign: 'center', padding: '20px', border: '0.5px dashed #eee', borderRadius: '8px'}}>
+                                        <div style={{ fontSize: '12px', color: '#999', textAlign: 'center', padding: '20px', border: '0.5px dashed #eee', borderRadius: '8px' }}>
                                             Not eligible for institutional lending analysis.
                                         </div>
                                     )}
@@ -1485,10 +1916,10 @@
                                 <button onClick={() => { onSave(result); setResult(null); }} className="btn-primary w-full">Save to Dashboard</button>
                             </div>
                         ) : (
-                            <div className="card" style={{height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.5, borderStyle: 'dashed'}}>
-                                <div style={{textAlign: 'center'}}>
-                                    <Icon name="Search" size={32} style={{marginBottom: '16px', opacity: 0.3}} />
-                                    <p style={{fontSize: '14px'}}>Awaiting Input Signals...<br/>Run assessment to see AI results.</p>
+                            <div className="card" style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.5, borderStyle: 'dashed' }}>
+                                <div style={{ textAlign: 'center' }}>
+                                    <Icon name="Search" size={32} style={{ marginBottom: '16px', opacity: 0.3 }} />
+                                    <p style={{ fontSize: '14px' }}>Awaiting Input Signals...<br />Run assessment to see AI results.</p>
                                 </div>
                             </div>
                         )}
@@ -1499,18 +1930,18 @@
 
         const HistoryPage = ({ history }) => {
             const [filter, setFilter] = useState('');
-            const filtered = history.filter(h => 
+            const filtered = history.filter(h =>
                 BUSINESS_TYPES[h.business_type]?.toLowerCase().includes(filter.toLowerCase())
             );
 
             return (
                 <div className="card">
-                    <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px'}}>
-                        <span className="section-label" style={{marginBottom: 0}}>Audit History</span>
-                        <input 
-                            placeholder="Filter by business type..." 
-                            style={{width: '240px'}} 
-                            value={filter} 
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+                        <span className="section-label" style={{ marginBottom: 0 }}>Audit History</span>
+                        <input
+                            placeholder="Filter by business type..."
+                            style={{ width: '240px' }}
+                            value={filter}
                             onChange={e => setFilter(e.target.value)}
                         />
                     </div>
@@ -1530,11 +1961,11 @@
                             {filtered.map((h, i) => (
                                 <tr key={i}>
                                     <td>{history.length - i}</td>
-                                    <td style={{fontWeight: 500}}>{BUSINESS_TYPES[h.business_type]}</td>
-                                    <td>₹{(h.loan_amount_inr/1000).toFixed(0)}k</td>
+                                    <td style={{ fontWeight: 500 }}>{BUSINESS_TYPES[h.business_type]}</td>
+                                    <td>₹{(h.loan_amount_inr / 1000).toFixed(0)}k</td>
                                     <td>{h.score}</td>
-                                    <td><span className="badge" style={{background: `${h.color}11`, color: h.color, border: `0.5px solid ${h.color}`}}>{h.grade}</span></td>
-                                    <td style={{color: h.color}}>{h.risk}</td>
+                                    <td><span className="badge" style={{ background: `${h.color}11`, color: h.color, border: `0.5px solid ${h.color}` }}>{h.grade}</span></td>
+                                    <td style={{ color: h.color }}>{h.risk}</td>
                                     <td>{h.date}</td>
                                 </tr>
                             ))}
@@ -1554,7 +1985,7 @@
                     return group.length ? group.reduce((a, b) => a + b.score, 0) / group.length : 0;
                 });
                 const bestType = BUSINESS_TYPES[typeScores.indexOf(Math.max(...typeScores))];
-                
+
                 const allReasons = history.flatMap(h => h.reasons);
                 const reasonCounts = {};
                 allReasons.forEach(r => reasonCounts[r] = (reasonCounts[r] || 0) + 1);
@@ -1569,7 +2000,7 @@
 
                 // 1. Avg Score by Type
                 const typeScores = BUSINESS_TYPES.map((_, i) => {
-                    const group = history.filter(h => h.businessType === i);
+                    const group = history.filter(h => h.business_type === i);
                     return group.length ? Math.round(group.reduce((a, b) => a + b.score, 0) / group.length) : 0;
                 });
                 const c1 = new Chart(chartRefs[0].current.getContext('2d'), {
@@ -1586,7 +2017,7 @@
                 });
 
                 // 3. Grade Distribution
-                const grades = { A:0, B:0, C:0, D:0, F:0 };
+                const grades = { A: 0, B: 0, C: 0, D: 0, F: 0 };
                 history.forEach(h => grades[h.grade]++);
                 const c3 = new Chart(chartRefs[2].current.getContext('2d'), {
                     type: 'doughnut',
@@ -1597,7 +2028,7 @@
                 // 4. Risk Factors
                 const factors = {};
                 history.flatMap(h => h.reasons).forEach(r => factors[r] = (factors[r] || 0) + 1);
-                const topFactors = Object.entries(factors).sort((a,b) => b[1]-a[1]).slice(0, 5);
+                const topFactors = Object.entries(factors).sort((a, b) => b[1] - a[1]).slice(0, 5);
                 const c4 = new Chart(chartRefs[3].current.getContext('2d'), {
                     type: 'bar',
                     indexAxis: 'y',
@@ -1610,7 +2041,7 @@
 
             return (
                 <div className="flex-col">
-                    <div className="analytics-grid" style={{marginBottom: '24px'}}>
+                    <div className="analytics-grid" style={{ marginBottom: '24px' }}>
                         <div className="card">
                             <span className="section-label">Avg Score by Business Sector</span>
                             <div className="chart-container"><canvas ref={chartRefs[0]}></canvas></div>
@@ -1632,19 +2063,19 @@
                     <div className="stat-grid">
                         <div className="card stat-card">
                             <span className="stat-label">TOP PERFORMANCE</span>
-                            <span className="stat-value" style={{fontSize: '20px'}}>{summary.bestType}</span>
+                            <span className="stat-value" style={{ fontSize: '20px' }}>{summary.bestType}</span>
                         </div>
                         <div className="card stat-card">
                             <span className="stat-label">PRIMARY RISK DRIVER</span>
-                            <span className="stat-value" style={{fontSize: '14px', lineHeight: 1.2}}>{summary.mostCommonRisk}</span>
+                            <span className="stat-value" style={{ fontSize: '14px', lineHeight: 1.2 }}>{summary.mostCommonRisk}</span>
                         </div>
                         <div className="card stat-card">
                             <span className="stat-label">MAX RECORDED SCORE</span>
-                            <span className="stat-value" style={{color: THEME_COLORS.success}}>{summary.highest}</span>
+                            <span className="stat-value" style={{ color: THEME_COLORS.success }}>{summary.highest}</span>
                         </div>
                         <div className="card stat-card">
                             <span className="stat-label">MIN RECORDED SCORE</span>
-                            <span className="stat-value" style={{color: THEME_COLORS.danger}}>{summary.lowest}</span>
+                            <span className="stat-value" style={{ color: THEME_COLORS.danger }}>{summary.lowest}</span>
                         </div>
                     </div>
                 </div>
@@ -1723,18 +2154,18 @@
 
         const ProfilePage = ({ user }) => (
             <div className="flex-col gap-6">
-                <div className="card" style={{textAlign: 'center'}}>
-                    <div className="avatar" style={{width: '80px', height: '80px', fontSize: '32px', margin: '0 auto 16px', background: '#111', color: '#fff'}}>
+                <div className="card" style={{ textAlign: 'center' }}>
+                    <div className="avatar" style={{ width: '80px', height: '80px', fontSize: '32px', margin: '0 auto 16px', background: '#111', color: '#fff' }}>
                         {user.charAt(0)}
                     </div>
-                    <h2 style={{fontSize: '20px', fontWeight: 600}}>{user}</h2>
-                    <p style={{fontSize: '14px', color: '#999', marginBottom: '24px'}}>Risk Analyst at FinanceCorp</p>
-                    
-                    <div className="form-group" style={{textAlign: 'left'}}>
+                    <h2 style={{ fontSize: '20px', fontWeight: 600 }}>{user}</h2>
+                    <p style={{ fontSize: '14px', color: '#999', marginBottom: '24px' }}>Risk Analyst at FinanceCorp</p>
+
+                    <div className="form-group" style={{ textAlign: 'left' }}>
                         <label>Display Name</label>
                         <input value={user} readOnly />
                     </div>
-                    <div className="form-group" style={{textAlign: 'left'}}>
+                    <div className="form-group" style={{ textAlign: 'left' }}>
                         <label>Account Role</label>
                         <input value="Senior Risk Analyst" readOnly />
                     </div>
@@ -1742,81 +2173,264 @@
 
                 <div className="card">
                     <span className="section-label">Model Intelligence</span>
-                    <div style={{display: 'flex', flexDirection: 'column', gap: '12px'}}>
-                        <div style={{display: 'flex', justifyContent: 'space-between', fontSize: '14px'}}>
-                            <span style={{color: '#999'}}>Architecture</span>
-                            <span style={{fontWeight: 500}}>TensorFlow.js Dense DNN</span>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
+                            <span style={{ color: '#999' }}>Architecture</span>
+                            <span style={{ fontWeight: 500 }}>TensorFlow.js Dense DNN</span>
                         </div>
-                        <div style={{display: 'flex', justifyContent: 'space-between', fontSize: '14px'}}>
-                            <span style={{color: '#999'}}>Training Set</span>
-                            <span style={{fontWeight: 500}}>500 Samples (Synthetic)</span>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
+                            <span style={{ color: '#999' }}>Training Set</span>
+                            <span style={{ fontWeight: 500 }}>500 Samples (Synthetic)</span>
                         </div>
-                        <div style={{display: 'flex', justifyContent: 'space-between', fontSize: '14px'}}>
-                            <span style={{color: '#999'}}>Features Support</span>
-                            <span style={{fontWeight: 500}}>9 Input Metrics</span>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
+                            <span style={{ color: '#999' }}>Features Support</span>
+                            <span style={{ fontWeight: 500 }}>9 Input Metrics</span>
                         </div>
-                        <div style={{display: 'flex', justifyContent: 'space-between', fontSize: '14px'}}>
-                            <span style={{color: '#999'}}>Validation Accuracy</span>
-                            <span style={{fontWeight: 500, color: THEME_COLORS.success}}>~91.4%</span>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
+                            <span style={{ color: '#999' }}>Validation Accuracy</span>
+                            <span style={{ fontWeight: 500, color: THEME_COLORS.success }}>~91.4%</span>
                         </div>
                     </div>
                 </div>
 
                 <div className="card">
                     <span className="section-label">General Settings</span>
-                    <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px'}}>
-                        <span style={{fontSize: '14px'}}>Auto-save assessments</span>
-                        <div style={{width: '36px', height: '20px', background: '#111', borderRadius: '10px'}}></div>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+                        <span style={{ fontSize: '14px' }}>Auto-save assessments</span>
+                        <div style={{ width: '36px', height: '20px', background: '#111', borderRadius: '10px' }}></div>
                     </div>
-                    <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
-                        <span style={{fontSize: '14px'}}>Detailed risk explanations</span>
-                        <div style={{width: '36px', height: '20px', background: '#111', borderRadius: '10px'}}></div>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <span style={{ fontSize: '14px' }}>Detailed risk explanations</span>
+                        <div style={{ width: '36px', height: '20px', background: '#111', borderRadius: '10px' }}></div>
                     </div>
                 </div>
             </div>
         );
 
+        const FundingPage = () => {
+            const [deals, setDeals] = useState([]);
+            const [search, setSearch] = useState('');
+            const [loading, setLoading] = useState(true);
+            const [selectedDeal, setSelectedDeal] = useState(null);
+            
+            useEffect(() => {
+                const unsubscribe = db.collection('assessments')
+                    .limit(50)
+                    .onSnapshot(snap => {
+                        const data = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                        // Sort by score desc for marketplace feel
+                        data.sort((a,b) => b.score - a.score);
+                        setDeals(data);
+                        setLoading(false);
+                    }, err => {
+                        console.error("Firestore Fetch Error:", err);
+                        setLoading(false);
+                    });
+                return () => unsubscribe();
+            }, []);
+
+            const filteredDeals = deals.filter(deal => {
+                const matchesSearch = BUSINESS_TYPES[deal.business_type]?.toLowerCase().includes(search.toLowerCase()) || 
+                                    deal.user?.toLowerCase().includes(search.toLowerCase());
+                return matchesSearch && ['C', 'D', 'E', 'F'].includes(deal.grade);
+            });
+
+            return (
+                <div className="flex-col gap-6" style={{padding: '32px'}}>
+                    <div className="welcome-banner">
+                        <div className="flex justify-between items-end">
+                            <div>
+                                <h1>Recovery & Opportunity Marketplace</h1>
+                                <p>High-yield deal-flow from MSMEs needing strategic capital intervention.</p>
+                            </div>
+                            <div className="flex gap-2 items-center" style={{background: '#fff', padding: '8px 16px', borderRadius: '12px', border: '1px solid #eee', width: '320px'}}>
+                                <Icon name="Search" size={16} color="#999" />
+                                <input 
+                                    placeholder="Search by business or owner..." 
+                                    style={{border: 'none', padding: '0', height: 'auto', fontSize: '13px', width: '100%', outline: 'none'}}
+                                    value={search}
+                                    onChange={e => setSearch(e.target.value)}
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    {loading ? (
+                        <div className="flex justify-center items-center" style={{padding: '60px'}}>
+                            <div className="spinner">Connecting into secure vault...</div>
+                        </div>
+                    ) : (
+                        <div className="flex-col gap-4">
+                            {filteredDeals.length > 0 ? filteredDeals.map(deal => (
+                                <div key={deal.id} className="card flex-col gap-4" style={{borderTop: `4px solid ${getMetaFromScore(deal.score).color}`, cursor: 'pointer'}} onClick={() => setSelectedDeal(deal)}>
+                                    <div className="flex justify-between items-start">
+                                        <div>
+                                            <h3 style={{fontSize: '18px', fontWeight: 700}}>{BUSINESS_TYPES[deal.business_type] || 'Unnamed Entity'}</h3>
+                                            <div className="flex gap-2" style={{marginTop: '4px'}}>
+                                                <span className="badge" style={{background: '#f8fafc', color: '#64748b', fontSize: '10px'}}>{deal.user || 'Anonymous'}</span>
+                                                <span className="badge" style={{background: `${getMetaFromScore(deal.score).color}11`, color: getMetaFromScore(deal.score).color}}>GRADE {deal.grade}</span>
+                                            </div>
+                                        </div>
+                                        <div style={{textAlign: 'right'}}>
+                                            <span style={{fontSize: '24px', fontWeight: 800, color: getMetaFromScore(deal.score).color}}>{deal.score}</span>
+                                            <span style={{display: 'block', fontSize: '10px', color: '#999'}}>AI SCORE</span>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex gap-4" style={{padding: '12px 0', borderTop: '0.5px solid #f1f5f9', borderBottom: '0.5px solid #f1f5f9'}}>
+                                        <div style={{flex: 1}}>
+                                            <span style={{fontSize: '11px', color: '#999', display: 'block'}}>LOAN REQUIRED</span>
+                                            <div style={{fontWeight: 600, fontSize: '15px'}}>₹{Math.round(deal.loan_amount_inr / 1000).toLocaleString('en-IN')}K</div>
+                                        </div>
+                                        <div style={{flex: 1}}>
+                                            <span style={{fontSize: '11px', color: '#999', display: 'block'}}>REPAYMENT TERM</span>
+                                            <div style={{fontWeight: 600, fontSize: '15px'}}>{deal.term || 12} Months</div>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex gap-2" style={{marginTop: '4px'}}>
+                                        <button className="btn-primary" style={{flex: 1, height: '40px', fontSize: '12px', padding: '0 12px'}}>
+                                            RECOVERY ANALYSIS
+                                        </button>
+                                        <button className="btn-ghost" style={{width: '40px', height: '40px', padding: 0}} title="Contact Owner">
+                                            <Icon name="User" size={16} />
+                                        </button>
+                                    </div>
+                                </div>
+                            )) : (
+                                <div className="card" style={{gridColumn: '1/-1', textAlign: 'center', padding: '80px', borderStyle: 'dashed'}}>
+                                    <Icon name="Search" size={48} style={{opacity: 0.1, marginBottom: '16px'}} />
+                                    <h4 style={{fontSize: '18px', color: '#666'}}>No active pitches found</h4>
+                                    <p style={{color: '#999', fontSize: '14px', maxWidth: '300px', margin: '8px auto'}}>There are currently no credit-ready MSMEs matching this criteria or search term.</p>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    {filteredDeals.length > 0 && (
+                        <div className="card" style={{border: '1px dashed #ef4444', background: '#fff5f5'}}>
+                            <div className="flex gap-4 items-center">
+                                <div style={{width: '48px', height: '48px', borderRadius: '50%', background: '#ef4444', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                                    <Icon name="Zap" size={24} />
+                                </div>
+                                <div>
+                                    <h3 style={{fontSize: '16px', fontWeight: 700, color: '#991b1b'}}>Intervention Required</h3>
+                                    <p style={{fontSize: '13px', color: '#b91c1c'}}>These MSMEs require strategic capital or recovery intervention based on their AI risk profile.</p>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {selectedDeal && (
+                        <div className="modal-overlay" onClick={() => setSelectedDeal(null)}>
+                            <div className="modal-card" onClick={e => e.stopPropagation()}>
+                                <div className="modal-close" onClick={() => setSelectedDeal(null)}>
+                                    <Icon name="Plus" style={{transform: 'rotate(45deg)'}} />
+                                </div>
+                                
+                                <div style={{padding: '32px'}}>
+                                    <div className="flex justify-between items-start" style={{marginBottom: '24px'}}>
+                                        <div>
+                                            <span className="badge" style={{background: `${getMetaFromScore(selectedDeal.score).color}11`, color: getMetaFromScore(selectedDeal.score).color, marginBottom: '8px'}}>GRADE {selectedDeal.grade}</span>
+                                            <h2 style={{fontSize: '24px', fontWeight: 800}}>{BUSINESS_TYPES[selectedDeal.business_type]}</h2>
+                                            <p style={{color: '#999'}}>{selectedDeal.user || 'Anonymous Merchant'}</p>
+                                        </div>
+                                        <div style={{textAlign: 'right'}}>
+                                            <div style={{fontSize: '32px', fontWeight: 800, color: getMetaFromScore(selectedDeal.score).color}}>{selectedDeal.score}</div>
+                                            <div style={{fontSize: '11px', color: '#999'}}>SILICONMIND SCORE</div>
+                                        </div>
+                                    </div>
+
+                                    <div className="analytics-grid" style={{marginBottom: '32px', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px'}}>
+                                        <div className="card" style={{padding: '16px'}}>
+                                            <span style={{fontSize: '11px', color: '#999', display: 'block'}}>LOAN AMOUNT</span>
+                                            <div style={{fontSize: '18px', fontWeight: 700}}>₹{selectedDeal.loan_amount_inr?.toLocaleString('en-IN')}</div>
+                                        </div>
+                                        <div className="card" style={{padding: '16px'}}>
+                                            <span style={{fontSize: '11px', color: '#999', display: 'block'}}>TERM</span>
+                                            <div style={{fontSize: '18px', fontWeight: 700}}>{selectedDeal.term} Months</div>
+                                        </div>
+                                        <div className="card" style={{padding: '16px'}}>
+                                            <span style={{fontSize: '11px', color: '#999', display: 'block'}}>EMPLOYEES</span>
+                                            <div style={{fontSize: '18px', fontWeight: 700}}>{selectedDeal.employees} Staff</div>
+                                        </div>
+                                        <div className="card" style={{padding: '16px'}}>
+                                            <span style={{fontSize: '11px', color: '#999', display: 'block'}}>GST SCORE</span>
+                                            <div style={{fontSize: '18px', fontWeight: 700}}>{selectedDeal.gst_filing_score}/10</div>
+                                        </div>
+                                    </div>
+
+                                    <div className="card" style={{background: '#f8fafc', border: 'none', padding: '24px', marginBottom: '24px'}}>
+                                        <h3 style={{fontSize: '14px', fontWeight: 700, marginBottom: '12px'}}>Risk Intelligence Summary</h3>
+                                        <div className="flex-col gap-3">
+                                            <div className="flex justify-between items-center">
+                                                <span style={{fontSize: '13px', color: '#64748b'}}>UPI Digital Trace</span>
+                                                <span style={{fontWeight: 600}}>{selectedDeal.upi_monthly_txn} Txns/mo</span>
+                                            </div>
+                                            <div className="flex justify-between items-center">
+                                                <span style={{fontSize: '13px', color: '#64748b'}}>Digital Infrastructure</span>
+                                                <span style={{fontWeight: 600}}>{selectedDeal.has_website ? 'Has Website' : 'Offline only'}</span>
+                                            </div>
+                                            <div className="flex justify-between items-center">
+                                                <span style={{fontSize: '13px', color: '#64748b'}}>Market Segment</span>
+                                                <span style={{fontWeight: 600}}>{selectedDeal.is_urban ? 'Urban' : 'Rural'}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex gap-4">
+                                        <button className="btn-primary" style={{flex: 1, height: '48px'}}>INITIATE RECOVERY PLAN</button>
+                                        <button className="btn-ghost" style={{height: '48px', padding: '0 24px'}}>DOWNLOAD DATA</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
         const LandingPage = ({ onGetStarted }) => {
             return (
-                <div style={{background: '#fff'}}>
+                <div style={{ background: '#fff' }}>
                     <nav className="landing-nav">
-                        <div className="logo-container" style={{padding: 0, marginBottom: 0}}>
+                        <div className="logo-container" style={{ padding: 0, marginBottom: 0 }}>
                             <Icon name="Brain" size={24} />
-                            <span style={{fontSize: '18px', fontWeight: 800, letterSpacing: '-0.03em'}}>Arthashakti</span>
+                            <span style={{ fontSize: '18px', fontWeight: 800, letterSpacing: '-0.03em' }}>Arthashakti</span>
                         </div>
                         <div className="flex gap-8 items-center">
-                            <button className="btn-primary" style={{borderRadius: '100px', padding: '10px 24px', fontSize: '13px'}} onClick={onGetStarted}>Analyst Portal</button>
+                            <button className="btn-primary" style={{ borderRadius: '100px', padding: '10px 24px', fontSize: '13px' }} onClick={onGetStarted}>Analyst Portal</button>
                         </div>
                     </nav>
 
-                    <header className="hero" style={{padding: '40px 20px 80px'}}>
-                        <div className="badge" style={{background: '#f4f4f4', color: '#111', marginBottom: '24px', borderRadius: '100px', padding: '6px 16px', display: 'inline-block', fontSize: '12px', fontWeight: 600, border: '1px solid #eee'}}>
+                    <header className="hero" style={{ padding: '40px 20px 80px' }}>
+                        <div className="badge" style={{ background: '#f4f4f4', color: '#111', marginBottom: '24px', borderRadius: '100px', padding: '6px 16px', display: 'inline-block', fontSize: '12px', fontWeight: 600, border: '1px solid #eee' }}>
                             BHARAT FINTECH v1.0
                         </div>
-                        <h1 style={{fontSize: 'clamp(48px, 8vw, 84px)', marginBottom: '32px', lineHeight: 1.1}}>Empowering MSME lending with intelligence.</h1>
-                        <p style={{fontSize: 'clamp(16px, 3vw, 22px)', marginBottom: '48px', maxWidth: '800px', margin: '0 auto 48px'}}>Evaluate the creditworthiness of small businesses using transaction flows, digital footprints, and SiliconMind AI logic. No credit history? No problem.</p>
+                        <h1 style={{ fontSize: 'clamp(48px, 8vw, 84px)', marginBottom: '32px', lineHeight: 1.1 }}>Empowering MSME lending with intelligence.</h1>
+                        <p style={{ fontSize: 'clamp(16px, 3vw, 22px)', marginBottom: '48px', maxWidth: '800px', margin: '0 auto 48px' }}>Evaluate the creditworthiness of small businesses using transaction flows, digital footprints, and SiliconMind AI logic. No credit history? No problem.</p>
                         <div className="flex justify-center gap-4">
-                            <button className="btn-primary" style={{height: '60px', padding: '0 48px', fontSize: '18px', borderRadius: '100px'}} onClick={onGetStarted}>Launch Assessment</button>
+                            <button className="btn-primary" style={{ height: '60px', padding: '0 48px', fontSize: '18px', borderRadius: '100px' }} onClick={onGetStarted}>Launch Assessment</button>
                         </div>
                     </header>
 
-                    <div className="feature-grid" style={{padding: '80px 20px'}}>
+                    <div className="feature-grid" style={{ padding: '80px 20px' }}>
                         <div className="feature-card">
-                            <div className="icon-box" style={{background: '#111', color: '#fff', width: '60px', height: '60px', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '24px', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)'}}>
+                            <div className="icon-box" style={{ background: '#111', color: '#fff', width: '60px', height: '60px', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '24px', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}>
                                 <Icon name="Zap" size={28} color="#fff" />
                             </div>
                             <h3>Instant Flow Analysis</h3>
                             <p>Directly analyze UPI and GST transaction patterns to predict repayment capacity in under 5 seconds.</p>
                         </div>
                         <div className="feature-card">
-                            <div className="icon-box" style={{background: '#111', color: '#fff', width: '60px', height: '60px', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '24px', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)'}}>
+                            <div className="icon-box" style={{ background: '#111', color: '#fff', width: '60px', height: '60px', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '24px', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}>
                                 <Icon name="ShieldCheck" size={28} color="#fff" />
                             </div>
                             <h3>On-Device Security</h3>
                             <p>Process sensitive business financials locally. Zero-copy architecture ensures data privacy for small merchants.</p>
                         </div>
                         <div className="feature-card">
-                            <div className="icon-box" style={{background: '#111', color: '#fff', width: '60px', height: '60px', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '24px', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)'}}>
+                            <div className="icon-box" style={{ background: '#111', color: '#fff', width: '60px', height: '60px', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '24px', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}>
                                 <Icon name="TrendingUp" size={28} color="#fff" />
                             </div>
                             <h3>Alternative Scoring</h3>
@@ -1824,46 +2438,46 @@
                         </div>
                     </div>
 
-                    <section style={{padding: '120px 80px', background: '#fcfcfc', borderBottom: '1px solid #eee'}}>
+                    <section style={{ padding: '120px 80px', background: '#fcfcfc', borderBottom: '1px solid #eee' }}>
                         <div className="flex-col items-center text-center">
-                            <span className="section-label" style={{color: '#888', letterSpacing: '0.1em'}}>THE WORKFLOW</span>
-                            <h2 style={{fontSize: '56px', fontWeight: 800, margin: '24px 0', letterSpacing: '-0.04em'}}>From Data to Decision.</h2>
-                            <p style={{maxWidth: '700px', fontSize: '18px', margin: '0 0 80px', color: '#666'}}>Arthashakti simplifies complex risk analysis into a single, automated workflow built for the modern Indian economy.</p>
-                            
-                            <div className="flex gap-16 text-left" style={{maxWidth: '1200px', margin: '0 auto'}}>
-                                <div style={{flex: 1}}>
-                                    <div style={{width: '40px', height: '40px', background: '#111', color: '#fff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '24px', fontWeight: 800}}>1</div>
-                                    <h4 style={{fontSize: '20px', fontWeight: 700, marginBottom: '16px'}}>Signal Capture</h4>
-                                    <p style={{fontSize: '15px', color: '#666', lineHeight: 1.6}}>Enter alternative data points including UPI velocity, GST history, and digital footprint indicators directly from the merchant.</p>
+                            <span className="section-label" style={{ color: '#888', letterSpacing: '0.1em' }}>THE WORKFLOW</span>
+                            <h2 style={{ fontSize: '56px', fontWeight: 800, margin: '24px 0', letterSpacing: '-0.04em' }}>From Data to Decision.</h2>
+                            <p style={{ maxWidth: '700px', fontSize: '18px', margin: '0 0 80px', color: '#666' }}>Arthashakti simplifies complex risk analysis into a single, automated workflow built for the modern Indian economy.</p>
+
+                            <div className="flex gap-16 text-left" style={{ maxWidth: '1200px', margin: '0 auto' }}>
+                                <div style={{ flex: 1 }}>
+                                    <div style={{ width: '40px', height: '40px', background: '#111', color: '#fff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '24px', fontWeight: 800 }}>1</div>
+                                    <h4 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '16px' }}>Signal Capture</h4>
+                                    <p style={{ fontSize: '15px', color: '#666', lineHeight: 1.6 }}>Enter alternative data points including UPI velocity, GST history, and digital footprint indicators directly from the merchant.</p>
                                 </div>
-                                <div style={{flex: 1}}>
-                                    <div style={{width: '40px', height: '40px', background: '#111', color: '#fff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '24px', fontWeight: 800}}>2</div>
-                                    <h4 style={{fontSize: '20px', fontWeight: 700, marginBottom: '16px'}}>Neural Processing</h4>
-                                    <p style={{fontSize: '15px', color: '#666', lineHeight: 1.6}}>The SiliconMind v1.0 engine cross-references signals against 14+ feature vectors to calculate a precise probability of default.</p>
+                                <div style={{ flex: 1 }}>
+                                    <div style={{ width: '40px', height: '40px', background: '#111', color: '#fff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '24px', fontWeight: 800 }}>2</div>
+                                    <h4 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '16px' }}>Neural Processing</h4>
+                                    <p style={{ fontSize: '15px', color: '#666', lineHeight: 1.6 }}>The SiliconMind v1.0 engine cross-references signals against 14+ feature vectors to calculate a precise probability of default.</p>
                                 </div>
-                                <div style={{flex: 1}}>
-                                    <div style={{width: '40px', height: '40px', background: '#111', color: '#fff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '24px', fontWeight: 800}}>3</div>
-                                    <h4 style={{fontSize: '20px', fontWeight: 700, marginBottom: '16px'}}>Credit Verdict</h4>
-                                    <p style={{fontSize: '15px', color: '#666', lineHeight: 1.6}}>Receive a calibrated grade, dynamic loan offer, and specific interest rate recommendations within milliseconds.</p>
+                                <div style={{ flex: 1 }}>
+                                    <div style={{ width: '40px', height: '40px', background: '#111', color: '#fff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '24px', fontWeight: 800 }}>3</div>
+                                    <h4 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '16px' }}>Credit Verdict</h4>
+                                    <p style={{ fontSize: '15px', color: '#666', lineHeight: 1.6 }}>Receive a calibrated grade, dynamic loan offer, and specific interest rate recommendations within milliseconds.</p>
                                 </div>
                             </div>
                         </div>
                     </section>
 
-                    <section style={{padding: '100px 80px', textAlign: 'center'}}>
-                        <div className="card" style={{padding: '80px', background: '#111', color: '#fff'}}>
-                            <h2 style={{fontSize: '40px', fontWeight: 800, marginBottom: '24px'}}>Ready to bridge the credit gap?</h2>
-                            <p style={{opacity: 0.7, marginBottom: '40px', fontSize: '18px'}}>Join Arthashakti in building a more inclusive financial future for Bharat.</p>
-                            <button className="btn-primary" style={{background: '#fff', color: '#111', height: '52px', padding: '0 40px'}} onClick={onGetStarted}>Get Started Now</button>
+                    <section style={{ padding: '100px 80px', textAlign: 'center' }}>
+                        <div className="card" style={{ padding: '80px', background: '#111', color: '#fff' }}>
+                            <h2 style={{ fontSize: '40px', fontWeight: 800, marginBottom: '24px' }}>Ready to bridge the credit gap?</h2>
+                            <p style={{ opacity: 0.7, marginBottom: '40px', fontSize: '18px' }}>Join Arthashakti in building a more inclusive financial future for Bharat.</p>
+                            <button className="btn-primary" style={{ background: '#fff', color: '#111', height: '52px', padding: '0 40px' }} onClick={onGetStarted}>Get Started Now</button>
                         </div>
                     </section>
 
                     <footer className="footer">
-                        <div className="logo-container" style={{padding: 0, marginBottom: 0}}>
+                        <div className="logo-container" style={{ padding: 0, marginBottom: 0 }}>
                             <Icon name="Brain" />
                             <span>Arthashakti</span>
                         </div>
-                        <div style={{color: '#999', fontSize: '13px'}}>
+                        <div style={{ color: '#999', fontSize: '13px' }}>
                             © 2026 Arthashakti Risk Systems. Built for Indian Financial Inclusion.
                         </div>
                     </footer>
@@ -1891,30 +2505,30 @@
             };
 
             return (
-                <div style={{height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8fafc'}}>
-                    <div className="card" style={{width: '380px', textAlign: 'center'}}>
-                        <div className="logo-container" style={{justifyContent: 'center', marginBottom: '8px'}}>
+                <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8fafc' }}>
+                    <div className="card" style={{ width: '380px', textAlign: 'center' }}>
+                        <div className="logo-container" style={{ justifyContent: 'center', marginBottom: '8px' }}>
                             <Icon name="Brain" size={32} /> <span>Arthashakti</span>
                         </div>
-                        <h2 style={{fontSize: '20px', marginBottom: '8px'}}>Welcome Back</h2>
-                        <p style={{fontSize: '13px', color: '#64748b', marginBottom: '24px'}}>Access your risk assessment dashboard</p>
-                        <div className="form-group" style={{textAlign: 'left'}}>
+                        <h2 style={{ fontSize: '20px', marginBottom: '8px' }}>Welcome Back</h2>
+                        <p style={{ fontSize: '13px', color: '#64748b', marginBottom: '24px' }}>Access your risk assessment dashboard</p>
+                        <div className="form-group" style={{ textAlign: 'left' }}>
                             <label>Email</label>
                             <input value={email} onChange={e => setEmail(e.target.value)} placeholder="analyst@finance.com" />
                         </div>
-                        <div className="form-group" style={{textAlign: 'left', position: 'relative'}}>
+                        <div className="form-group" style={{ textAlign: 'left', position: 'relative' }}>
                             <label>Password</label>
                             <input type={showPass ? "text" : "password"} value={pass} onChange={e => setPass(e.target.value)} placeholder="••••••••" />
-                            <div onClick={() => setShowPass(!showPass)} style={{position: 'absolute', right: '12px', top: '34px', cursor: 'pointer', opacity: 0.5}}>
+                            <div onClick={() => setShowPass(!showPass)} style={{ position: 'absolute', right: '12px', top: '34px', cursor: 'pointer', opacity: 0.5 }}>
                                 <Icon name={showPass ? "ph:eye-closed-bold" : "ph:eye-bold"} />
                             </div>
                         </div>
                         <button className="btn-primary w-full" onClick={handleLogin}>Log In</button>
-                        <button className="btn-google" onClick={handleGoogle} style={{marginTop: '12px'}}>
+                        <button className="btn-google" onClick={handleGoogle} style={{ marginTop: '12px' }}>
                             <span className="iconify" data-icon="logos:google-icon"></span> Continue with Google
                         </button>
-                        <p style={{marginTop: '24px', fontSize: '13px', color: '#64748b'}}>
-                            Don't have an account? <span onClick={() => setPage('signup')} style={{color: '#111', fontWeight: 700, cursor: 'pointer'}}>Sign up</span>
+                        <p style={{ marginTop: '24px', fontSize: '13px', color: '#64748b' }}>
+                            Don't have an account? <span onClick={() => setPage('signup')} style={{ color: '#111', fontWeight: 700, cursor: 'pointer' }}>Sign up</span>
                         </p>
                     </div>
                 </div>
@@ -1936,31 +2550,31 @@
             };
 
             return (
-                <div style={{height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8fafc'}}>
-                    <div className="card" style={{width: '380px', textAlign: 'center'}}>
-                        <div className="logo-container" style={{justifyContent: 'center', marginBottom: '8px'}}>
+                <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8fafc' }}>
+                    <div className="card" style={{ width: '380px', textAlign: 'center' }}>
+                        <div className="logo-container" style={{ justifyContent: 'center', marginBottom: '8px' }}>
                             <Icon name="Brain" size={32} /> <span>Arthashakti</span>
                         </div>
-                        <h2 style={{fontSize: '20px', marginBottom: '8px'}}>Create Account</h2>
-                        <p style={{fontSize: '13px', color: '#64748b', marginBottom: '24px'}}>Start evaluating MSME risk with AI</p>
-                        <div className="form-group" style={{textAlign: 'left'}}>
+                        <h2 style={{ fontSize: '20px', marginBottom: '8px' }}>Create Account</h2>
+                        <p style={{ fontSize: '13px', color: '#64748b', marginBottom: '24px' }}>Start evaluating MSME risk with AI</p>
+                        <div className="form-group" style={{ textAlign: 'left' }}>
                             <label>Full Name</label>
                             <input value={name} onChange={e => setName(e.target.value)} placeholder="John Doe" />
                         </div>
-                        <div className="form-group" style={{textAlign: 'left'}}>
+                        <div className="form-group" style={{ textAlign: 'left' }}>
                             <label>Email</label>
                             <input value={email} onChange={e => setEmail(e.target.value)} placeholder="analyst@finance.com" />
                         </div>
-                        <div className="form-group" style={{textAlign: 'left', position: 'relative'}}>
+                        <div className="form-group" style={{ textAlign: 'left', position: 'relative' }}>
                             <label>Password</label>
                             <input type={showPass ? "text" : "password"} value={pass} onChange={e => setPass(e.target.value)} placeholder="••••••••" />
-                            <div onClick={() => setShowPass(!showPass)} style={{position: 'absolute', right: '12px', top: '34px', cursor: 'pointer', opacity: 0.5}}>
+                            <div onClick={() => setShowPass(!showPass)} style={{ position: 'absolute', right: '12px', top: '34px', cursor: 'pointer', opacity: 0.5 }}>
                                 <Icon name={showPass ? "ph:eye-closed-bold" : "ph:eye-bold"} />
                             </div>
                         </div>
                         <button className="btn-primary w-full" onClick={handleSignup}>Sign Up</button>
-                        <p style={{marginTop: '24px', fontSize: '13px', color: '#64748b'}}>
-                            Already have an account? <span onClick={() => setPage('login')} style={{color: '#111', fontWeight: 700, cursor: 'pointer'}}>Log in</span>
+                        <p style={{ marginTop: '24px', fontSize: '13px', color: '#64748b' }}>
+                            Already have an account? <span onClick={() => setPage('login')} style={{ color: '#111', fontWeight: 700, cursor: 'pointer' }}>Log in</span>
                         </p>
                     </div>
                 </div>
@@ -1971,14 +2585,14 @@
             <div id="training-screen">
                 <div className="progress-box">
                     <Icon name="Brain" />
-                    <h2 style={{marginTop: '12px', fontSize: '20px'}}>Arthashakti AI</h2>
-                    <p style={{fontSize: '14px', color: '#666', marginTop: '4px'}}>
+                    <h2 style={{ marginTop: '12px', fontSize: '20px' }}>Arthashakti AI</h2>
+                    <p style={{ fontSize: '14px', color: '#666', marginTop: '4px' }}>
                         {isReady ? 'Model calibration complete' : 'Training neural network in browser...'}
                     </p>
                     <div className="progress-bar-wrap">
-                        <div className="progress-bar-fill" style={{width: `${(progress/50)*100}%`}}></div>
+                        <div className="progress-bar-fill" style={{ width: `${(progress / 50) * 100}%` }}></div>
                     </div>
-                    <span style={{fontSize: '11px', color: '#999'}}>Learning from 500 samples • Epoch {progress}/50</span>
+                    <span style={{ fontSize: '11px', color: '#999' }}>Learning from 500 samples • Epoch {progress}/50</span>
                 </div>
             </div>
         );
@@ -2013,7 +2627,7 @@
 
             useEffect(() => {
                 if (!user || page === 'landing') return;
-                
+
                 // Real-time Firestore sync (Manual sort to avoid index errors)
                 const unsubscribe = db.collection('assessments')
                     .where('user_id', '==', auth.currentUser.uid)
@@ -2027,7 +2641,7 @@
                         });
                         setHistory(data);
                     }, err => console.error("Sync Error:", err));
-                
+
                 return () => unsubscribe();
             }, [user, page]);
 
@@ -2036,7 +2650,7 @@
                 if (page === 'landing') return <LandingPage onGetStarted={() => setPage('login')} />;
                 if (page === 'login') return <LoginPage setPage={setPage} onLogin={(u) => { setUser(u); setPage('dashboard'); }} />;
                 if (page === 'signup') return <SignupPage setPage={setPage} onLogin={(u) => { setUser(u); setPage('dashboard'); }} />;
-                
+
                 // Protected Route Logic
                 if (!user) {
                     setPage('login');
@@ -2044,11 +2658,12 @@
                 }
 
                 // Private Routes
-                switch(page) {
+                switch (page) {
                     case 'dashboard': return <DashboardPage history={history} user={user} />;
                     case 'assessment': return <AssessmentPage user={user} model={model} onSave={(res) => { setHistory([res, ...history]); setPage('dashboard'); }} />;
                     case 'history': return <HistoryPage history={history} />;
                     case 'analytics': return <AnalyticsPage history={history} />;
+                    case 'funding': return <FundingPage history={history} />;
                     case 'fraud': return <FraudMonitorPage history={history} />;
                     case 'simulator': return <WhatIfSimulator />;
                     case 'profile': return <ProfilePage user={user} />;
@@ -2063,8 +2678,8 @@
                     {!isPublicPage && user && (
                         <Sidebar activePage={page} setPage={setPage} user={user} onLogout={() => { auth.signOut(); setUser(null); setPage('landing'); }} />
                     )}
-                    <div className="main-content" style={{ 
-                        marginLeft: (isPublicPage || !user) ? '0' : 'var(--sidebar-width)', 
+                    <div className="main-content" style={{
+                        marginLeft: (isPublicPage || !user) ? '0' : 'var(--sidebar-width)',
                         width: '100%',
                         backgroundColor: (isPublicPage || !user) ? '#fff' : 'var(--bg-page)'
                     }}>
@@ -2074,10 +2689,10 @@
                                 <span className="current-date">{new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
                             </header>
                         )}
-                        <div className="content-body" style={{ 
+                        <div className="content-body" style={{
                             height: (isPublicPage || !user) ? '100%' : 'auto',
                             padding: '0'
-                         }}>
+                        }}>
                             {renderContent()}
                         </div>
                     </div>
@@ -2089,4 +2704,5 @@
         root.render(<App />);
     </script>
 </body>
+
 </html>

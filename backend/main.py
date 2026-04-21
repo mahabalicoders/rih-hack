@@ -434,7 +434,9 @@ def score():
 
         # ── Step 2: Credit Score (ML + Hybrid Calibration) ─────
         if model is not None:
-            default_prob = model.predict_proba(features)[0][1]
+            # Model was trained on 14 features (before rep_score was added)
+            model_features = features[:, :14]
+            default_prob = model.predict_proba(model_features)[0][1]
             raw_score = (1 - default_prob) * 100
         else:
             raw_score = 50.0
