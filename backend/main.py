@@ -32,6 +32,26 @@ else:
 
 
 # ─────────────────────────────────────────────────────────────
+#  V2.0 Seasonal Cash Flow Matrix
+# ─────────────────────────────────────────────────────────────
+# Mapping Business Type + Month to Multiplier
+# Months: 1 (Jan) - 12 (Dec)
+SEASONAL_MATRIX = {
+    0: {6: 1.20, 7: 1.15, 10: 1.25, 11: 1.20},  # Agri: Sowing/Harvesting peak
+    1: {1: 1.10, 2: 1.15, 3: 1.10},            # Construction: Pre-monsoon build-up
+    3: {10: 1.15, 11: 1.20},                   # Retail: Festive/Diwali surge
+    4: {12: 1.20, 1: 1.15},                    # Restaurant: Holiday & New Year
+    6: {3: 1.25, 4: 1.15}                      # Professional/CA: Financial Year End
+}
+
+BUSINESS_NAMES = {
+    0: "Agri-Business", 1: "Construction", 2: "Manufacturing",
+    3: "Retail Store", 4: "Hospitality", 5: "Medical",
+    6: "Professional Services", 7: "General Services"
+}
+
+
+# ─────────────────────────────────────────────────────────────
 #  Google OAuth 2.0 Configuration
 # ─────────────────────────────────────────────────────────────
 oauth = OAuth(app)
@@ -448,7 +468,22 @@ def score():
 
         # 50% ML + 50% expert rules
         calibrated_score = round((raw_score * 0.5) + (boost * 1.8), 1)
-        final_score = min(max(calibrated_score, 10), 99)
+        
+        # ── Step 2.5: Seasonal Policy Layer (V2.0) ───────────
+        current_month = datetime.datetime.now().month
+        biz_type = int(data.get('business_type', 0))
+        
+        multiplier = 1.0
+        seasonal_applied = False
+        seasonal_msg = ""
+        
+        if biz_type in SEASONAL_MATRIX and current_month in SEASONAL_MATRIX[biz_type]:
+            multiplier = SEASONAL_MATRIX[biz_type][current_month]
+            seasonal_applied = True
+            boost_pct = int((multiplier - 1) * 100)
+            seasonal_msg = f"+{boost_pct}% boost: Peak seasonal activity for {BUSINESS_NAMES.get(biz_type, 'sector')}"
+
+        final_score = min(max(round(calibrated_score * multiplier, 1), 10), 99)
         final_prob  = 1 - (final_score / 100)
 
         # Grading
@@ -472,7 +507,10 @@ def score():
             # ── Anomaly Detection Fields (V2.0) ──
             'is_anomaly':          is_anomaly,
             'anomaly_score':       anomaly_score,
-            'anomaly_message':     anomaly_message
+            'anomaly_message':     anomaly_message,
+            # ── Seasonality Fields (V2.0) ──
+            'seasonal_adjustment_applied': seasonal_applied,
+            'seasonal_message':            seasonal_msg
         })
 
     except Exception as e:
