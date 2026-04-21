@@ -37,11 +37,14 @@ else:
 # Mapping Business Type + Month to Multiplier
 # Months: 1 (Jan) - 12 (Dec)
 SEASONAL_MATRIX = {
-    0: {6: 1.20, 7: 1.15, 10: 1.25, 11: 1.20},  # Agri: Sowing/Harvesting peak
-    1: {1: 1.10, 2: 1.15, 3: 1.10},            # Construction: Pre-monsoon build-up
-    3: {10: 1.15, 11: 1.20},                   # Retail: Festive/Diwali surge
-    4: {12: 1.20, 1: 1.15},                    # Restaurant: Holiday & New Year
-    6: {3: 1.25, 4: 1.15}                      # Professional/CA: Financial Year End
+    0: {4: 1.15, 6: 1.20, 7: 1.15, 10: 1.25, 11: 1.20},  # Agri: April Monsoon prep & Sowing
+    1: {1: 1.10, 2: 1.15, 3: 1.10, 4: 1.12},            # Construction: Pre-monsoon surge
+    2: {4: 1.10},                                       # Manufacturing: Q1 build-up
+    3: {4: 1.08, 10: 1.15, 11: 1.20},                   # Retail: Spring & Festive
+    4: {4: 1.15, 12: 1.20, 1: 1.15},                    # Restaurant: Holiday & Spring
+    5: {4: 1.05},                                       # Medical
+    6: {3: 1.25, 4: 1.20},                              # Professional/CA: Financial Year End
+    7: {4: 1.07}                                        # General Services
 }
 
 BUSINESS_NAMES = {
